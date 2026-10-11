@@ -17,6 +17,9 @@ class ModelRoute:
     max_tokens: int
     timeout_s: float
     effort: str | None = None
+    # "json_schema": provider-enforced schema; "json_object": JSON mode + schema in prompt,
+    # validated by Pydantic (for models without schema-constrained decoding)
+    output_mode: str = "json_schema"
 
 
 class ProviderError(Exception):

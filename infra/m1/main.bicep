@@ -1,7 +1,8 @@
-// ShopSense M1 infrastructure: resource group + Foundry with Claude Opus 5.5 and an
-// Azure OpenAI model (provider-agnostic client). Free-trial profile (D15), East US 2.
+// ShopSense M1 infrastructure: resource group + Foundry with two model vendors for the
+// provider-agnostic client (OpenAI gpt-4.1-mini, Mistral AI mistral-medium) and an optional
+// Claude deployment. Free-trial profile (D15), East US 2.
 //
-// IMPORTANT: deploying the Claude deployment accepts the Anthropic Marketplace offer
+// IMPORTANT: deployClaude=true accepts the Anthropic Marketplace offer
 // terms via `modelProviderData`. Set the organisation fields to your real details.
 targetScope = 'subscription'
 
@@ -30,6 +31,11 @@ param claudeIndustry string = 'education'
 param openAiModel string = 'gpt-4.1-mini'
 param openAiModelVersion string = '2025-04-14'
 param openAiCapacity int = 10
+
+param secondModel string = 'mistral-medium-2505'
+param secondModelFormat string = 'Mistral AI'
+param secondModelVersion string = '1'
+param secondCapacity int = 10
 
 var regionCode = location == 'eastus2' ? 'eus2' : location == 'swedencentral' ? 'sdc' : 'wus2'
 var suffix = take(uniqueString(subscription().id, environmentName), 6)
@@ -64,13 +70,17 @@ module foundry 'foundry.bicep' = {
     openAiModel: openAiModel
     openAiModelVersion: openAiModelVersion
     openAiCapacity: openAiCapacity
+    secondModel: secondModel
+    secondModelFormat: secondModelFormat
+    secondModelVersion: secondModelVersion
+    secondCapacity: secondCapacity
     principalId: principalId
   }
 }
 
 // Values for the repository .env (SHOPSENSE_* settings)
 output SHOPSENSE_FOUNDRY_RESOURCE string = foundry.outputs.accountName
+output SHOPSENSE_PRIMARY_DEPLOYMENT string = foundry.outputs.openAiDeployment
+output SHOPSENSE_SECOND_VENDOR_DEPLOYMENT string = foundry.outputs.secondDeployment
 output SHOPSENSE_CLAUDE_DEPLOYMENT string = foundry.outputs.claudeDeployment
-output SHOPSENSE_AZURE_OPENAI_ENDPOINT string = foundry.outputs.openAiEndpoint
-output SHOPSENSE_AZURE_OPENAI_DEPLOYMENT string = foundry.outputs.openAiDeployment
 output AZURE_RESOURCE_GROUP string = rg.name

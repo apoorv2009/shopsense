@@ -1,4 +1,5 @@
-// M1: Foundry account + project + model deployments (Claude Opus 5.5, Azure OpenAI)
+// M1: Foundry account + project + model deployments: primary (OpenAI), second vendor
+// (Mistral AI), optional Claude (needs Claude quota)
 // + least-privilege inference role for the developer (Entra auth, no keys).
 // Schema follows the Azure-Samples Claude-on-Foundry starter kit.
 param location string
@@ -17,6 +18,11 @@ param claudeIndustry string
 param openAiModel string
 param openAiModelVersion string
 param openAiCapacity int
+
+param secondModel string
+param secondModelFormat string
+param secondModelVersion string
+param secondCapacity int
 
 param principalId string
 
@@ -87,7 +93,18 @@ resource openAi 'Microsoft.CognitiveServices/accounts/deployments@2025-10-01-pre
   dependsOn: [project, claude]
 }
 
+resource secondVendor 'Microsoft.CognitiveServices/accounts/deployments@2025-10-01-preview' = {
+  parent: account
+  name: secondModel
+  sku: { name: 'GlobalStandard', capacity: secondCapacity }
+  properties: {
+    model: { format: secondModelFormat, name: secondModel, version: secondModelVersion }
+    raiPolicyName: 'Microsoft.DefaultV2'
+  }
+  dependsOn: [openAi]
+}
+
 output accountName string = account.name
-output openAiEndpoint string = 'https://${account.name}.openai.azure.com/'
 output claudeDeployment string = deployClaude ? claudeModel : ''
 output openAiDeployment string = openAi.name
+output secondDeployment string = secondVendor.name

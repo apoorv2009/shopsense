@@ -17,7 +17,7 @@ The project is for learning and runs on a one-month Azure free account: a one-ti
 | Area | Choice |
 |---|---|
 | Region | **East US 2** (single region; broad Foundry model availability). India data residency documented as the production consideration |
-| Model | **Claude on Foundry** — confirmed available on the trial subscription (2026-10-11). Azure OpenAI chat model on Foundry remains the configured fallback in the LLM gateway |
+| Model | **Primary: OpenAI `gpt-4.1-mini`; second vendor: Mistral AI `mistral-medium-2505`**, both on the same Foundry resource and within trial credits. **Amended 2026-10-11:** the trial subscription has zero quota for every Claude model, and the project has no requirement to use Claude. The Claude adapter stays in the code, enabled by configuration where quota exists |
 | Embeddings | Azure OpenAI `text-embedding-3-small` on Foundry |
 | APIM | **Consumption** if it supports the required AI-gateway policies; otherwise **Developer**. Verified at M1 setup |
 | PostgreSQL | Flexible Server **B1ms** (12-month free allowance) |
@@ -27,6 +27,15 @@ The project is for learning and runs on a one-month Azure free account: a one-ti
 | Networking | Middle ground without private endpoints: internal ingress for MCP server and Order Platform, PostgreSQL firewall + Entra auth, Key Vault and Storage firewall + managed identity, ShopSense API accepts APIM only |
 | Environments | One: `dev` (also used for demo; eval mode by configuration) |
 | Budget | Alerts at 50% and 75% of the trial credit |
+
+## Quota check (2026-10-11, East US 2)
+| Model | Quota (k TPM) |
+|---|---|
+| All Claude models | 0 |
+| gpt-4.1-mini (GlobalStandard) | 200 |
+| mistral-medium-2505 | 20 |
+| text-embedding-3-small (GlobalStandard) | 1,000 |
+| Cohere Rerank v4 (Fast / Pro) | 20 |
 
 ## Consequences
 - Every choice is a tier or configuration value in the Bicep parameter file; moving to a production profile changes parameters, not architecture.

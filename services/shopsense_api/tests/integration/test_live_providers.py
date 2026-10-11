@@ -2,12 +2,10 @@
 
 import pytest
 
-from shopsense_api.adapters.llm.anthropic_foundry import AnthropicFoundryProvider
-from shopsense_api.adapters.llm.azure_openai import AzureOpenAIProvider
 from shopsense_api.application.use_cases.triage_ticket import TriageCommand
 from shopsense_api.domain.ticket.enums import RiskFlag
 from shopsense_api.domain.values.untrusted_text import UntrustedText
-from shopsense_api.entrypoints.composition import build_triage
+from shopsense_api.entrypoints.composition import PRIMARY, SECOND_VENDOR, build_triage
 from shopsense_api.entrypoints.settings import Settings
 
 pytestmark = pytest.mark.integration
@@ -18,10 +16,10 @@ TICKET = (
 )
 
 
-@pytest.mark.parametrize("provider", [AnthropicFoundryProvider.name, AzureOpenAIProvider.name])
+@pytest.mark.parametrize("provider", [PRIMARY, SECOND_VENDOR])
 async def test_provider_parses_support_ticket(provider: str) -> None:
     settings = Settings()
-    if not settings.foundry_resource or not settings.azure_openai_endpoint:
+    if not settings.foundry_resource:
         pytest.skip("Foundry settings not configured (.env)")
     triage = build_triage(settings, primary_provider=provider)
     result = await triage.execute(TriageCommand(message=UntrustedText(TICKET)))

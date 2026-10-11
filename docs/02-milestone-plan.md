@@ -31,7 +31,7 @@ The project is assessed milestone by milestone against the course brief. **Each 
 
 | | |
 |---|---|
-| Deliverables | Pydantic `SupportTicket` (frozen); `LLMClient` port; LLM gateway with two providers (Claude Opus 5.5 on Foundry, Azure OpenAI model on Foundry); `TriageTicket` use case (random-ID delimiters, one retry, fail closed); triage prompt v1 |
+| Deliverables | Pydantic `SupportTicket` (frozen); `LLMClient` port; LLM gateway with two model vendors on Foundry (OpenAI `gpt-4.1-mini`, Mistral AI `mistral-medium-2505`; Claude adapter available where quota exists); `TriageTicket` use case (random-ID delimiters, one retry, fail closed); triage prompt v1 |
 | Data | 20-ticket golden set; ~150 noisy tickets generated from Bitext intents |
 | Infrastructure | Foundry model deployments only |
 | Demo | Showcase tickets parsed live; same ticket parsed by both providers; field-accuracy table |

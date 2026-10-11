@@ -13,10 +13,9 @@ from pathlib import Path
 from rich.console import Console
 from rich.table import Table
 
-from shopsense_api.adapters.llm.anthropic_foundry import AnthropicFoundryProvider
 from shopsense_api.adapters.llm.gateway import AgentProfile, LLMGateway
 from shopsense_api.adapters.llm.provider import ModelRoute
-from shopsense_api.entrypoints.composition import build_providers, build_triage
+from shopsense_api.entrypoints.composition import PRIMARY, build_providers, build_triage
 from shopsense_api.entrypoints.logging_config import configure_logging
 from shopsense_api.entrypoints.settings import REPO_ROOT, Settings
 from shopsense_evals.bitext import load_rows
@@ -56,9 +55,7 @@ async def cmd_triage(args: argparse.Namespace) -> int:
 
 async def cmd_generate(args: argparse.Namespace) -> int:
     settings = Settings()
-    route = ModelRoute(
-        AnthropicFoundryProvider.name, settings.claude_deployment, 8_000, 180.0, "medium"
-    )
+    route = ModelRoute(PRIMARY, settings.primary_deployment, 8_000, 180.0)
     llm = LLMGateway({"ticket_generator": AgentProfile((route,))}, build_providers(settings))
     specs = build_specs(load_rows(BITEXT), n=args.n, seed=args.seed)
     cases = await generate(llm, specs)
@@ -110,7 +107,7 @@ def main() -> None:
     sub = parser.add_subparsers(dest="command", required=True)
     triage = sub.add_parser("triage")
     triage.add_argument("--suite", choices=["golden", "generated", "all"], default="golden")
-    triage.add_argument("--provider", default=AnthropicFoundryProvider.name)
+    triage.add_argument("--provider", default=PRIMARY)
     triage.add_argument("--runs", type=int, default=1)
     triage.add_argument("--concurrency", type=int, default=4)
     gen = sub.add_parser("generate-suite")

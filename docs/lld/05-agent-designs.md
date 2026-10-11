@@ -13,7 +13,7 @@
 ## Decisions
 | # | Decision |
 |---|---|
-| L5a | **One model with effort tuned per agent** as the baseline (Claude Opus 5.5: low / medium / high), compared against Claude Sonnet 5.5 on the golden set; model and effort per agent are configuration in the LLM gateway. Foundry model availability for the subscription and region is confirmed before locking |
+| L5a | **Model per agent is configuration in the LLM gateway.** Free-trial baseline ([D15](../adr/015-free-trial-profile.md)): OpenAI `gpt-4.1-mini` for every agent, Mistral AI `mistral-medium-2505` as second vendor and fallback. The original Claude Opus 5.5 plan (effort per agent) applies where Claude quota exists; `effort` is ignored by models that do not support it |
 | L5b | **Structured outputs for every agent**, validated by Pydantic at the adapter edge and mapped to domain dataclasses; no free-text parsing |
 | L5c | **Limits per run**: Order-Actions ≤ 6 tool calls and 20 s; token budget per agent; one retry on validation failure; any breach fails closed to the human queue |
 | L5d | **Stable, cacheable system prompts**; untrusted text only in the user message inside delimiter tags with a **per-request random ID**; prompts versioned in the repo and recorded in traces |
@@ -21,6 +21,8 @@
 | L5f | **Reviewer console separates** code-generated risk reasons (trusted), the AI summary (labelled), and the customer's raw words (marked panel); decisions act only on the code-computed proposed action |
 
 ## Model configuration
+Effort levels below apply to models that support effort (Claude); OpenAI and Mistral models use their defaults.
+
 | Agent | Effort (baseline) | Rationale |
 |---|---|---|
 | Triage | Low | Classification and extraction |

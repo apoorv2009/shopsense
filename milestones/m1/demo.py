@@ -11,12 +11,10 @@ import asyncio
 from rich.console import Console
 from rich.panel import Panel
 
-from shopsense_api.adapters.llm.anthropic_foundry import AnthropicFoundryProvider
-from shopsense_api.adapters.llm.azure_openai import AzureOpenAIProvider
 from shopsense_api.application.use_cases.triage_ticket import TriageCommand, TriageTicket
 from shopsense_api.domain.exceptions import DomainException
 from shopsense_api.domain.values.untrusted_text import UntrustedText
-from shopsense_api.entrypoints.composition import build_triage
+from shopsense_api.entrypoints.composition import PRIMARY, SECOND_VENDOR, build_triage
 from shopsense_api.entrypoints.logging_config import configure_logging
 from shopsense_api.entrypoints.settings import Settings
 from shopsense_evals.cli import load_suite, print_report
@@ -52,19 +50,20 @@ async def show(triage: TriageTicket, title: str, text: str) -> None:
 
 async def main(run_eval: bool) -> None:
     settings = Settings()
-    claude = build_triage(settings, primary_provider=AnthropicFoundryProvider.name)
-    openai = build_triage(settings, primary_provider=AzureOpenAIProvider.name)
+    primary = build_triage(settings, primary_provider=PRIMARY)
+    second = build_triage(settings, primary_provider=SECOND_VENDOR)
     console.rule("[bold]M1 · Ticket → validated Pydantic SupportTicket[/bold]")
     for title, text in SHOWCASE.items():
-        await show(claude, title, text)
+        await show(primary, title, text)
     console.rule("[bold]Provider-agnostic client: same ticket, two providers[/bold]")
     sample = SHOWCASE["Angry, high value, legal threat"]
-    await show(claude, "Claude Opus 5.5 (Foundry)", sample)
-    await show(openai, "Azure OpenAI (Foundry)", sample)
+    await show(primary, f"OpenAI · {settings.primary_deployment}", sample)
+    await show(second, f"Mistral AI · {settings.second_vendor_deployment}", sample)
     if run_eval:
         console.rule("[bold]Golden set (20 tickets)[/bold]")
         cases = load_suite("golden")
-        print_report("Golden set · Claude", summarise(cases, await run_cases(claude, cases)))
+        report = summarise(cases, await run_cases(primary, cases))
+        print_report(f"Golden set · {settings.primary_deployment}", report)
 
 
 if __name__ == "__main__":

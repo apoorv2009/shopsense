@@ -10,7 +10,7 @@ import pytest
 from pydantic import ValidationError
 
 from shopsense_api.adapters.llm.anthropic_foundry import AnthropicFoundryProvider
-from shopsense_api.adapters.llm.azure_openai import AzureOpenAIProvider
+from shopsense_api.adapters.llm.foundry_openai import FoundryOpenAIProvider
 from shopsense_api.adapters.llm.provider import ModelRoute, ProviderError
 from shopsense_api.application.ports.llm import StructuredRequest
 from shopsense_api.domain.exceptions import LLMOutputInvalid, LLMRefused
@@ -33,6 +33,7 @@ class FakeClient:
         self.kwargs: dict[str, Any] = {}
         self.messages = self
         self.chat = SimpleNamespace(completions=self)
+        self.create = self.parse
 
     def with_options(self, **_: object) -> "FakeClient":
         return self
@@ -49,8 +50,8 @@ def claude(outcome: object) -> tuple[AnthropicFoundryProvider, FakeClient]:
     return AnthropicFoundryProvider(cast("anthropic.AsyncAnthropicFoundry", client)), client
 
 
-def gpt(outcome: object) -> AzureOpenAIProvider:
-    return AzureOpenAIProvider(cast("openai.AsyncAzureOpenAI", FakeClient(outcome)))
+def gpt(outcome: object) -> FoundryOpenAIProvider:
+    return FoundryOpenAIProvider("azure-openai", cast("openai.AsyncOpenAI", FakeClient(outcome)))
 
 
 def claude_message(stop_reason: str, parsed: object) -> SimpleNamespace:
@@ -126,3 +127,38 @@ async def test_openai_success() -> None:
 async def test_openai_failures_are_translated(outcome: object, error: type[Exception]) -> None:
     with pytest.raises(error):
         await gpt(outcome).generate(ROUTE, REQUEST)
+
+
+JSON_ROUTE = ModelRoute(
+    provider="p", model="mistral", max_tokens=100, timeout_s=5, output_mode="json_object"
+)
+
+
+def json_completion(content: str | None, finish_reason: str = "stop") -> SimpleNamespace:
+    message = SimpleNamespace(content=content)
+    usage = SimpleNamespace(prompt_tokens=3, completion_tokens=4)
+    choice = SimpleNamespace(message=message, finish_reason=finish_reason)
+    return SimpleNamespace(choices=[choice], usage=usage)
+
+
+async def test_json_object_mode_validates_with_pydantic() -> None:
+    client = FakeClient(json_completion(make_ticket().model_dump_json()))
+    provider = FoundryOpenAIProvider("foundry-mistral", cast("openai.AsyncOpenAI", client))
+    response = await provider.generate(JSON_ROUTE, REQUEST)
+    assert response.provider == "foundry-mistral"
+    assert client.kwargs["response_format"] == {"type": "json_object"}
+    assert "JSON object matching this schema" in client.kwargs["messages"][0]["content"]
+
+
+@pytest.mark.parametrize(
+    ("completion", "error"),
+    [
+        (json_completion('{"issue_type": "nonsense"}'), LLMOutputInvalid),
+        (json_completion(None, "length"), LLMOutputInvalid),
+        (json_completion("{}", "content_filter"), LLMRefused),
+    ],
+)
+async def test_json_object_mode_failures(completion: object, error: type[Exception]) -> None:
+    provider = FoundryOpenAIProvider("m", cast("openai.AsyncOpenAI", FakeClient(completion)))
+    with pytest.raises(error):
+        await provider.generate(JSON_ROUTE, REQUEST)

@@ -22,17 +22,23 @@ class Settings(BaseSettings):
     auth_mode: AuthMode = AuthMode.ENTRA
     # OAuth scope for Entra tokens; not a secret
     token_scope: str = "https://cognitiveservices.azure.com/.default"  # noqa: S105
-
     foundry_resource: str = ""
-    claude_deployment: str = "claude-opus-5-5"
-    claude_api_key: SecretStr | None = None
+    foundry_api_key: SecretStr | None = None
 
-    azure_openai_endpoint: str = ""
-    azure_openai_deployment: str = "gpt-4.1-mini"
-    azure_openai_api_version: str = "2024-10-21"
-    azure_openai_api_key: SecretStr | None = None
+    # Primary model and a second vendor on the same Foundry resource (D15)
+    primary_deployment: str = "gpt-4.1-mini"
+    second_vendor_deployment: str = "mistral-medium-2505"
+    second_vendor_output_mode: str = "json_schema"
+
+    # Claude adapter: enabled only where the subscription has Claude quota
+    claude_enabled: bool = False
+    claude_deployment: str = "claude-opus-5-5"
 
     triage_effort: str = "low"
     triage_max_tokens: int = 2_000
     llm_timeout_s: float = 60.0
     log_json: bool = True
+
+    @property
+    def foundry_openai_base_url(self) -> str:
+        return f"https://{self.foundry_resource}.openai.azure.com/openai/v1/"
