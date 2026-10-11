@@ -7,7 +7,7 @@
 - [Data sources](#data-sources)
 - [Evaluation suites](#evaluation-suites)
 - [Decisions](#decisions)
-- [D14f: intent taxonomy](#d14f-intent-taxonomy-proposed)
+- [D14f: intent taxonomy](#d14f-intent-taxonomy)
 - [Consequences](#consequences)
 
 ## Context
