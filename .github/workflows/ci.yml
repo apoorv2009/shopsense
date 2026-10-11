@@ -8,6 +8,19 @@ on:
 jobs:
   python:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: shopsense
+          POSTGRES_PASSWORD: shopsense
+          POSTGRES_DB: order_platform_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U shopsense" --health-interval 5s --health-retries 10
+    env:
+      ORDER_PLATFORM_TEST_DATABASE_URL: postgresql+asyncpg://shopsense:shopsense@localhost:5432/order_platform_test
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
@@ -20,6 +33,6 @@ jobs:
       - name: Format
         run: uv run ruff format --check .
       - name: Type check
-        run: uv run mypy services/shopsense_api evals
+        run: uv run mypy services evals milestones
       - name: Tests
-        run: uv run pytest --cov=shopsense_api --cov=shopsense_evals --cov-report=term-missing
+        run: uv run pytest --cov=shopsense_api --cov=order_platform --cov=shopsense_evals --cov-report=term-missing
