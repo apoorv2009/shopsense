@@ -7,9 +7,13 @@ flagged. It never blocks a ticket; it raises a flag that routes the ticket to a 
 import re
 
 _PATTERNS = (
-    r"ignore (all |any |the |your )?(previous|prior|above|earlier) (instructions|rules|prompts?)",
-    r"disregard (all |any |the |your )?(previous |prior |above |earlier )?"
-    r"(instructions|rules|policy)",
+    # "ignore your rules", "ignore all previous instructions", "forget the policy", ...
+    r"\b(ignore|disregard|forget|bypass|override|skip)\s+(all\s+|any\s+|the\s+|your\s+|these\s+"
+    r"|those\s+|previous\s+|prior\s+|above\s+|earlier\s+|system\s+)*(\w+\s+){0,2}"
+    r"(instructions?|rules?|prompts?|polic(y|ies)|guidelines?|checks?|limits?|commands?)\b",
+    # claims that the request is already authorised: "it is approved", "pre-approved"
+    r"\b(it\s+is|it's|this\s+is)\s+(already\s+)?(pre-?)?approved\b",
+    r"\b(pre-?approved|auto-?approve\s+(it|this|my))\b",
     r"\byou are now\b",
     r"\b(system|developer) (prompt|message|override)\b",
     r"\bsystem override\b",

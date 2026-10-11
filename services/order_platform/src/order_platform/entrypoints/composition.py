@@ -1,10 +1,12 @@
 """Composition root for the Order Platform."""
 
 import secrets
+import time
 from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
 from typing import Any
 
+from azure.core.credentials import AccessToken
 from azure.identity.aio import DefaultAzureCredential
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -29,11 +31,24 @@ class RandomIds:
         return f"{prefix}-{secrets.token_hex(5).upper()}"
 
 
-def build_engine(settings: Settings) -> AsyncEngine:
-    connect_args: dict[str, Any] = {}
-    if settings.db_auth is DbAuth.ENTRA:
-        connect_args = {"password": _entra_password(settings.db_token_scope), "ssl": "require"}
-    return create_async_engine(settings.database_url, connect_args=connect_args, pool_pre_ping=True)
+class Database:
+    """Engine plus the Entra credential it uses; close both with aclose()."""
+
+    def __init__(self, settings: Settings) -> None:
+        connect_args: dict[str, Any] = {}
+        self._credential: DefaultAzureCredential | None = None
+        if settings.db_auth is DbAuth.ENTRA:
+            self._credential = DefaultAzureCredential()
+            password = _entra_password(self._credential, settings.db_token_scope)
+            connect_args = {"password": password, "ssl": "require"}
+        self.engine: AsyncEngine = create_async_engine(
+            settings.database_url, connect_args=connect_args, pool_pre_ping=True
+        )
+
+    async def aclose(self) -> None:
+        await self.engine.dispose()
+        if self._credential is not None:
+            await self._credential.close()
 
 
 def build_services(engine: AsyncEngine) -> Services:
@@ -50,11 +65,14 @@ def build_services(engine: AsyncEngine) -> Services:
     )
 
 
-def _entra_password(scope: str) -> Callable[[], Awaitable[str]]:
-    """asyncpg accepts a coroutine function as password: a fresh Entra token per connection."""
-    credential = DefaultAzureCredential()
+def _entra_password(credential: DefaultAzureCredential, scope: str) -> Callable[[], Awaitable[str]]:
+    """asyncpg accepts a coroutine function as password. Tokens are cached until five
+    minutes before expiry: fetching one (e.g. via the Azure CLI) can take seconds."""
+    cached: list[AccessToken] = []
 
     async def token() -> str:
-        return (await credential.get_token(scope)).token
+        if not cached or cached[0].expires_on - time.time() < 300:
+            cached[:] = [await credential.get_token(scope)]
+        return cached[0].token
 
     return token

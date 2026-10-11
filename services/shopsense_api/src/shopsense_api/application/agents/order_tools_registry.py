@@ -172,6 +172,9 @@ class ToolExecutor:
     tools: OrderTools
     customer_id: str
     run_id: str
+    writes_allowed: bool = True
+    # orders the customer explicitly named; writes are limited to these (never a guess)
+    named_orders: frozenset[str] = frozenset()
     writes_done: int = 0
     log: list[dict[str, Any]] = field(default_factory=list)
 
@@ -189,6 +192,16 @@ class ToolExecutor:
         except ValidationError as exc:
             fields = ", ".join(".".join(str(p) for p in e["loc"]) for e in exc.errors())
             return _error("VALIDATION_ERROR", f"invalid arguments: {fields}")
+        if tool.writes and not self.writes_allowed:
+            return _error(
+                "NOT_ALLOWED",
+                "write actions are disabled for this request; a specialist will review it",
+            )
+        if tool.writes and getattr(args, "order_no", None) not in self.named_orders:
+            return _error(
+                "NOT_ALLOWED",
+                "refunds and replacements need the customer to state the order number; ask them",
+            )
         if tool.writes and self.writes_done >= 1:
             return _error("NOT_ALLOWED", "only one refund or replacement per request")
         try:

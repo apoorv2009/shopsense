@@ -4,6 +4,7 @@ Identity travels in `X-Customer-Id`, set from the verified customer, never from 
 output. Order-system errors become OrderToolError with the LLD-4 error code.
 """
 
+import asyncio
 from typing import Any
 
 import httpx
@@ -12,8 +13,12 @@ from shopsense_api.domain.exceptions import OrderToolError
 
 
 class HttpOrderTools:
-    def __init__(self, client: httpx.AsyncClient) -> None:
+    def __init__(
+        self, client: httpx.AsyncClient, *, retries: int = 2, backoff_s: float = 0.5
+    ) -> None:
         self._client = client
+        self._retries = retries
+        self._backoff_s = backoff_s
 
     async def list_my_orders(self, customer_id: str, limit: int) -> list[dict[str, Any]]:
         result = await self._call("GET", "/v1/orders", customer_id, params={"limit": limit})
@@ -74,6 +79,17 @@ class HttpOrderTools:
         **kwargs: Any,
     ) -> Any:
         headers = {"X-Customer-Id": customer_id} | ({"Idempotency-Key": key} if key else {})
+        for attempt in range(self._retries + 1):
+            try:
+                return await self._once(method, path, headers, **kwargs)
+            except OrderToolError as exc:
+                # Safe for writes too: the same idempotency key replays, never repeats
+                if not exc.retryable or attempt == self._retries:
+                    raise
+                await asyncio.sleep(self._backoff_s * (attempt + 1))
+        raise AssertionError("unreachable")
+
+    async def _once(self, method: str, path: str, headers: dict[str, str], **kwargs: Any) -> Any:
         try:
             response = await self._client.request(method, path, headers=headers, **kwargs)
         except httpx.TimeoutException as exc:

@@ -3,13 +3,14 @@ name = "shopsense-evals"
 version = "0.1.0"
 description = "ShopSense evaluation suites and runners"
 requires-python = ">=3.13,<3.14"
-dependencies = ["shopsense-api", "rich>=13.9"]
+dependencies = ["shopsense-api", "order-platform", "rich>=13.9"]
 
 [project.scripts]
 shopsense-eval = "shopsense_evals.cli:main"
 
 [tool.uv.sources]
 shopsense-api = { workspace = true }
+order-platform = { workspace = true }
 
 [build-system]
 requires = ["hatchling"]

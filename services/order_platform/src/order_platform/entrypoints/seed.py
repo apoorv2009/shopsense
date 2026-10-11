@@ -25,7 +25,7 @@ from order_platform.adapters.db.tables import (
     ShipmentEventRow,
     ShipmentRow,
 )
-from order_platform.entrypoints.composition import build_engine
+from order_platform.entrypoints.composition import Database
 from order_platform.entrypoints.settings import Settings
 
 SEED = 42
@@ -278,11 +278,18 @@ async def _counts(session: AsyncSession) -> dict[str, int]:
     }
 
 
+async def _run(database: Database, anchor: date, *, reset: bool) -> dict[str, int]:
+    try:
+        return await seed(database.engine, anchor, reset=reset)
+    finally:
+        await database.aclose()
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(prog="order-platform-seed")
     parser.add_argument("--reset", action="store_true", help="drop and recreate all tables first")
     args = parser.parse_args()
     settings = Settings()
     anchor = settings.anchor_date or date.today()
-    counts = asyncio.run(seed(build_engine(settings), anchor, reset=args.reset))
+    counts = asyncio.run(_run(Database(settings), anchor, reset=args.reset))
     print(f"Seeded (anchor {anchor}): {counts}")

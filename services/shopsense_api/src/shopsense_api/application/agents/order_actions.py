@@ -7,6 +7,7 @@ Loop: the model calls order tools until it submits an OrderActionsResult through
 
 import asyncio
 import json
+import re
 from dataclasses import dataclass, field
 from enum import StrEnum
 from typing import Any
@@ -29,9 +30,11 @@ from shopsense_api.application.untrusted_blocks import (
     random_block_id,
     wrap_untrusted,
 )
+from shopsense_api.domain.guardrails.injection_screen import looks_like_injection
 from shopsense_api.domain.values.untrusted_text import UntrustedText
 
 PROFILE = "order_actions"
+ORDER_NO = re.compile(r"\bORD-\d{6}\b", re.IGNORECASE)
 PROMPT_NAME = "order_actions"
 SUBMIT = "submit_result"
 
@@ -104,7 +107,16 @@ class OrderActionsAgent:
         self._limits, self._block_ids = limits, block_ids
 
     async def run(self, command: OrderActionsCommand) -> OrderActionsRun:
-        executor = ToolExecutor(self._tools, command.customer_id, command.run_id)
+        # Deterministic guard: a ticket that tries to instruct the system never triggers a write
+        writes_allowed = not looks_like_injection(command.message.value)
+        named = frozenset(m.upper() for m in ORDER_NO.findall(command.message.value))
+        executor = ToolExecutor(
+            self._tools,
+            command.customer_id,
+            command.run_id,
+            writes_allowed=writes_allowed,
+            named_orders=named,
+        )
         run = OrderActionsRun(_fallback("not started"), executor.log)
         try:
             async with asyncio.timeout(self._limits.timeout_s):
@@ -112,6 +124,7 @@ class OrderActionsAgent:
         except TimeoutError:
             run.limit_hit = "timeout"
             run.result = _fallback("time limit reached")
+        run.result = _consistent(run.result, executor.log)
         return run
 
     async def _loop(
@@ -177,6 +190,17 @@ def _parse_result(call: ToolCall) -> OrderActionsResult | None:
         return OrderActionsResult.model_validate(call.arguments)
     except ValidationError:
         return None
+
+
+def _consistent(result: OrderActionsResult, log: list[dict[str, Any]]) -> OrderActionsResult:
+    """Code check: 'pending approval' is only claimed when a write is actually pending."""
+    pending = any(
+        step["result"].get("ok") and step["result"]["data"].get("status") == "pending_approval"
+        for step in log
+    )
+    if result.outcome is Outcome.PENDING_HUMAN_APPROVAL and not pending:
+        return _fallback("claimed a pending approval that was never submitted")
+    return result
 
 
 def _fallback(why: str) -> OrderActionsResult:

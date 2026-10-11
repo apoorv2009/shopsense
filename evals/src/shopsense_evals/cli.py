@@ -8,11 +8,15 @@ import argparse
 import asyncio
 import json
 from collections.abc import Sequence
+from datetime import date
 from pathlib import Path
 
 from rich.console import Console
 from rich.table import Table
 
+from order_platform.entrypoints.composition import Database
+from order_platform.entrypoints.seed import seed
+from order_platform.entrypoints.settings import Settings as OrderPlatformSettings
 from shopsense_api.adapters.llm.gateway import AgentProfile, LLMGateway
 from shopsense_api.adapters.llm.provider import ModelRoute
 from shopsense_api.application.use_cases.triage_ticket import TriageTicket
@@ -25,11 +29,19 @@ from shopsense_evals.generator import generate, write_suite
 from shopsense_evals.runner import run_cases
 from shopsense_evals.scoring import FIELDS, CaseOutcome, Report, summarise
 from shopsense_evals.specs import build_specs
+from shopsense_evals.tool_use import (
+    ToolOutcome,
+    ToolReport,
+    load_tool_cases,
+    run_tool_cases,
+    summarise_tool_use,
+)
 
 DATA = REPO_ROOT / "evals" / "data"
 RESULTS = REPO_ROOT / "evals" / "results"
 BITEXT = REPO_ROOT / "data" / "raw" / "bitext" / "bitext-retail-ecommerce.csv"
 console = Console()
+TOOL_ANCHOR = date(2026, 10, 11)
 
 
 def load_suite(name: str) -> list[EvalCase]:
@@ -67,6 +79,67 @@ async def cmd_generate(args: argparse.Namespace) -> int:
     write_suite(cases, DATA / "triage_suite.jsonl")
     console.print(f"Wrote {len(cases)}/{len(specs)} tickets to {DATA / 'triage_suite.jsonl'}")
     return 0
+
+
+async def cmd_tool_use(args: argparse.Namespace) -> int:
+    cases = load_tool_cases(DATA / "tool_use.jsonl")
+    reports = []
+    async with container(Settings()) as app:
+        agent = app.order_actions(args.provider)
+        for run in range(1, args.runs + 1):
+            await _reseed()
+            outcomes = await run_tool_cases(agent, cases, run_tag=f"eval{run}")
+            report = summarise_tool_use(outcomes)
+            reports.append(report)
+            title = f"Run {run}/{args.runs} · tool use · {args.provider}"
+            print_tool_report(title, outcomes, report)
+            save_tool(outcomes, report, RESULTS / f"m2_tool_use_{args.provider}_run{run}.json")
+    return 0 if all(r.gates_passed for r in reports) else 1
+
+
+async def _reseed() -> None:
+    database = Database(OrderPlatformSettings())
+    try:
+        await seed(database.engine, TOOL_ANCHOR, reset=True)
+    finally:
+        await database.aclose()
+
+
+def print_tool_report(title: str, outcomes: Sequence[ToolOutcome], report: ToolReport) -> None:
+    table = Table("Case", "Group", "Tools called", "Outcome", "Checks", title=title)
+    for o in outcomes:
+        failed = [k for k, ok in {**o.checks, **o.safety}.items() if not ok]
+        mark = "[green]PASS[/green]" if o.passed else f"[red]{','.join(failed)}[/red]"
+        table.add_row(o.case_id, o.group, " > ".join(o.tools), o.outcome, mark)
+    console.print(table)
+    acc = " · ".join(f"{k} {v:.0%}" for k, v in report.check_accuracy.items())
+    console.print(f"  accuracy (all checks) {report.accuracy:.0%} · {acc}")
+    status = "[green]PASS[/green]" if report.gates_passed else "[red]FAIL[/red]"
+    violations = report.safety_violations or "none"
+    console.print(f"  safety violations: {violations} · gates: {status}\n")
+
+
+def save_tool(outcomes: Sequence[ToolOutcome], report: ToolReport, path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "accuracy": report.accuracy,
+        "check_accuracy": report.check_accuracy,
+        "safety_violations": report.safety_violations,
+        "cases": [
+            {
+                "id": o.case_id,
+                "group": o.group,
+                "checks": o.checks,
+                "safety": o.safety,
+                "tools": o.tools,
+                "writes": o.writes,
+                "outcome": o.outcome,
+                "reply": o.reply,
+            }
+            for o in outcomes
+        ],
+    }
+    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
 def print_report(title: str, report: Report) -> None:
@@ -118,10 +191,14 @@ def main() -> None:
     triage.add_argument("--provider", default=PRIMARY)
     triage.add_argument("--runs", type=int, default=1)
     triage.add_argument("--concurrency", type=int, default=2)
+    tool = sub.add_parser("tool-use")
+    tool.add_argument("--provider", default=PRIMARY)
+    tool.add_argument("--runs", type=int, default=1)
     gen = sub.add_parser("generate-suite")
     gen.add_argument("--n", type=int, default=150)
     gen.add_argument("--seed", type=int, default=7)
     args = parser.parse_args()
     configure_logging(json=Settings().log_json)
-    handler = cmd_triage if args.command == "triage" else cmd_generate
+    handlers = {"triage": cmd_triage, "tool-use": cmd_tool_use, "generate-suite": cmd_generate}
+    handler = handlers[args.command]
     raise SystemExit(asyncio.run(handler(args)))

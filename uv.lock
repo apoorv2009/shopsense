@@ -1175,12 +1175,14 @@ name = "shopsense-evals"
 version = "0.1.0"
 source = { editable = "evals" }
 dependencies = [
+    { name = "order-platform" },
     { name = "rich" },
     { name = "shopsense-api" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "order-platform", editable = "services/order_platform" },
     { name = "rich", specifier = ">=13.9" },
     { name = "shopsense-api", editable = "services/shopsense_api" },
 ]

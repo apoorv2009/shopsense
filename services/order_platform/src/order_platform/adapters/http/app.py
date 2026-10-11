@@ -1,5 +1,7 @@
 """FastAPI routes for the Order Platform (LLD-7)."""
 
+from collections.abc import Callable
+from contextlib import AbstractAsyncContextManager
 from dataclasses import dataclass
 from typing import Annotated, Any
 
@@ -44,6 +46,7 @@ _STATUS = {
     DuplicateRequestError: status.HTTP_409_CONFLICT,
 }
 CustomerId = Annotated[str, Header(alias="X-Customer-Id", pattern=r"^C\d{4}$")]
+Lifespan = Callable[[FastAPI], AbstractAsyncContextManager[None]]
 IdempotencyKey = Annotated[str, Header(alias="Idempotency-Key", min_length=8, max_length=128)]
 
 
@@ -54,8 +57,8 @@ class Services:
     replacements: RequestReplacement
 
 
-def create_app(services: Services) -> FastAPI:
-    app = FastAPI(title="ShopSense Order Platform (mock)", version="1.0")
+def create_app(services: Services, lifespan: Lifespan | None = None) -> FastAPI:
+    app = FastAPI(title="ShopSense Order Platform (mock)", version="1.0", lifespan=lifespan)
     app.include_router(_routes(services))
     app.add_exception_handler(OrderPlatformError, _domain_error)
     app.add_exception_handler(RequestValidationError, _validation_error)

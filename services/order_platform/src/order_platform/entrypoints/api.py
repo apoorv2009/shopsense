@@ -1,7 +1,21 @@
 """ASGI entrypoint: uvicorn order_platform.entrypoints.api:app"""
 
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
+from fastapi import FastAPI
+
 from order_platform.adapters.http.app import create_app
-from order_platform.entrypoints.composition import build_engine, build_services
+from order_platform.entrypoints.composition import Database, build_services
 from order_platform.entrypoints.settings import Settings
 
-app = create_app(build_services(build_engine(Settings())))
+_database = Database(Settings())
+
+
+@asynccontextmanager
+async def _lifespan(_: FastAPI) -> AsyncIterator[None]:
+    yield
+    await _database.aclose()
+
+
+app = create_app(build_services(_database.engine), lifespan=_lifespan)

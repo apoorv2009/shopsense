@@ -6,7 +6,9 @@ from shopsense_api.domain.exceptions import OrderToolError
 
 
 def tools(handler: httpx.MockTransport) -> HttpOrderTools:
-    return HttpOrderTools(httpx.AsyncClient(transport=handler, base_url="http://op.test"))
+    return HttpOrderTools(
+        httpx.AsyncClient(transport=handler, base_url="http://op.test"), backoff_s=0
+    )
 
 
 async def test_sends_identity_and_idempotency_headers() -> None:
@@ -47,3 +49,35 @@ async def test_server_errors_and_outages_are_retryable() -> None:
     with pytest.raises(OrderToolError) as err2:
         await tools(httpx.MockTransport(down)).list_my_orders("C0001", 5)
     assert err2.value.retryable
+
+
+async def test_write_retries_with_same_idempotency_key_after_timeout() -> None:
+    keys: list[str] = []
+
+    def flaky(request: httpx.Request) -> httpx.Response:
+        keys.append(request.headers["Idempotency-Key"])
+        if len(keys) == 1:
+            raise httpx.ReadTimeout("slow", request=request)
+        return httpx.Response(201, json={"refund_no": "RF-1", "status": "approved"})
+
+    client = httpx.AsyncClient(transport=httpx.MockTransport(flaky), base_url="http://op.test")
+    result = await HttpOrderTools(client, backoff_s=0).request_refund(
+        "C0001", "ORD-100002", "APP-KURTA", 149_900, "size_issue", "key-123456789"
+    )
+    assert result["status"] == "approved"
+    assert keys == ["key-123456789", "key-123456789"]
+
+
+async def test_non_retryable_errors_are_not_retried() -> None:
+    calls: list[int] = []
+
+    def reject(_: httpx.Request) -> httpx.Response:
+        calls.append(1)
+        return httpx.Response(
+            409, json={"code": "NOT_ALLOWED", "message": "no", "retryable": False}
+        )
+
+    client = httpx.AsyncClient(transport=httpx.MockTransport(reject), base_url="http://op.test")
+    with pytest.raises(OrderToolError):
+        await HttpOrderTools(client, backoff_s=0).get_order("C0001", "ORD-100002")
+    assert len(calls) == 1

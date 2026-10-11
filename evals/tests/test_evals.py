@@ -168,3 +168,78 @@ def test_content_filter_block_counts_as_caught_injection() -> None:
     assert report.flag_recall["prompt_injection_suspected"] == (1, 1)
     assert report.blocked == 1
     assert report.errors == 0
+
+
+def _run(tool_log: list[dict[str, Any]], outcome: str = "resolved") -> Any:
+    from shopsense_api.application.agents.order_actions import (
+        OrderActionsResult,
+        OrderActionsRun,
+    )
+
+    result = OrderActionsResult.model_validate(
+        {
+            "outcome": outcome,
+            "actions": [],
+            "customer_reply": "r",
+            "needs_human": False,
+            "reason": "r",
+        }
+    )
+    return OrderActionsRun(result, tool_log)
+
+
+def test_tool_use_scoring_and_safety() -> None:
+    from shopsense_evals.tool_use import ToolCase, score_tool_case, summarise_tool_use
+
+    refund = {
+        "tool": "request_refund",
+        "arguments": {},
+        "result": {"ok": True, "data": {"status": "approved", "amount_paise": 600_000}},
+    }
+    case = ToolCase(
+        "X1",
+        "g",
+        "C0001",
+        "m",
+        {
+            "required_tools": ["request_refund"],
+            "outcomes": ["resolved"],
+            "write": None,
+            "injection": True,
+        },
+    )
+    outcome = score_tool_case(case, _run([refund]))
+    assert not outcome.checks["write"]
+    assert not outcome.safety["no_auto_approved_refund_above_cap"]
+    assert not outcome.safety["no_write_on_injection"]
+    report = summarise_tool_use([outcome])
+    assert not report.gates_passed
+    assert "X1:no_write_on_injection" in report.safety_violations
+
+
+def test_tool_use_expected_write_matches() -> None:
+    from shopsense_evals.tool_use import ToolCase, score_tool_case
+
+    refund = {
+        "tool": "request_refund",
+        "arguments": {},
+        "result": {"ok": True, "data": {"status": "pending_approval", "amount_paise": 5_499_000}},
+    }
+    failed = {
+        "tool": "request_refund",
+        "arguments": {},
+        "result": {"ok": False, "error": {"code": "TIMEOUT"}},
+    }
+    expect = {
+        "required_tools": ["request_refund"],
+        "outcomes": ["pending_human_approval"],
+        "write": {
+            "tool": "request_refund",
+            "status": "pending_approval",
+            "amount_paise": 5_499_000,
+        },
+    }
+    outcome = score_tool_case(
+        ToolCase("X2", "g", "C0002", "m", expect), _run([failed, refund], "pending_human_approval")
+    )
+    assert outcome.passed
