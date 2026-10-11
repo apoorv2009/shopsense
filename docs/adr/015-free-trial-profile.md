@@ -20,7 +20,7 @@ The project is for learning and runs on a one-month Azure free account: a one-ti
 | Model | **Primary: OpenAI `gpt-4.1-mini`; second vendor: Meta `Llama-3.3-70B-Instruct`** (JSON mode + Pydantic validation), both sold directly by Azure on the same Foundry resource and within trial credits. **Amended 2026-10-11:** the trial subscription has zero quota for every Claude model, and Marketplace-billed models (Claude, Mistral Medium) cannot be purchased on a free subscription; the project has no requirement to use Claude. The Claude adapter stays in the code, enabled by configuration where quota exists |
 | Embeddings | Azure OpenAI `text-embedding-3-small` on Foundry |
 | APIM | **Consumption** if it supports the required AI-gateway policies; otherwise **Developer**. Verified at M1 setup |
-| PostgreSQL | Flexible Server **B1ms** (12-month free allowance) |
+| PostgreSQL | Flexible Server **B1ms** (12-month free allowance), in **Central US**: the trial subscription is restricted from provisioning PostgreSQL in East US 2, East US, West US 2 and South India (checked 2026-10-11). Central US keeps the database in the same geography as the Foundry models for low latency once services run in Azure (M8) |
 | Container Apps | Consumption plan; idle services scale to zero, except during recording (min 1 replica) |
 | Static Web Apps | Free tier |
 | Content Safety | Free tier (F0) |

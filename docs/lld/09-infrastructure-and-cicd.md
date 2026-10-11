@@ -15,7 +15,7 @@
 | # | Decision |
 |---|---|
 | L9a | **Bicep + Azure Developer CLI (`azd`)**, using Azure Verified Modules where available |
-| L9b | **Single region: East US 2** ([D15](../adr/015-free-trial-profile.md)) |
+| L9b | **East US 2**, except PostgreSQL in **Central US** (subscription region restriction, [D15](../adr/015-free-trial-profile.md)) |
 | L9c | **APIM Consumption** if it supports the required AI-gateway policies; otherwise **Developer**; verified at M1 setup |
 | L9d | **Middle-ground networking without private endpoints** |
 | L9e | **One user-assigned managed identity per workload**; least privilege; PostgreSQL Entra auth; GitHub OIDC federation |

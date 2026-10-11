@@ -4,7 +4,12 @@
 targetScope = 'subscription'
 
 param environmentName string = 'dev'
+
+@description('Region of the M1 resource group (Foundry).')
 param location string = 'eastus2'
+
+@description('PostgreSQL region: the free-trial subscription cannot provision PostgreSQL in East US 2 (D15).')
+param dbLocation string = 'centralus'
 
 @description('Object id of the developer (Entra administrator of the server).')
 param principalId string
@@ -26,7 +31,7 @@ module postgres 'postgres.bicep' = {
   name: 'shopsense-postgres'
   scope: rg
   params: {
-    location: location
+    location: dbLocation
     serverName: 'psql-shopsense-${environmentName}-${suffix}'
     tags: { project: 'shopsense', env: environmentName, purpose: 'learning', milestone: 'm2' }
     principalId: principalId
