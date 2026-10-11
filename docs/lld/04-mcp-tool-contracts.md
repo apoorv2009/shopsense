@@ -5,7 +5,7 @@
 ## Table of contents
 - [Decisions](#decisions)
 - [Read tools](#read-tools)
-- [Write tools](#write-tools)
+- [System tools](#system-tools)
 - [Caller context](#caller-context)
 - [Error model](#error-model)
 - [Resilience](#resilience)
@@ -14,7 +14,7 @@
 ## Decisions
 | # | Decision |
 |---|---|
-| L4a | **Two endpoints**: `/mcp/read` (scope `tools.read`) and `/mcp/write` (scope `tools.write`, requested only by the execute use case's adapter); enforced by the server |
+| L4a | **Two endpoints**: `/mcp/read` (scope `tools.read`, agents) and `/mcp/system` (scope `tools.system`, code only: write tools and sensitive reads; renamed from `/mcp/write` by [LLD-7 L7b](07-order-platform-api.md#decisions)); enforced by the server |
 | L4b | **Signed caller-context token** per turn (5 min; customer ID, ticket ID, channel, turn) sent as a header; verified by the MCP server and forwarded to the Order Platform |
 | L4c | **Structured error model** with `code`, `message`, `retryable`; idempotent replays return the original result |
 | L4d | **Data minimization**: no phone, email, address or payment details in tool outputs; free-text fields wrapped as `UntrustedText` by the ShopSense adapter |
@@ -36,8 +36,8 @@ All amounts are integers in paise. Customer and ticket identity are never tool a
 | `get_refund_status` | `order_no` | refunds: amount_paise, status, created_at, expected settlement window |
 | `calculate_refund` | `order_no`, `item_sku`, `reason` | refundable_paise, paid_paise, already_refunded_paise, breakdown (incl. shipping-fee refundability). Pure calculation |
 
-## Write tools
-`/mcp/write` — callable only by the execute use case.
+## System tools
+`/mcp/system` — code only (execute use case, memory loader / risk gate). Never available to agents.
 
 | Tool | Input | Requirements |
 |---|---|---|
@@ -46,6 +46,7 @@ All amounts are integers in paise. Customer and ticket identity are never tool a
 | `cancel_order` | order_no, reason, idempotency_key | Order not yet shipped |
 | `issue_goodwill_credit` | amount_paise (≤ 50,000), reason, idempotency_key | |
 | `raise_carrier_trace` | order_no, idempotency_key | |
+| `get_customer_risk_profile` | (none; customer from caller context) | Read-only; abuse flag, return rate, tier. Never shown to a model (fraud-disclosure policy) |
 
 ## Caller context
 | Field | Source |

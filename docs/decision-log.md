@@ -36,7 +36,7 @@ LLD documents live in [`lld/`](lld/).
 | [LLD-4](lld/04-mcp-tool-contracts.md) | MCP tool contracts | Accepted | 2026-10-11 |
 | [LLD-5](lld/05-agent-designs.md) | Agent designs | Accepted | 2026-10-11 |
 | [LLD-6](lld/06-rules-engine-and-retrieval.md) | Rules engine, rules-block format, retrieval, photo evidence | Accepted | 2026-10-11 |
-| LLD-7 | Order Platform API | Not started | |
+| [LLD-7](lld/07-order-platform-api.md) | Order Platform API | Accepted | 2026-10-11 |
 | LLD-8 | Angular app | Not started | |
 | LLD-9 | Infrastructure as code | Not started | |
 
