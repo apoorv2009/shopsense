@@ -1,6 +1,6 @@
 # High-Level Design
 
-> Status: in progress. HLD complete: decisions D1–D14 accepted (D14f taxonomy proposed). Next: LLD.
+> Status: in progress. HLD complete: decisions D1–D14 accepted. Next: LLD.
 
 ## Table of contents
 - [1. Architecture principles](#1-architecture-principles)
@@ -198,5 +198,4 @@ Details in [D13](adr/013-resilience-and-observability.md).
 ## 11. Open items
 | # | Topic |
 |---|---|
-| D14f | Intent taxonomy mapping from Bitext (proposed) |
 | LLD | Per-component design: interfaces, `TicketState` schema, data models, tool contracts, prompts, error handling |

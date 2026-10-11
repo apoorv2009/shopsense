@@ -1,13 +1,13 @@
 # D14: Evaluation strategy and data sources
 
-**Status:** Accepted (D14f proposed) · **Date:** 2026-10-11
+**Status:** Accepted · **Date:** 2026-10-11
 
 ## Table of contents
 - [Context](#context)
 - [Data sources](#data-sources)
 - [Evaluation suites](#evaluation-suites)
 - [Decisions](#decisions)
-- [D14f: intent taxonomy (proposed)](#d14f-intent-taxonomy-proposed)
+- [D14f: intent taxonomy](#d14f-intent-taxonomy-proposed)
 - [Consequences](#consequences)
 
 ## Context
@@ -46,8 +46,8 @@ Each milestone must be provably working, and the brief names specific data sourc
 | D14d | CI | **Deterministic tests on every push**; LLM evaluation on demand before milestone demos |
 | D14e | Downloads | Bitext downloaded (2026-10-11); Twitter corpus downloaded by the user if used |
 
-## D14f: intent taxonomy (proposed)
-The downloaded Bitext retail dataset has **13 categories and 46 intents**, not the "27 intents across ORDER, DELIVERY, PRODUCT, REFUND and FEEDBACK" described in the brief (that description matches Bitext's separate *customer-support* dataset). Proposal: map the in-scope Bitext intents onto ShopSense issue types, and route the rest to a polite out-of-scope reply.
+## D14f: intent taxonomy
+**Accepted 2026-10-11.** The downloaded Bitext retail dataset has **13 categories and 46 intents**, not the "27 intents across ORDER, DELIVERY, PRODUCT, REFUND and FEEDBACK" described in the brief (that description matches Bitext's separate *customer-support* dataset). Decision: map the in-scope Bitext intents onto ShopSense issue types, and route the rest to a polite out-of-scope reply.
 
 | ShopSense issue type | Bitext intents |
 |---|---|
@@ -72,4 +72,4 @@ The downloaded Bitext retail dataset has **13 categories and 46 intents**, not t
 
 ## Consequences
 - Evaluation results are reproducible (seeded data, frozen reference date) and traceable to individual runs.
-- The taxonomy gains `missing_item`, `request_human` and `out_of_scope` routes (pending D14f).
+- The taxonomy gains `missing_item`, `request_human` (immediate handoff) and `out_of_scope` (polite redirect, no tool calls).

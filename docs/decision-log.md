@@ -22,7 +22,7 @@ Every architecture decision is recorded as an ADR in [`adr/`](adr/). Status valu
 | [D11](adr/011-policy-as-data.md) | Policy as data | Accepted | 2026-10-11 |
 | [D12](adr/012-guardrails.md) | Guardrail map and risk gate | Accepted | 2026-10-11 |
 | [D13](adr/013-resilience-and-observability.md) | Resilience and observability | Accepted | 2026-10-11 |
-| [D14](adr/014-evaluation-and-data.md) | Evaluation strategy and data sources | Accepted (D14f proposed) | 2026-10-11 |
+| [D14](adr/014-evaluation-and-data.md) | Evaluation strategy and data sources | Accepted | 2026-10-11 |
 
 ## ADR template
 ```
