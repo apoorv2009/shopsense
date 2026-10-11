@@ -14,11 +14,13 @@ param location string = 'eastus2'
 @description('Object id of the developer running the code locally (gets inference role).')
 param principalId string = ''
 
+@description('Deploy Claude on Foundry. Requires Claude quota (free-trial subscriptions have none).')
+param deployClaude bool = false
 param claudeModel string = 'claude-opus-5-5'
 param claudeModelVersion string = '1'
 @description('Tokens per minute / 1000. Keep low on a free trial.')
 param claudeCapacity int = 25
-param claudeOrganizationName string
+param claudeOrganizationName string = ''
 @minLength(2)
 @maxLength(2)
 param claudeCountryCode string = 'IN'
@@ -52,6 +54,7 @@ module foundry 'foundry.bicep' = {
     tags: tags
     accountName: 'ais-shopsense-${environmentName}-${suffix}'
     projectName: 'proj-shopsense-${environmentName}'
+    deployClaude: deployClaude
     claudeModel: claudeModel
     claudeModelVersion: claudeModelVersion
     claudeCapacity: claudeCapacity

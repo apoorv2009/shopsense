@@ -6,6 +6,7 @@ param tags object
 param accountName string
 param projectName string
 
+param deployClaude bool
 param claudeModel string
 param claudeModelVersion string
 param claudeCapacity int
@@ -56,7 +57,7 @@ resource developerInference 'Microsoft.Authorization/roleAssignments@2022-04-01'
   }
 }
 
-resource claude 'Microsoft.CognitiveServices/accounts/deployments@2025-10-01-preview' = {
+resource claude 'Microsoft.CognitiveServices/accounts/deployments@2025-10-01-preview' = if (deployClaude) {
   parent: account
   name: claudeModel
   sku: { name: 'GlobalStandard', capacity: claudeCapacity }
@@ -83,10 +84,10 @@ resource openAi 'Microsoft.CognitiveServices/accounts/deployments@2025-10-01-pre
     versionUpgradeOption: 'OnceNewDefaultVersionAvailable'
     raiPolicyName: 'Microsoft.DefaultV2'
   }
-  dependsOn: [claude]
+  dependsOn: [project, claude]
 }
 
 output accountName string = account.name
 output openAiEndpoint string = 'https://${account.name}.openai.azure.com/'
-output claudeDeployment string = claude.name
+output claudeDeployment string = deployClaude ? claudeModel : ''
 output openAiDeployment string = openAi.name
