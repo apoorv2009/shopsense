@@ -156,6 +156,18 @@ async def test_unbacked_pending_claim_is_replaced_by_handoff() -> None:
     assert "never submitted" in run.result.reason
 
 
+async def test_pending_claim_after_list_reads_is_kept() -> None:
+    llm = ScriptedToolLLM(
+        [
+            turn(("list_my_orders", {"limit": 5})),
+            turn(("request_refund", REFUND)),
+            turn(("submit_result", RESULT)),
+        ]
+    )
+    run = await agent(llm, FakeOrderTools()).run(command())
+    assert run.result.outcome is Outcome.PENDING_HUMAN_APPROVAL
+
+
 async def test_only_one_write_per_run() -> None:
     llm = ScriptedToolLLM(
         [

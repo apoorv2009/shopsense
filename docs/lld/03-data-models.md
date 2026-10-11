@@ -12,7 +12,7 @@
 ## Decisions
 | # | Decision |
 |---|---|
-| L3a | **SQLAlchemy 2.0 (typed, async) + Alembic**, migrations per service; ORM models only in `adapters/postgres/`, mapped to domain dataclasses |
+| L3a | **SQLAlchemy 2.0 (typed, async) + Alembic**, migrations per service (in place for `order_platform` since M2 and `shopsense` since M3); ORM models only in `adapters/db/`, mapped to domain dataclasses |
 | L3b | **UUIDv7 internal primary keys** plus human-readable public numbers (`ORD-123456`, `TKT-1042`, `C0001`); public numbers never used for joins |
 | L3c | **Column conventions**: money as `amount_paise BIGINT` + `currency CHAR(3)` with `CHECK (amount_paise >= 0)`; all timestamps `TIMESTAMPTZ` in UTC; statuses as enums or checked text |
 | L3d | **Customer return rate computed by a view**, never stored |

@@ -16,8 +16,8 @@ from faker import Faker
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 
+from order_platform.adapters.db import migrate
 from order_platform.adapters.db.tables import (
-    Base,
     CustomerRow,
     OrderItemRow,
     OrderRow,
@@ -120,9 +120,8 @@ FIXTURE_ORDERS = [
 
 async def seed(engine: AsyncEngine, anchor: date, *, reset: bool) -> dict[str, int]:
     if reset:
-        async with engine.begin() as conn:
-            await conn.run_sync(Base.metadata.drop_all)
-            await conn.run_sync(Base.metadata.create_all)
+        await migrate.reset(engine)
+        await migrate.upgrade(engine)
     sessions = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
     async with sessions() as session:
         builder = _Builder(session, anchor)

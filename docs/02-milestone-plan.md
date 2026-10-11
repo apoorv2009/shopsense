@@ -39,6 +39,8 @@ The project is assessed milestone by milestone against the course brief. **Each 
 | Enhancements | Regex injection screen; `UntrustedText`; token metering |
 
 ## M2 Single agent with tools
+**Status:** ✅ Done (2026-10-11): tool-use suite 96.8% over 3 runs (31 cases), zero safety violations; one known miss (U19) recorded. Execution plan: [plans/m2.md](plans/m2.md) · Demo: [`milestones/m2`](../milestones/m2/README.md).
+
 **Brief:** *Single agent with tools: mock order-lookup API, mock refund/replace API, shipping-tracker API, refund-amount calculator.*
 
 | | |
@@ -50,12 +52,14 @@ The project is assessed milestone by milestone against the course brief. **Each 
 | Acceptance | Tool-use suite: right tool, right arguments; no refund above cap executes |
 
 ## M3 Memory and policy index
+**Status:** Planned. Execution plan: [plans/m3.md](plans/m3.md).
+
 **Brief:** *Persistent per-customer memory (past tickets, preferences) + a Qdrant index over returns/shipping/warranty policy documents.*
 
 | | |
 |---|---|
 | Deliverables | `shopsense` DB: `ticket_history`, `customer_profiles`; memory loader and writer (anti-poisoning rule); 14 policy documents with rules blocks; ingestion to Qdrant (dense vectors) and the rules table |
-| Infrastructure | Qdrant (Container App + Azure Files), Foundry embeddings |
+| Infrastructure | Qdrant (Container App, ephemeral storage, rebuilt by ingestion), `shopsense` database, Foundry embeddings |
 | Demo | Returning customer recognised; policy question answered from retrieved sections |
 | Acceptance | Memory recall tests; retrieval baseline on the retrieval suite |
 

@@ -54,8 +54,9 @@ class ProductRow(Base):
     name: Mapped[str] = mapped_column(String(200))
     category: Mapped[str] = mapped_column(String(32))
     is_accessory: Mapped[bool] = mapped_column(Boolean, default=False)
-    price_paise: Mapped[int] = mapped_column(BigInteger, CheckConstraint("price_paise >= 0"))
+    price_paise: Mapped[int] = mapped_column(BigInteger)
     warranty_months: Mapped[int] = mapped_column(Integer, default=0)
+    __table_args__ = (CheckConstraint("price_paise >= 0", name="ck_products_price"),)
 
 
 class OrderRow(Base):
@@ -121,12 +122,13 @@ class RefundRow(Base):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid7)
     refund_no: Mapped[str] = mapped_column(String(24), unique=True)
     order_item_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("order_items.id"), index=True)
-    amount_paise: Mapped[int] = mapped_column(BigInteger, CheckConstraint("amount_paise > 0"))
+    amount_paise: Mapped[int] = mapped_column(BigInteger)
     reason: Mapped[str] = mapped_column(String(24))
     status: Mapped[str] = mapped_column(String(24))
     grant_id: Mapped[str | None] = mapped_column(String(64), unique=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     item: Mapped[OrderItemRow] = relationship(back_populates="refunds")
+    __table_args__ = (CheckConstraint("amount_paise > 0", name="ck_refunds_amount"),)
 
 
 class ReplacementRow(Base):

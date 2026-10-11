@@ -83,6 +83,8 @@ class OrderActionsCommand:
     customer_id: str  # verified identity (trusted), never from the model
     run_id: str
     message: UntrustedText
+    # Trusted customer context built by code from system records (M3, D9); never customer text
+    context: str = ""
 
 
 @dataclass(slots=True)
@@ -134,6 +136,9 @@ class OrderActionsAgent:
         messages = [
             ChatMessage("user", wrap_untrusted("ticket", command.message, self._block_ids()))
         ]
+        if command.context:
+            block = f"<customer_context>\n{command.context}\n</customer_context>"
+            messages.insert(0, ChatMessage("user", block))
         tool_calls = 0
         for run.turns in range(1, self._limits.max_turns + 1):
             request = ToolTurnRequest(PROFILE, prompt.text, tuple(messages), _specs())
@@ -194,13 +199,19 @@ def _parse_result(call: ToolCall) -> OrderActionsResult | None:
 
 def _consistent(result: OrderActionsResult, log: list[dict[str, Any]]) -> OrderActionsResult:
     """Code check: 'pending approval' is only claimed when a write is actually pending."""
-    pending = any(
-        step["result"].get("ok") and step["result"]["data"].get("status") == "pending_approval"
-        for step in log
-    )
+    pending = any(_is_pending_write(step["result"]) for step in log)
     if result.outcome is Outcome.PENDING_HUMAN_APPROVAL and not pending:
         return _fallback("claimed a pending approval that was never submitted")
     return result
+
+
+def _is_pending_write(result: dict[str, Any]) -> bool:
+    data = result.get("data")  # read tools may return lists; only writes return a status
+    return (
+        bool(result.get("ok"))
+        and isinstance(data, dict)
+        and data.get("status") == "pending_approval"
+    )
 
 
 def _fallback(why: str) -> OrderActionsResult:

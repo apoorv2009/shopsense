@@ -23,6 +23,7 @@ from shopsense_api.application.use_cases.triage_ticket import TriageTicket
 from shopsense_api.entrypoints.composition import PRIMARY, container
 from shopsense_api.entrypoints.logging_config import configure_logging
 from shopsense_api.entrypoints.settings import REPO_ROOT, Settings
+from shopsense_evals import retrieval
 from shopsense_evals.bitext import load_rows
 from shopsense_evals.cases import EvalCase, load_cases
 from shopsense_evals.generator import generate, write_suite
@@ -95,6 +96,19 @@ async def cmd_tool_use(args: argparse.Namespace) -> int:
             print_tool_report(title, outcomes, report)
             save_tool(outcomes, report, RESULTS / f"m2_tool_use_{args.provider}_run{run}.json")
     return 0 if all(r.gates_passed for r in reports) else 1
+
+
+async def cmd_retrieval(args: argparse.Namespace) -> int:
+    cases = retrieval.load_cases(DATA / "retrieval.jsonl")
+    async with container(Settings()) as app:
+        search = app.search_policy()
+        for run in range(1, args.runs + 1):
+            outcomes = await retrieval.run_retrieval(search, cases)
+            report = retrieval.summarise(outcomes)
+            console.print(f"Run {run}/{args.runs} · retrieval (dense) · {report.cases} questions")
+            console.print(f"hit@4 {report.hit_at_4:.0%} · MRR@10 {report.mrr_at_10:.3f}")
+            retrieval.save(outcomes, report, RESULTS / f"m3_retrieval_dense_run{run}.json")
+    return 0
 
 
 async def _reseed() -> None:
@@ -194,11 +208,18 @@ def main() -> None:
     tool = sub.add_parser("tool-use")
     tool.add_argument("--provider", default=PRIMARY)
     tool.add_argument("--runs", type=int, default=1)
+    retrieval = sub.add_parser("retrieval")
+    retrieval.add_argument("--runs", type=int, default=1)
     gen = sub.add_parser("generate-suite")
     gen.add_argument("--n", type=int, default=150)
     gen.add_argument("--seed", type=int, default=7)
     args = parser.parse_args()
     configure_logging(json=Settings().log_json)
-    handlers = {"triage": cmd_triage, "tool-use": cmd_tool_use, "generate-suite": cmd_generate}
+    handlers = {
+        "triage": cmd_triage,
+        "tool-use": cmd_tool_use,
+        "retrieval": cmd_retrieval,
+        "generate-suite": cmd_generate,
+    }
     handler = handlers[args.command]
     raise SystemExit(asyncio.run(handler(args)))

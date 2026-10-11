@@ -11,8 +11,12 @@ from datetime import date
 
 import pytest
 import pytest_asyncio
+from alembic.autogenerate import compare_metadata
+from alembic.migration import MigrationContext
+from sqlalchemy import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 
+from order_platform.adapters.db.tables import Base
 from order_platform.adapters.http.app import Services
 from order_platform.application.use_cases import RefundCommand, ReplacementCommand
 from order_platform.domain.errors import NotAllowedError, NotFoundError
@@ -116,3 +120,12 @@ async def test_replacement_cap(services: Services) -> None:
         "C0002", "ORD-100003", "ELE-LAPTOP14", RefundReason.DEFECTIVE, "db-key-0003"
     )
     assert (await services.replacements.execute(cmd))["status"] == "pending_approval"
+
+
+async def test_migrations_match_models(engine: AsyncEngine) -> None:
+    def diff(sync: Connection) -> list[object]:
+        context = MigrationContext.configure(sync, opts={"compare_type": True})
+        return list(compare_metadata(context, Base.metadata))
+
+    async with engine.connect() as conn:
+        assert await conn.run_sync(diff) == []
