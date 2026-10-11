@@ -4,6 +4,7 @@ Every architecture decision is recorded as an ADR in [`adr/`](adr/). Status valu
 
 ## Table of contents
 - [Decisions](#decisions)
+- [Low-level design](#low-level-design)
 - [ADR template](#adr-template)
 
 ## Decisions
@@ -23,6 +24,21 @@ Every architecture decision is recorded as an ADR in [`adr/`](adr/). Status valu
 | [D12](adr/012-guardrails.md) | Guardrail map and risk gate | Accepted | 2026-10-11 |
 | [D13](adr/013-resilience-and-observability.md) | Resilience and observability | Accepted | 2026-10-11 |
 | [D14](adr/014-evaluation-and-data.md) | Evaluation strategy and data sources | Accepted | 2026-10-11 |
+
+## Low-level design
+LLD documents live in [`lld/`](lld/).
+
+| # | Component | Status | Date |
+|---|---|---|---|
+| [LLD-1](lld/01-ticket-state.md) | TicketState | Accepted | 2026-10-11 |
+| LLD-2 | ShopSense API internal structure | Not started | |
+| LLD-3 | Data models | Not started | |
+| LLD-4 | MCP tool contracts | Not started | |
+| LLD-5 | Agent designs | Not started | |
+| LLD-6 | Rules engine and policy rules-block format | Not started | |
+| LLD-7 | Order Platform API | Not started | |
+| LLD-8 | Angular app | Not started | |
+| LLD-9 | Infrastructure as code | Not started | |
 
 ## ADR template
 ```

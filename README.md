@@ -4,7 +4,7 @@ A multi-agent AI assistant for a mid-size Indian e-commerce marketplace. It tria
 
 IIT Hyderabad course project, Problem Statement 4 (Retail / E-commerce), built across 8 milestones (M1–M8).
 
-> **Status:** design phase. No code yet: the architecture, HLD and LLD are being finalised first and recorded here as architecture decision records (ADRs).
+> **Status:** design phase. HLD complete; LLD in progress. No code until each design is accepted.
 
 ## Table of contents
 - [The problem](#the-problem)
@@ -29,7 +29,9 @@ Guiding principle: **LLMs understand and explain; code decides and enforces.**
 |---|---|
 | [Requirements](docs/00-requirements.md) | Actors, channels, scope, success criteria, constraints |
 | [High-level design](docs/01-hld.md) | System context, components, deployment, data, request flows |
-| [Decision log](docs/decision-log.md) | Index of every architecture decision and its status |
+| [Decision log](docs/decision-log.md) | Index of every architecture and LLD decision and its status |
+| [LLD](docs/lld/) | Low-level design, one document per component |
+| [CLAUDE.md](CLAUDE.md) | Process rules and engineering standards |
 | [Data](data/README.md) | Datasets, sources and licences |
 | [ADRs](docs/adr/) | One record per decision: context, options with pros and cons, decision, consequences |
 

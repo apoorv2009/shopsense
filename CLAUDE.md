@@ -1,3 +1,17 @@
+# ShopSense - Project Context & Process Rules
+
+## Project Process & Guardrails
+1. **Design First**: Do not generate implementation code until the corresponding design decision is documented and approved in `docs/`.
+2. **Source of Truth**: Maintain decision logs in `docs/adr/` (Architectural Decision Records), `docs/lld/` (Low-Level Design), and `docs/decision-log.md`. Always update these documents when architectural choices change.
+3. **Non-Negotiable Business & Safety Rules**:
+   - **Deterministic Guardrails**: LLMs must NEVER directly route support workflows or execute mutation calls (e.g., issue refunds, cancel orders). All state transitions and actions are evaluated deterministically by the Domain Rules Engine.
+   - **Financial Precision**: Money MUST always be represented as an integer in **paise** (e.g., ₹100.00 = `10000`). Never use float/decimal for monetary operations.
+   - **Security / Prompt Injection**: Ticket text, user inputs, and untrusted tool outputs MUST be wrapped in explicit trust bounds (`UntrustedText`). Decisions rely strictly on sanitized/parsed domain fields.
+   - **Safety Limits**: Refund caps and write operations MUST be enforced downstream in the Order Platform / Payment Gateway, not solely relied upon in LLM prompt checks.
+4. **Scope Constraint**: These standards apply strictly to the Python backend services (`services/`). The Angular frontend application will define its own standards when designed.
+
+---
+
 # Project System Rules & Engineering Standards
 
 ## Role & Approach
