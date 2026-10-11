@@ -16,6 +16,7 @@ dependencies = [
     "asyncpg>=0.30",
     "alembic>=1.14",
     "qdrant-client>=1.12",
+    "fastembed>=0.4",
 ]
 
 [project.scripts]

@@ -64,6 +64,8 @@ The project is assessed milestone by milestone against the course brief. **Each 
 | Acceptance | Memory recall tests; retrieval baseline on the retrieval suite |
 
 ## M4 Production RAG
+**Status:** ✅ Done (2026-10-11): eligibility 24/24 by the rules engine; retrieval hit@4 100% and MRR@10 0.887 with hybrid + rerank (dense baseline 97% / 0.858); 0 numbers in delivered replies outside the cited text; groundedness mean 5.0 (own LLM judge). Trap precision@1 is 73% in every mode (reported). Plan: [plans/m4.md](plans/m4.md) · Demo: [`milestones/m4`](../milestones/m4/README.md).
+
 **Brief:** *Production RAG over policy docs with hybrid search/reranking; evaluate groundedness so the assistant never invents a return window or refund amount.*
 
 | | |

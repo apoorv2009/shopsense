@@ -16,6 +16,7 @@ class RuleKind(StrEnum):
     REFUND_METHOD = "refund_method"
     REFUND_TIMELINE = "refund_timeline"
     CANCELLATION = "cancellation"
+    GOODWILL = "goodwill"
 
 
 class Outcome(StrEnum):

@@ -1,7 +1,10 @@
-"""Policy question answering (M3): answers only from retrieved sections, with citations.
+"""Policy question answering: answers only from retrieved sections, with citations.
 
-Citations must be a subset of the retrieved chunk IDs. Anything else fails closed to a
-hand-off, so a reply can never cite a section the model did not read."""
+Checks, in order, all failing closed to a hand-off:
+1. The model says it can answer and cites at least one section.
+2. Every citation was retrieved (M3).
+3. Every number in the answer occurs in the cited sections (numeric fabrication, M4 R4-6).
+The blocked numbers are returned so the evaluation can count fabrication attempts."""
 
 from dataclasses import dataclass
 
@@ -10,7 +13,8 @@ from pydantic import BaseModel, ConfigDict
 from shopsense_api.application.ports.llm import LLMClient, StructuredRequest
 from shopsense_api.application.ports.prompts import PromptRepository
 from shopsense_api.application.untrusted_blocks import random_block_id, wrap_untrusted
-from shopsense_api.application.use_cases.search_policy import SearchPolicy
+from shopsense_api.application.use_cases.hybrid_search import HybridSearch, Mode
+from shopsense_api.domain.policy.grounding import unsupported_numbers
 from shopsense_api.domain.values.untrusted_text import UntrustedText
 
 PROFILE = "policy"
@@ -33,16 +37,22 @@ class PolicyAnswer:
     reply: str
     citations: tuple[str, ...]
     answered: bool
+    blocked_numbers: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
 class AnswerPolicyQuestion:
     llm: LLMClient
     prompts: PromptRepository
-    search: SearchPolicy
+    search: HybridSearch
 
-    async def run(self, question: UntrustedText, category: str | None = None) -> PolicyAnswer:
-        hits = await self.search.run(question.value, limit=4, category=category)
+    async def run(
+        self,
+        question: UntrustedText,
+        category: str | None = None,
+        mode: Mode = "hybrid_rerank",
+    ) -> PolicyAnswer:
+        hits = await self.search.run(question.value, limit=4, category=category, mode=mode)
         if not hits:
             return PolicyAnswer(HANDOFF, (), answered=False)
         sections = "\n\n".join(
@@ -57,12 +67,16 @@ class AnswerPolicyQuestion:
                 output_type=PolicyAnswerOut,
             )
         )
-        return _checked(response.output, {h.chunk.chunk_id for h in hits})
+        texts = {h.chunk.chunk_id: h.chunk.text for h in hits}
+        return _checked(response.output, texts)
 
 
-def _checked(out: PolicyAnswerOut, retrieved: set[str]) -> PolicyAnswer:
+def _checked(out: PolicyAnswerOut, retrieved: dict[str, str]) -> PolicyAnswer:
     cited = tuple(dict.fromkeys(out.citations))
-    grounded = bool(cited) and set(cited) <= retrieved
+    grounded = bool(cited) and set(cited) <= retrieved.keys()
     if not out.can_answer or not grounded:
         return PolicyAnswer(HANDOFF, (), answered=False)
+    blocked = unsupported_numbers(out.answer, [retrieved[c] for c in cited])
+    if blocked:
+        return PolicyAnswer(HANDOFF, (), answered=False, blocked_numbers=tuple(sorted(blocked)))
     return PolicyAnswer(out.answer, cited, answered=True)

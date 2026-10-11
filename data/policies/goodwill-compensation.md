@@ -13,7 +13,7 @@ Goodwill credits recognise inconvenience, such as a late delivery or a poor supp
 Support can offer a goodwill credit of up to **₹500** per order. The credit is store credit valid for 90 days.
 
 ```rules
-[{"rule_id": "GW-500", "kind": "exception", "applies_to": {}, "window_days": null, "outcome": "escalate", "overrides": [], "requires_evidence": "none"}]
+[{"rule_id": "GW-500", "kind": "goodwill", "applies_to": {}, "window_days": null, "outcome": "escalate", "overrides": [], "requires_evidence": "none"}]
 ```
 
 ## 2. Above the limit

@@ -1,13 +1,14 @@
-"""M3 retrieval evaluation: does the right policy section come back for each question?
+"""Retrieval evaluation: does the right policy section come back for each question?
 
-Metrics: hit@4 (an acceptable section is in the top 4) and MRR@10 (reciprocal rank of the
-first acceptable section within the top 10). Dense retrieval only; M4 must beat this baseline."""
+Metrics: hit@4 (an acceptable section is in the top 4), MRR@10 (reciprocal rank of the first
+acceptable section within the top 10) and, for category questions (conflict traps),
+precision@1 (the top section is an acceptable one)."""
 
 import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from shopsense_api.application.use_cases.search_policy import SearchPolicy
+from shopsense_api.application.use_cases.hybrid_search import HybridSearch, Mode
 
 TOP_K = 4
 MRR_K = 10
@@ -39,6 +40,7 @@ class RetrievalReport:
     cases: int
     hit_at_4: float
     mrr_at_10: float
+    precision_at_1_traps: float | None
 
 
 def load_cases(path: Path) -> list[RetrievalCase]:
@@ -48,21 +50,31 @@ def load_cases(path: Path) -> list[RetrievalCase]:
     ]
 
 
-async def run_retrieval(search: SearchPolicy, cases: list[RetrievalCase]) -> list[RetrievalOutcome]:
+def trap_ids(cases: list[RetrievalCase]) -> set[str]:
+    """Conflict traps: questions asked within a category, where the category window must win
+    over the general 30-day policy."""
+    return {c.case_id for c in cases if c.category is not None}
+
+
+async def run_retrieval(
+    search: HybridSearch, cases: list[RetrievalCase], mode: Mode
+) -> list[RetrievalOutcome]:
     outcomes = []
     for case in cases:
-        hits = await search.run(case.question, limit=MRR_K, category=case.category)
+        hits = await search.run(case.question, limit=MRR_K, category=case.category, mode=mode)
         ranked = tuple(h.chunk.chunk_id for h in hits)
         rank = next((i + 1 for i, cid in enumerate(ranked) if cid in case.expected), None)
         outcomes.append(RetrievalOutcome(case.case_id, case.question, case.expected, ranked, rank))
     return outcomes
 
 
-def summarise(outcomes: list[RetrievalOutcome]) -> RetrievalReport:
+def summarise(outcomes: list[RetrievalOutcome], traps: set[str]) -> RetrievalReport:
     total = len(outcomes)
     hits = sum(o.hit_at_4 for o in outcomes)
     reciprocal = sum(1 / o.rank for o in outcomes if o.rank is not None)
-    return RetrievalReport(total, hits / total, reciprocal / total)
+    trap_outcomes = [o for o in outcomes if o.case_id in traps]
+    p1 = sum(o.rank == 1 for o in trap_outcomes) / len(trap_outcomes) if trap_outcomes else None
+    return RetrievalReport(total, hits / total, reciprocal / total, p1)
 
 
 def save(outcomes: list[RetrievalOutcome], report: RetrievalReport, path: Path) -> None:

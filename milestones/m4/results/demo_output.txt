@@ -1,0 +1,40 @@
+﻿────────────────────────────────────────────── 1 · Return eligibility: rules engine decides, RAG cites ──────────────────────────────────────────────
+┌─────────────────────────────── Power bank bought 10 days ago (electronics window says 15, accessory window says 7) ───────────────────────────────┐
+│ Not eligible. The 7-day return window closed 3 days ago.                                                                                          │
+│ rule ELE-ACC-7 · citation returns-electronics-accessories#1 · not_eligible                                                                        │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────── Laptop delivered 12 days ago ───────────────────────────────────────────────────────────┐
+│ Eligible. Items like this can be returned within 15 days of delivery, and 12 days have passed.                                                    │
+│ rule ELE-RET-15 · citation returns-electronics#1 · eligible                                                                                       │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────── Leaking cooking oil reported 90 minutes after delivery, no photo yet ───────────────────────────────────────┐
+│ A photo is needed to check this claim. Please upload up to three clear photos.                                                                    │
+│ rule GRO-DMG-48H · citation returns-groceries#2 · needs_evidence                                                                                  │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────── Damaged laptop delivered yesterday, damage reported 10 hours after delivery, photo verified ───────────────────────────┐
+│ This item is eligible under our policy for this issue.                                                                                            │
+│ rule DMG-48H · citation damaged-wrong-missing#2 · eligible                                                                                        │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+───────────────────────────────────────────────── 2 · Retrieval: dense vs hybrid vs hybrid + rerank ─────────────────────────────────────────────────
+┌────────────────────────────────┬───────────────────────────────────┬───────────────────────────────────┬───────────────────────────────────┐
+│ question                       │ dense                             │ hybrid                            │ hybrid_rerank                     │
+├────────────────────────────────┼───────────────────────────────────┼───────────────────────────────────┼───────────────────────────────────┤
+│ return window for a power bank │ returns-electronics-accessories#3 │ returns-electronics-accessories#3 │ returns-electronics-accessories#3 │
+├────────────────────────────────┼───────────────────────────────────┼───────────────────────────────────┼───────────────────────────────────┤
+│ refund timeline after return   │ refund-methods#2                  │ returns-general#3                 │ refund-methods#2                  │
+└────────────────────────────────┴───────────────────────────────────┴───────────────────────────────────┴───────────────────────────────────┘
+───────────────────────────────────────────────── 3 · Open questions: cited, number-checked, judged ─────────────────────────────────────────────────
+┌───────────────────────────────────────────────────── Can I return an opened vitamin C serum? ─────────────────────────────────────────────────────┐
+│ No, opened vitamin C serum cannot be returned unless it is faulty or the seal was broken before delivery because opened or used beauty products   │
+│ are non-returnable for hygiene reasons.                                                                                                           │
+│ citations: returns-beauty#2 · groundedness 5/5                                                                                                    │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────── What is the refund timeline after I return an item? ───────────────────────────────────────────────┐
+│ After you return an item and it is received at our warehouse, we initiate the refund within 7 days. For card and bank credits, the refund appears │
+│ within 5 to 7 additional business days depending on your bank. For cash on delivery refunds by bank transfer, the transfer begins within 7 days   │
+│ and reaches your account within 3 to 5 business days.                                                                                             │
+│ citations: refund-methods#2, cash-on-delivery#2 · groundedness 5/5                                                                                │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────── Do you deliver to Mars? ─────────────────────────────────────────────────────────────┐
+│ I could not find a clear answer in our policies, so I have passed your question to a support specialist.                                          │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘

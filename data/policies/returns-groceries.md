@@ -20,7 +20,7 @@ Groceries, including rice, oil and dry fruits, are **non-returnable** for change
 If a grocery item arrives damaged, leaking or already expired, the customer may report it within **48 hours** of delivery. The customer must upload clear photos of the item and the packaging. Once the photo check passes, the seller replaces the item. A refund applies only when a replacement is out of stock.
 
 ```rules
-[{"rule_id": "GRO-DMG-48H", "kind": "exception", "applies_to": {"category": "groceries", "reported_within_hours": 48}, "window_days": null, "outcome": "replacement_only", "overrides": ["GRO-NR"], "requires_evidence": "photo"}]
+[{"rule_id": "GRO-DMG-48H", "kind": "exception", "applies_to": {"category": "groceries", "reported_within_hours": 48}, "window_days": null, "outcome": "replacement_only", "overrides": ["GRO-NR", "DMG-48H"], "requires_evidence": "photo"}]
 ```
 
 ## 3. Opened packs

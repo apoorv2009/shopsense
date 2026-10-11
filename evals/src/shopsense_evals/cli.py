@@ -8,6 +8,7 @@ import argparse
 import asyncio
 import json
 from collections.abc import Sequence
+from dataclasses import asdict
 from datetime import date
 from pathlib import Path
 
@@ -23,7 +24,7 @@ from shopsense_api.application.use_cases.triage_ticket import TriageTicket
 from shopsense_api.entrypoints.composition import PRIMARY, container
 from shopsense_api.entrypoints.logging_config import configure_logging
 from shopsense_api.entrypoints.settings import REPO_ROOT, Settings
-from shopsense_evals import retrieval
+from shopsense_evals import rag, retrieval
 from shopsense_evals.bitext import load_rows
 from shopsense_evals.cases import EvalCase, load_cases
 from shopsense_evals.generator import generate, write_suite
@@ -102,13 +103,66 @@ async def cmd_retrieval(args: argparse.Namespace) -> int:
     cases = retrieval.load_cases(DATA / "retrieval.jsonl")
     async with container(Settings()) as app:
         search = app.search_policy()
-        for run in range(1, args.runs + 1):
-            outcomes = await retrieval.run_retrieval(search, cases)
-            report = retrieval.summarise(outcomes)
-            console.print(f"Run {run}/{args.runs} · retrieval (dense) · {report.cases} questions")
-            console.print(f"hit@4 {report.hit_at_4:.0%} · MRR@10 {report.mrr_at_10:.3f}")
-            retrieval.save(outcomes, report, RESULTS / f"m3_retrieval_dense_run{run}.json")
+        traps = retrieval.trap_ids(cases)
+        for mode in args.modes:
+            for run in range(1, args.runs + 1):
+                outcomes = await retrieval.run_retrieval(search, cases, mode)
+                report = retrieval.summarise(outcomes, traps)
+                console.print(
+                    f"Run {run}/{args.runs} · retrieval ({mode}) · {report.cases} questions"
+                )
+                p1 = report.precision_at_1_traps
+                console.print(
+                    f"hit@4 {report.hit_at_4:.0%} · MRR@10 {report.mrr_at_10:.3f} · "
+                    f"trap p@1 {p1:.0%}"
+                    if p1 is not None
+                    else f"hit@4 {report.hit_at_4:.0%}"
+                )
+                name = f"m4_retrieval_{mode}_run{run}.json"
+                retrieval.save(outcomes, report, RESULTS / name)
     return 0
+
+
+async def cmd_rag(args: argparse.Namespace) -> int:
+    decisions = rag.load_decisions(DATA / "decisions.jsonl")
+    questions = [
+        json.loads(x)
+        for x in (DATA / "open_policy.jsonl").read_text(encoding="utf-8").splitlines()
+        if x
+    ]
+    cases = retrieval.load_cases(DATA / "retrieval.jsonl")
+    traps = retrieval.trap_ids(cases)
+    async with container(Settings()) as app:
+        decided = await rag.run_decisions(app.policy_store(), decisions)
+        correct = sum(r["correct"] for r in decided)
+        console.print(f"Decisions: {correct}/{len(decided)} correct")
+        retrieval_rows = {}
+        for mode in args.modes:
+            outcomes = await retrieval.run_retrieval(app.search_policy(), cases, mode)
+            report = retrieval.summarise(outcomes, traps)
+            retrieval_rows[mode] = asdict(report)
+            retrieval.save(outcomes, report, RESULTS / f"m4_retrieval_{mode}.json")
+            p1 = report.precision_at_1_traps or 0.0
+            console.print(
+                f"Retrieval {mode}: hit@4 {report.hit_at_4:.0%} · "
+                f"MRR@10 {report.mrr_at_10:.3f} · trap p@1 {p1:.0%}"
+            )
+        judge = app.judge()
+        open_rows = await rag.run_open(app, judge, questions)
+        summary = rag.summarise_open(open_rows)
+        console.print(f"Open questions: {summary}")
+    payload = {
+        "decisions": decided,
+        "retrieval": retrieval_rows,
+        "open": open_rows,
+        "summary": summary,
+    }
+    RESULTS.mkdir(parents=True, exist_ok=True)
+    (RESULTS / "m4_rag.json").write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+    gates = correct == len(decided) and summary["fabricated_in_delivered_replies"] == 0
+    return 0 if gates else 1
 
 
 async def _reseed() -> None:
@@ -208,8 +262,18 @@ def main() -> None:
     tool = sub.add_parser("tool-use")
     tool.add_argument("--provider", default=PRIMARY)
     tool.add_argument("--runs", type=int, default=1)
+    rag_cmd = sub.add_parser("rag")
+    rag_cmd.add_argument(
+        "--modes",
+        nargs="+",
+        choices=["dense", "hybrid", "hybrid_rerank"],
+        default=["dense", "hybrid", "hybrid_rerank"],
+    )
     retrieval = sub.add_parser("retrieval")
     retrieval.add_argument("--runs", type=int, default=1)
+    retrieval.add_argument(
+        "--modes", nargs="+", choices=["dense", "hybrid", "hybrid_rerank"], default=["dense"]
+    )
     gen = sub.add_parser("generate-suite")
     gen.add_argument("--n", type=int, default=150)
     gen.add_argument("--seed", type=int, default=7)
@@ -219,6 +283,7 @@ def main() -> None:
         "triage": cmd_triage,
         "tool-use": cmd_tool_use,
         "retrieval": cmd_retrieval,
+        "rag": cmd_rag,
         "generate-suite": cmd_generate,
     }
     handler = handlers[args.command]

@@ -13,13 +13,13 @@ from shopsense_api.entrypoints.composition import container
 from shopsense_api.entrypoints.settings import Settings
 
 
-async def _ingest(settings: Settings) -> None:
+async def _ingest(settings: Settings, rebuild: bool) -> None:
     docs = load_corpus(Path(settings.policy_dir))
     async with container(settings) as c:
         if c.engine is None:
             raise SystemExit("SHOPSENSE_DATABASE_URL is not set")
         await upgrade(c.engine)
-        report = await c.ingest_policies().run(docs)
+        report = await c.ingest_policies().run(docs, rebuild=rebuild)
     print(
         f"documents: {len(docs)} · indexed: {len(report.indexed_docs)} · "
         f"unchanged: {len(report.skipped_docs)} · chunks written: {report.chunks}"
@@ -30,8 +30,9 @@ async def _ingest(settings: Settings) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Index the policy corpus into Qdrant.")
-    parser.parse_args()
-    asyncio.run(_ingest(Settings()))
+    parser.add_argument("--rebuild", action="store_true", help="re-index every document")
+    args = parser.parse_args()
+    asyncio.run(_ingest(Settings(), rebuild=args.rebuild))
 
 
 if __name__ == "__main__":

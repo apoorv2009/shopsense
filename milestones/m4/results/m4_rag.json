@@ -1,0 +1,522 @@
+{
+  "decisions": [
+    {
+      "id": "D01",
+      "note": "electronics, day 10 of 15",
+      "expected": [
+        "ELE-RET-15",
+        "eligible"
+      ],
+      "got": [
+        "ELE-RET-15",
+        "eligible"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D02",
+      "note": "electronics, day 16 (past the 15-day window; trap: general 30 days would allow it)",
+      "expected": [
+        "ELE-RET-15",
+        "not_eligible"
+      ],
+      "got": [
+        "ELE-RET-15",
+        "not_eligible"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D03",
+      "note": "electronics, day 15 (last accepted day)",
+      "expected": [
+        "ELE-RET-15",
+        "eligible"
+      ],
+      "got": [
+        "ELE-RET-15",
+        "eligible"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D04",
+      "note": "power bank, day 10 (trap: electronics window says eligible, accessory window is 7)",
+      "expected": [
+        "ELE-ACC-7",
+        "not_eligible"
+      ],
+      "got": [
+        "ELE-ACC-7",
+        "not_eligible"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D05",
+      "note": "charger, day 7 (last accepted day)",
+      "expected": [
+        "ELE-ACC-7",
+        "eligible"
+      ],
+      "got": [
+        "ELE-ACC-7",
+        "eligible"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D06",
+      "note": "charger, day 8",
+      "expected": [
+        "ELE-ACC-7",
+        "not_eligible"
+      ],
+      "got": [
+        "ELE-ACC-7",
+        "not_eligible"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D07",
+      "note": "kurta, day 44 (trap: general 30 days says no; apparel 45 says yes)",
+      "expected": [
+        "APP-RET-45",
+        "eligible"
+      ],
+      "got": [
+        "APP-RET-45",
+        "eligible"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D08",
+      "note": "kurta, day 52",
+      "expected": [
+        "APP-RET-45",
+        "not_eligible"
+      ],
+      "got": [
+        "APP-RET-45",
+        "not_eligible"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D09",
+      "note": "pressure cooker, day 10 of 10",
+      "expected": [
+        "HOM-RET-10",
+        "eligible"
+      ],
+      "got": [
+        "HOM-RET-10",
+        "eligible"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D10",
+      "note": "pressure cooker, day 11",
+      "expected": [
+        "HOM-RET-10",
+        "not_eligible"
+      ],
+      "got": [
+        "HOM-RET-10",
+        "not_eligible"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D11",
+      "note": "opened serum",
+      "expected": [
+        "BEA-OPEN-NR",
+        "not_eligible"
+      ],
+      "got": [
+        "BEA-OPEN-NR",
+        "not_eligible"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D12",
+      "note": "unopened sunscreen, day 6",
+      "expected": [
+        "BEA-RET-7",
+        "eligible"
+      ],
+      "got": [
+        "BEA-RET-7",
+        "eligible"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D13",
+      "note": "unopened sunscreen, day 9",
+      "expected": [
+        "BEA-RET-7",
+        "not_eligible"
+      ],
+      "got": [
+        "BEA-RET-7",
+        "not_eligible"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D14",
+      "note": "rice, no damage reported",
+      "expected": [
+        "GRO-NR",
+        "not_eligible"
+      ],
+      "got": [
+        "GRO-NR",
+        "not_eligible"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D15",
+      "note": "leaking oil reported in 90 minutes, no photo yet",
+      "expected": [
+        "GRO-DMG-48H",
+        "needs_evidence"
+      ],
+      "got": [
+        "GRO-DMG-48H",
+        "needs_evidence"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D16",
+      "note": "leaking oil, photo verified",
+      "expected": [
+        "GRO-DMG-48H",
+        "eligible"
+      ],
+      "got": [
+        "GRO-DMG-48H",
+        "eligible"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D17",
+      "note": "leaking oil reported after three days",
+      "expected": [
+        "GRO-NR",
+        "not_eligible"
+      ],
+      "got": [
+        "GRO-NR",
+        "not_eligible"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D18",
+      "note": "damaged laptop delivered yesterday, damage reported 10 hours after delivery, no photo yet",
+      "expected": [
+        "DMG-48H",
+        "needs_evidence"
+      ],
+      "got": [
+        "DMG-48H",
+        "needs_evidence"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D19",
+      "note": "damaged laptop delivered yesterday, damage reported 10 hours after delivery, photo verified",
+      "expected": [
+        "DMG-48H",
+        "eligible"
+      ],
+      "got": [
+        "DMG-48H",
+        "eligible"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D20",
+      "note": "damage reported 48 hours and 1 minute after delivery (boundary: the damage rule no longer applies)",
+      "expected": [
+        "ELE-RET-15",
+        "eligible"
+      ],
+      "got": [
+        "ELE-RET-15",
+        "eligible"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D21",
+      "note": "unknown category, day 26",
+      "expected": [
+        "RET-GEN-30",
+        "eligible"
+      ],
+      "got": [
+        "RET-GEN-30",
+        "eligible"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D22",
+      "note": "unknown category, day 36",
+      "expected": [
+        "RET-GEN-30",
+        "not_eligible"
+      ],
+      "got": [
+        "RET-GEN-30",
+        "not_eligible"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D23",
+      "note": "wrong kurta reported in an hour, no photo yet",
+      "expected": [
+        "WRG-MIS-48H",
+        "needs_evidence"
+      ],
+      "got": [
+        "WRG-MIS-48H",
+        "needs_evidence"
+      ],
+      "correct": true
+    },
+    {
+      "id": "D24",
+      "note": "wrong electronics reported in an hour, photo verified",
+      "expected": [
+        "WRG-MIS-48H",
+        "eligible"
+      ],
+      "got": [
+        "WRG-MIS-48H",
+        "eligible"
+      ],
+      "correct": true
+    }
+  ],
+  "retrieval": {
+    "dense": {
+      "cases": 31,
+      "hit_at_4": 0.967741935483871,
+      "mrr_at_10": 0.8575268817204301,
+      "precision_at_1_traps": 0.7333333333333333
+    },
+    "hybrid": {
+      "cases": 31,
+      "hit_at_4": 0.967741935483871,
+      "mrr_at_10": 0.8612903225806451,
+      "precision_at_1_traps": 0.7333333333333333
+    },
+    "hybrid_rerank": {
+      "cases": 31,
+      "hit_at_4": 1.0,
+      "mrr_at_10": 0.8870967741935484,
+      "precision_at_1_traps": 0.7333333333333333
+    }
+  },
+  "open": [
+    {
+      "id": "O01",
+      "question": "What is the refund timeline after I return an item?",
+      "answered": true,
+      "reply": "After you return an item, a refund is initiated within 7 days of the item being received at the warehouse. For card and bank credits, the refund appears within 5 to 7 further business days depending on the bank. For cash on delivery refunds via bank transfer, the transfer is initiated within 7 days and the amount reaches the account within 3 to 5 business days.",
+      "citations": [
+        "refund-methods#2",
+        "cash-on-delivery#2"
+      ],
+      "blocked_numbers": [],
+      "fabricated_in_delivered_reply": [],
+      "judge": {
+        "score": 5,
+        "supported": true
+      }
+    },
+    {
+      "id": "O02",
+      "question": "Can I get a replacement for a faulty appliance after the return window?",
+      "answered": true,
+      "reply": "If your appliance is faulty and the return window has passed, you cannot get a replacement through a return. Instead, the issue will be handled under the warranty policy.",
+      "citations": [
+        "returns-home-kitchen#3",
+        "returns-electronics#3"
+      ],
+      "blocked_numbers": [],
+      "fabricated_in_delivered_reply": [],
+      "judge": {
+        "score": 5,
+        "supported": true
+      }
+    },
+    {
+      "id": "O03",
+      "question": "How long is the warranty on electronics?",
+      "answered": true,
+      "reply": "The warranty on electronics is 12 months (365 days) from the delivery date. If the product record shows a longer period, that longer period applies.",
+      "citations": [
+        "warranty#1"
+      ],
+      "blocked_numbers": [],
+      "fabricated_in_delivered_reply": [],
+      "judge": {
+        "score": 5,
+        "supported": true
+      }
+    },
+    {
+      "id": "O04",
+      "question": "Is the shipping fee refunded if the order arrived damaged?",
+      "answered": true,
+      "reply": "If the order arrived damaged, the shipping fee is refunded as the seller is at fault for delivering a damaged item. This applies to damaged, defective, wrong, or missing items, but not for change of mind.",
+      "citations": [
+        "shipping-delivery#2"
+      ],
+      "blocked_numbers": [],
+      "fabricated_in_delivered_reply": [],
+      "judge": {
+        "score": 5,
+        "supported": true
+      }
+    },
+    {
+      "id": "O05",
+      "question": "Can I cancel an order that has already been dispatched?",
+      "answered": true,
+      "reply": "No, once the order has been dispatched, it cannot be cancelled. You can refuse delivery or return the item under the return policy for its category.",
+      "citations": [
+        "order-cancellation#2"
+      ],
+      "blocked_numbers": [],
+      "fabricated_in_delivered_reply": [],
+      "judge": {
+        "score": 5,
+        "supported": true
+      }
+    },
+    {
+      "id": "O06",
+      "question": "How much goodwill credit can support give me?",
+      "answered": true,
+      "reply": "Support can offer a goodwill credit of up to ₹500 per order. This credit is store credit valid for 90 days.",
+      "citations": [
+        "goodwill-compensation#1"
+      ],
+      "blocked_numbers": [],
+      "fabricated_in_delivered_reply": [],
+      "judge": {
+        "score": 5,
+        "supported": true
+      }
+    },
+    {
+      "id": "O07",
+      "question": "What is the return window for apparel?",
+      "answered": true,
+      "reply": "The return window for apparel is 45 days from delivery. This is longer than the general 30-day window and applies specifically to apparel, footwear, and fashion accessories.",
+      "citations": [
+        "returns-apparel#1"
+      ],
+      "blocked_numbers": [],
+      "fabricated_in_delivered_reply": [],
+      "judge": {
+        "score": 5,
+        "supported": true
+      }
+    },
+    {
+      "id": "O08",
+      "question": "How many days do I have to report a damaged delivery?",
+      "answered": true,
+      "reply": "You must report a damaged delivery within 48 hours of delivery. This 48-hour window is measured from the delivery timestamp, not in calendar days.",
+      "citations": [
+        "damaged-wrong-missing#1"
+      ],
+      "blocked_numbers": [],
+      "fabricated_in_delivered_reply": [],
+      "judge": {
+        "score": 5,
+        "supported": true
+      }
+    },
+    {
+      "id": "O09",
+      "question": "Can I return unopened sunscreen?",
+      "answered": true,
+      "reply": "Yes, you can return unopened beauty products like sunscreen within 7 days of delivery, provided they are unused, in original packaging, with all tags and invoice as per the general and beauty return policies.",
+      "citations": [
+        "returns-beauty#1",
+        "returns-general#2"
+      ],
+      "blocked_numbers": [],
+      "fabricated_in_delivered_reply": [],
+      "judge": {
+        "score": 5,
+        "supported": true
+      }
+    },
+    {
+      "id": "O10",
+      "question": "How long is store credit valid after a goodwill credit?",
+      "answered": true,
+      "reply": "A goodwill credit is store credit that is valid for 90 days from the date it is issued.",
+      "citations": [
+        "goodwill-compensation#1"
+      ],
+      "blocked_numbers": [],
+      "fabricated_in_delivered_reply": [],
+      "judge": {
+        "score": 5,
+        "supported": true
+      }
+    },
+    {
+      "id": "O11",
+      "question": "Can I return a Bluetooth speaker after 20 days?",
+      "answered": false,
+      "reply": "I could not find a clear answer in our policies, so I have passed your question to a support specialist.",
+      "citations": [],
+      "blocked_numbers": [
+        "20"
+      ],
+      "fabricated_in_delivered_reply": [],
+      "judge": null
+    },
+    {
+      "id": "O12",
+      "question": "Do you deliver to Mars?",
+      "answered": false,
+      "reply": "I could not find a clear answer in our policies, so I have passed your question to a support specialist.",
+      "citations": [],
+      "blocked_numbers": [],
+      "fabricated_in_delivered_reply": [],
+      "judge": null
+    }
+  ],
+  "summary": {
+    "questions": 12,
+    "answered": 10,
+    "handed_off": 2,
+    "fabrication_attempts_blocked": 1,
+    "fabricated_in_delivered_replies": 0,
+    "groundedness_mean": 5.0,
+    "groundedness_supported_share": 1.0
+  }
+}

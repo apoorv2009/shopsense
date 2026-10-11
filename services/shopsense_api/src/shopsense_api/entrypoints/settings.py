@@ -51,7 +51,9 @@ class Settings(BaseSettings):
     qdrant_url: str = ""
     qdrant_path: str = "data/qdrant-local"
     qdrant_api_key: SecretStr | None = None
-    qdrant_collection: str = "policy_chunks"
+    qdrant_collection: str = "policy_chunks_v2"
+    # Local cross-encoder for reranking (fastembed ONNX; downloaded once)
+    rerank_model: str = "Xenova/ms-marco-MiniLM-L-6-v2"
     policy_dir: str = "data/policies"
     # Empty URL = no database; memory and policy rules then need one (see infra/m3)
     database_url: str = ""

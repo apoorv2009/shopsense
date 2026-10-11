@@ -1,0 +1,664 @@
+{
+  "report": {
+    "cases": 31,
+    "hit_at_4": 0.967741935483871,
+    "mrr_at_10": 0.8575268817204301,
+    "precision_at_1_traps": 0.7333333333333333
+  },
+  "cases": [
+    {
+      "id": "R01",
+      "question": "I bought headphones 12 days ago, can I still return them?",
+      "expected": [
+        "returns-electronics#1"
+      ],
+      "top_10": [
+        "returns-electronics-accessories#1",
+        "returns-electronics#1",
+        "returns-general#1",
+        "returns-electronics-accessories#3",
+        "warranty#1",
+        "returns-electronics-accessories#2",
+        "returns-general#2",
+        "returns-home-kitchen#2",
+        "damaged-wrong-missing#4",
+        "refund-methods#2"
+      ],
+      "rank": 2,
+      "hit_at_4": true
+    },
+    {
+      "id": "R02",
+      "question": "How many days do I have to return a fast charger?",
+      "expected": [
+        "returns-electronics-accessories#1"
+      ],
+      "top_10": [
+        "returns-electronics-accessories#1",
+        "returns-electronics#1",
+        "returns-electronics-accessories#3",
+        "returns-general#1",
+        "returns-electronics-accessories#2",
+        "returns-general#2",
+        "refund-methods#2",
+        "returns-electronics#3",
+        "warranty#1",
+        "damaged-wrong-missing#4"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R03",
+      "question": "return window for a power bank",
+      "expected": [
+        "returns-electronics-accessories#1"
+      ],
+      "top_10": [
+        "returns-electronics-accessories#3",
+        "returns-electronics#3",
+        "returns-electronics#1",
+        "returns-electronics-accessories#1",
+        "returns-general#1",
+        "returns-electronics-accessories#2",
+        "returns-beauty#3",
+        "returns-electronics#2",
+        "damaged-wrong-missing#1",
+        "cash-on-delivery#1"
+      ],
+      "rank": 4,
+      "hit_at_4": true
+    },
+    {
+      "id": "R04",
+      "question": "I want to return a smartphone bought 14 days ago",
+      "expected": [
+        "returns-electronics#1"
+      ],
+      "top_10": [
+        "returns-electronics-accessories#1",
+        "returns-electronics-accessories#3",
+        "returns-electronics#1",
+        "returns-general#1",
+        "returns-general#2",
+        "returns-electronics#3",
+        "damaged-wrong-missing#4",
+        "returns-electronics-accessories#2",
+        "returns-electronics#2",
+        "returns-home-kitchen#3"
+      ],
+      "rank": 3,
+      "hit_at_4": true
+    },
+    {
+      "id": "R05",
+      "question": "Bluetooth speaker returned on day 14, is that allowed?",
+      "expected": [
+        "returns-electronics#1"
+      ],
+      "top_10": [
+        "returns-electronics#1",
+        "returns-electronics-accessories#1",
+        "returns-electronics-accessories#3",
+        "returns-electronics#2",
+        "returns-electronics-accessories#2",
+        "returns-electronics#3",
+        "damaged-wrong-missing#4",
+        "returns-home-kitchen#3",
+        "warranty#1",
+        "returns-beauty#3"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R06",
+      "question": "return window for a mixer grinder",
+      "expected": [
+        "returns-electronics#1"
+      ],
+      "top_10": [
+        "returns-electronics#3",
+        "returns-electronics#1",
+        "returns-general#1",
+        "goodwill-compensation#1",
+        "returns-electronics-accessories#1",
+        "returns-home-kitchen#3",
+        "goodwill-compensation#2",
+        "returns-electronics-accessories#2",
+        "returns-electronics-accessories#3",
+        "returns-beauty#3"
+      ],
+      "rank": 2,
+      "hit_at_4": true
+    },
+    {
+      "id": "R07",
+      "question": "return a cotton kurta I bought 40 days ago",
+      "expected": [
+        "returns-apparel#1"
+      ],
+      "top_10": [
+        "returns-apparel#1",
+        "returns-general#2",
+        "returns-home-kitchen#2",
+        "returns-general#1",
+        "returns-apparel#2",
+        "returns-apparel#3",
+        "damaged-wrong-missing#4",
+        "cash-on-delivery#2",
+        "returns-groceries#3",
+        "goodwill-compensation#1"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R08",
+      "question": "running shoes size exchange policy",
+      "expected": [
+        "returns-apparel#1",
+        "returns-apparel#3"
+      ],
+      "top_10": [
+        "returns-apparel#3",
+        "returns-apparel#2",
+        "returns-apparel#1",
+        "returns-general#2",
+        "returns-general#1",
+        "returns-general#3",
+        "returns-home-kitchen#2",
+        "shipping-delivery#2",
+        "returns-electronics#3",
+        "order-cancellation#2"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R09",
+      "question": "can I return basmati rice I ordered by mistake",
+      "expected": [
+        "returns-groceries#1"
+      ],
+      "top_10": [
+        "returns-groceries#1",
+        "returns-groceries#2",
+        "order-cancellation#2",
+        "returns-home-kitchen#2",
+        "returns-groceries#3",
+        "shipping-delivery#2",
+        "damaged-wrong-missing#4",
+        "returns-general#2",
+        "returns-general#1",
+        "cash-on-delivery#1"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R10",
+      "question": "the cold-pressed oil bottle arrived leaking, what should I do",
+      "expected": [
+        "returns-groceries#2",
+        "damaged-wrong-missing#2"
+      ],
+      "top_10": [
+        "returns-groceries#2",
+        "returns-groceries#3",
+        "damaged-wrong-missing#2",
+        "damaged-wrong-missing#1",
+        "damaged-wrong-missing#4",
+        "damaged-wrong-missing#3",
+        "returns-electronics-accessories#2",
+        "returns-groceries#1",
+        "shipping-delivery#2",
+        "returns-beauty#3"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R11",
+      "question": "return a pressure cooker I already used for cooking",
+      "expected": [
+        "returns-home-kitchen#1"
+      ],
+      "top_10": [
+        "returns-home-kitchen#1",
+        "returns-home-kitchen#3",
+        "returns-groceries#3",
+        "returns-beauty#3",
+        "returns-general#2",
+        "returns-home-kitchen#2",
+        "returns-electronics-accessories#3",
+        "warranty#3",
+        "goodwill-compensation#3",
+        "returns-electronics#3"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R12",
+      "question": "return window for cookware sets",
+      "expected": [
+        "returns-home-kitchen#1"
+      ],
+      "top_10": [
+        "returns-home-kitchen#1",
+        "returns-home-kitchen#2",
+        "returns-home-kitchen#3",
+        "returns-general#1",
+        "returns-electronics#3",
+        "damaged-wrong-missing#1",
+        "returns-groceries#3",
+        "damaged-wrong-missing#4",
+        "returns-beauty#3",
+        "returns-apparel#3"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R13",
+      "question": "can I return an opened vitamin C serum",
+      "expected": [
+        "returns-beauty#2"
+      ],
+      "top_10": [
+        "returns-beauty#2",
+        "returns-beauty#1",
+        "returns-groceries#3",
+        "returns-electronics-accessories#3",
+        "returns-general#1",
+        "returns-electronics#2",
+        "returns-general#2",
+        "returns-beauty#3",
+        "returns-electronics-accessories#2",
+        "returns-apparel#2"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R14",
+      "question": "unopened sunscreen return within how many days",
+      "expected": [
+        "returns-beauty#1"
+      ],
+      "top_10": [
+        "returns-beauty#1",
+        "returns-groceries#3",
+        "returns-general#1",
+        "returns-beauty#2",
+        "returns-electronics-accessories#3",
+        "damaged-wrong-missing#4",
+        "returns-home-kitchen#2",
+        "returns-apparel#2",
+        "returns-general#2",
+        "returns-beauty#3"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R15",
+      "question": "my laptop arrived with a cracked screen, how do I claim",
+      "expected": [
+        "damaged-wrong-missing#2"
+      ],
+      "top_10": [
+        "damaged-wrong-missing#2",
+        "returns-electronics#3",
+        "damaged-wrong-missing#4",
+        "damaged-wrong-missing#1",
+        "warranty#2",
+        "returns-home-kitchen#3",
+        "returns-groceries#2",
+        "returns-electronics#2",
+        "damaged-wrong-missing#3",
+        "returns-electronics-accessories#2"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R16",
+      "question": "I received the wrong item in my order",
+      "expected": [
+        "damaged-wrong-missing#3"
+      ],
+      "top_10": [
+        "damaged-wrong-missing#3",
+        "damaged-wrong-missing#4",
+        "damaged-wrong-missing#1",
+        "shipping-delivery#2",
+        "damaged-wrong-missing#2",
+        "order-cancellation#2",
+        "order-cancellation#3",
+        "shipping-delivery#4",
+        "returns-groceries#2",
+        "order-cancellation#1"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R17",
+      "question": "one item was missing from my delivery box",
+      "expected": [
+        "damaged-wrong-missing#3"
+      ],
+      "top_10": [
+        "damaged-wrong-missing#3",
+        "damaged-wrong-missing#1",
+        "damaged-wrong-missing#2",
+        "damaged-wrong-missing#4",
+        "returns-groceries#2",
+        "shipping-delivery#4",
+        "shipping-delivery#2",
+        "order-cancellation#2",
+        "shipping-delivery#1",
+        "shipping-delivery#3"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R18",
+      "question": "how long do I have to report a damaged delivery",
+      "expected": [
+        "damaged-wrong-missing#1"
+      ],
+      "top_10": [
+        "damaged-wrong-missing#1",
+        "returns-groceries#2",
+        "damaged-wrong-missing#4",
+        "damaged-wrong-missing#2",
+        "shipping-delivery#4",
+        "damaged-wrong-missing#3",
+        "returns-home-kitchen#3",
+        "shipping-delivery#3",
+        "shipping-delivery#2",
+        "returns-beauty#1"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R19",
+      "question": "how long until my refund reaches my card",
+      "expected": [
+        "refund-methods#2"
+      ],
+      "top_10": [
+        "refund-methods#2",
+        "cash-on-delivery#2",
+        "refund-methods#1",
+        "refund-methods#3",
+        "returns-general#3",
+        "cash-on-delivery#3",
+        "cash-on-delivery#1",
+        "order-cancellation#3",
+        "returns-apparel#1",
+        "order-cancellation#1"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R20",
+      "question": "refund to the original payment method for UPI orders",
+      "expected": [
+        "refund-methods#1"
+      ],
+      "top_10": [
+        "refund-methods#1",
+        "order-cancellation#3",
+        "returns-general#3",
+        "cash-on-delivery#1",
+        "cash-on-delivery#3",
+        "refund-methods#3",
+        "cash-on-delivery#2",
+        "refund-methods#2",
+        "order-cancellation#1",
+        "order-cancellation#2"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R21",
+      "question": "is a refund above 5000 rupees released immediately",
+      "expected": [
+        "refund-methods#3"
+      ],
+      "top_10": [
+        "refund-methods#3",
+        "refund-methods#1",
+        "cash-on-delivery#3",
+        "returns-general#3",
+        "cash-on-delivery#1",
+        "refund-methods#2",
+        "cash-on-delivery#2",
+        "order-cancellation#1",
+        "order-cancellation#3",
+        "goodwill-compensation#1"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R22",
+      "question": "is the shipping fee refunded when the item arrives damaged",
+      "expected": [
+        "shipping-delivery#2"
+      ],
+      "top_10": [
+        "shipping-delivery#2",
+        "order-cancellation#3",
+        "returns-groceries#2",
+        "damaged-wrong-missing#3",
+        "shipping-delivery#1",
+        "cash-on-delivery#1",
+        "damaged-wrong-missing#4",
+        "damaged-wrong-missing#2",
+        "damaged-wrong-missing#1",
+        "returns-general#3"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R23",
+      "question": "what is the shipping charge for an order below 499 rupees",
+      "expected": [
+        "shipping-delivery#1"
+      ],
+      "top_10": [
+        "shipping-delivery#1",
+        "shipping-delivery#2",
+        "goodwill-compensation#1",
+        "order-cancellation#3",
+        "shipping-delivery#4",
+        "order-cancellation#1",
+        "order-cancellation#2",
+        "shipping-delivery#3",
+        "cash-on-delivery#3",
+        "refund-methods#3"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R24",
+      "question": "can I cancel my order after it was dispatched",
+      "expected": [
+        "order-cancellation#2"
+      ],
+      "top_10": [
+        "order-cancellation#1",
+        "order-cancellation#2",
+        "order-cancellation#3",
+        "shipping-delivery#4",
+        "shipping-delivery#2",
+        "cash-on-delivery#1",
+        "cash-on-delivery#2",
+        "refund-methods#1",
+        "shipping-delivery#3",
+        "shipping-delivery#1"
+      ],
+      "rank": 2,
+      "hit_at_4": true
+    },
+    {
+      "id": "R25",
+      "question": "cancel my order before it ships, will I get a full refund",
+      "expected": [
+        "order-cancellation#1",
+        "order-cancellation#3"
+      ],
+      "top_10": [
+        "order-cancellation#1",
+        "order-cancellation#3",
+        "order-cancellation#2",
+        "shipping-delivery#2",
+        "cash-on-delivery#1",
+        "returns-general#3",
+        "refund-methods#1",
+        "shipping-delivery#4",
+        "refund-methods#2",
+        "cash-on-delivery#2"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R26",
+      "question": "how long is the warranty on a smartwatch",
+      "expected": [
+        "warranty#1"
+      ],
+      "top_10": [
+        "warranty#1",
+        "warranty#2",
+        "warranty#3",
+        "returns-electronics#3",
+        "damaged-wrong-missing#4",
+        "returns-electronics-accessories#1",
+        "returns-general#1",
+        "returns-electronics#1",
+        "returns-home-kitchen#3",
+        "returns-electronics-accessories#3"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R27",
+      "question": "cash on delivery order refund, which method is used",
+      "expected": [
+        "cash-on-delivery#1"
+      ],
+      "top_10": [
+        "cash-on-delivery#1",
+        "cash-on-delivery#3",
+        "cash-on-delivery#2",
+        "order-cancellation#3",
+        "order-cancellation#1",
+        "refund-methods#1",
+        "order-cancellation#2",
+        "shipping-delivery#2",
+        "returns-general#3",
+        "refund-methods#2"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R28",
+      "question": "how many business days until the bank transfer for a cash on delivery refund",
+      "expected": [
+        "cash-on-delivery#2"
+      ],
+      "top_10": [
+        "cash-on-delivery#2",
+        "cash-on-delivery#1",
+        "refund-methods#2",
+        "cash-on-delivery#3",
+        "refund-methods#3",
+        "shipping-delivery#3",
+        "shipping-delivery#4",
+        "refund-methods#1",
+        "returns-general#1",
+        "returns-electronics#1"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R29",
+      "question": "support asked for my bank account number, is that safe",
+      "expected": [
+        "cash-on-delivery#3"
+      ],
+      "top_10": [
+        "cash-on-delivery#3",
+        "cash-on-delivery#1",
+        "goodwill-compensation#3",
+        "goodwill-compensation#2",
+        "returns-electronics-accessories#3",
+        "refund-methods#3",
+        "cash-on-delivery#2",
+        "goodwill-compensation#1",
+        "refund-methods#2",
+        "damaged-wrong-missing#2"
+      ],
+      "rank": 1,
+      "hit_at_4": true
+    },
+    {
+      "id": "R30",
+      "question": "store credit for a late delivery",
+      "expected": [
+        "goodwill-compensation#1"
+      ],
+      "top_10": [
+        "shipping-delivery#4",
+        "cash-on-delivery#1",
+        "returns-groceries#2",
+        "damaged-wrong-missing#1",
+        "cash-on-delivery#2",
+        "goodwill-compensation#1",
+        "goodwill-compensation#3",
+        "cash-on-delivery#3",
+        "damaged-wrong-missing#4",
+        "shipping-delivery#2"
+      ],
+      "rank": 6,
+      "hit_at_4": false
+    },
+    {
+      "id": "R31",
+      "question": "can support give me 2000 rupees for the inconvenience",
+      "expected": [
+        "goodwill-compensation#2"
+      ],
+      "top_10": [
+        "goodwill-compensation#1",
+        "refund-methods#3",
+        "goodwill-compensation#2",
+        "cash-on-delivery#3",
+        "warranty#2",
+        "shipping-delivery#1",
+        "shipping-delivery#4",
+        "refund-methods#1",
+        "goodwill-compensation#3",
+        "cash-on-delivery#1"
+      ],
+      "rank": 3,
+      "hit_at_4": true
+    }
+  ]
+}

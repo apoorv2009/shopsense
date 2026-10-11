@@ -26,17 +26,21 @@ from shopsense_api.adapters.llm.foundry_openai import FoundryOpenAIProvider
 from shopsense_api.adapters.llm.gateway import AgentProfile, LLMGateway
 from shopsense_api.adapters.llm.provider import ModelProvider, ModelRoute
 from shopsense_api.adapters.orders.http_order_tools import HttpOrderTools
+from shopsense_api.adapters.policy.fastembed_reranker import FastEmbedReranker
 from shopsense_api.adapters.policy.foundry_embedder import FoundryEmbedder
 from shopsense_api.adapters.policy.qdrant_index import QdrantPolicyIndex
 from shopsense_api.adapters.prompts.file_repository import FilePromptRepository
 from shopsense_api.application.agents.order_actions import OrderActionsAgent
 from shopsense_api.application.ports.memory import MemoryStore
-from shopsense_api.application.ports.policy import Embedder, PolicyIndex, PolicyStore
+from shopsense_api.application.ports.policy import Embedder, PolicyIndex, PolicyStore, Reranker
 from shopsense_api.application.use_cases.answer_policy import AnswerPolicyQuestion
+from shopsense_api.application.use_cases.decide_return import DecideReturn
+from shopsense_api.application.use_cases.hybrid_search import HybridSearch
 from shopsense_api.application.use_cases.ingest_policies import IngestPolicies
+from shopsense_api.application.use_cases.judge_groundedness import GroundednessJudge
 from shopsense_api.application.use_cases.memory import RecallCustomer, RememberTicket
-from shopsense_api.application.use_cases.search_policy import SearchPolicy
 from shopsense_api.application.use_cases.triage_ticket import TriageTicket
+from shopsense_api.domain.policy.model import PolicyDocument
 from shopsense_api.entrypoints.settings import AuthMode, Settings
 
 PRIMARY = "azure-openai"
@@ -87,8 +91,11 @@ class Container:
     def ingest_policies(self) -> IngestPolicies:
         return IngestPolicies(self.policy_store(), self.policy_index(), self.embedder())
 
-    def search_policy(self) -> SearchPolicy:
-        return SearchPolicy(self.embedder(), self.policy_index())
+    def reranker(self) -> Reranker:
+        return FastEmbedReranker(self.settings.rerank_model)
+
+    def search_policy(self) -> HybridSearch:
+        return HybridSearch(self.embedder(), self.policy_index(), self.reranker())
 
     def answer_policy(self, primary_provider: str | None = None) -> AnswerPolicyQuestion:
         return AnswerPolicyQuestion(
@@ -96,6 +103,13 @@ class Container:
             prompts=FilePromptRepository(),
             search=self.search_policy(),
         )
+
+    def decide_return(self, corpus: list[PolicyDocument]) -> DecideReturn:
+        hashes = {s.chunk_id: s.content_hash for d in corpus for s in d.sections}
+        return DecideReturn(self.policy_store(), self.policy_index(), hashes)
+
+    def judge(self, primary_provider: str | None = None) -> GroundednessJudge:
+        return GroundednessJudge(self.gateway(primary_provider), FilePromptRepository())
 
     def recall(self) -> RecallCustomer:
         return RecallCustomer(self.memory_store())

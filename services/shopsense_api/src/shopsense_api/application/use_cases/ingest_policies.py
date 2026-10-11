@@ -1,12 +1,14 @@
-"""Policy ingestion (M3): validate the corpus, then index changed documents only.
+"""Policy ingestion: validate the corpus, then index changed documents (LLD-3 re-index trigger).
 
-Idempotent: a document whose content hash is unchanged is skipped (LLD-3 re-index trigger)."""
+Idempotent: a document whose content hash is unchanged is skipped. `rebuild=True` ignores the
+stored hashes and re-indexes everything (used when the Qdrant collection is created)."""
 
 from collections.abc import Sequence
 from dataclasses import dataclass
 
 from shopsense_api.application.ports.policy import Embedder, PolicyIndex, PolicyStore
 from shopsense_api.domain.policy.chunks import chunks_for
+from shopsense_api.domain.policy.grounding import encode_sparse
 from shopsense_api.domain.policy.model import PolicyDocument
 from shopsense_api.domain.policy.validation import validate_corpus
 
@@ -24,9 +26,9 @@ class IngestPolicies:
         self._index = index
         self._embedder = embedder
 
-    async def run(self, docs: Sequence[PolicyDocument]) -> IngestReport:
+    async def run(self, docs: Sequence[PolicyDocument], *, rebuild: bool = False) -> IngestReport:
         validate_corpus(docs)
-        known = await self._store.document_hashes()
+        known = {} if rebuild else await self._store.document_hashes()
         indexed: list[str] = []
         skipped: list[str] = []
         chunk_count = 0
@@ -35,8 +37,10 @@ class IngestPolicies:
                 skipped.append(doc.doc_id)
                 continue
             chunks = chunks_for(doc)
-            vectors = await self._embedder.embed([c.embed_text for c in chunks])
-            await self._index.replace_document(doc.doc_id, chunks, vectors)
+            texts = [c.embed_text for c in chunks]
+            dense = await self._embedder.embed(texts)
+            sparse = [encode_sparse(t) for t in texts]
+            await self._index.replace_document(doc.doc_id, chunks, dense, sparse)
             await self._store.save_document(doc)
             indexed.append(doc.doc_id)
             chunk_count += len(chunks)

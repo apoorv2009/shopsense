@@ -18,7 +18,13 @@ from shopsense_api.domain.memory.model import (
     TicketOutcome,
     TicketRecord,
 )
-from shopsense_api.domain.policy.model import PolicyDocument, PolicyRule
+from shopsense_api.domain.policy.model import (
+    Evidence,
+    Outcome,
+    PolicyDocument,
+    PolicyRule,
+    RuleKind,
+)
 from shopsense_api.domain.ticket.enums import IssueType, Language, Sentiment
 
 
@@ -82,6 +88,11 @@ class SqlPolicyStore:
             rows = (await session.execute(select(PolicyDocumentRow))).scalars().all()
         return {row.doc_id: row.content_hash for row in rows}
 
+    async def rules(self) -> list[PolicyRule]:
+        async with self._sessions() as session:
+            rows = (await session.execute(select(PolicyRuleRow))).scalars().all()
+        return [_rule(row) for row in rows]
+
     async def save_document(self, doc: PolicyDocument) -> None:
         header = PolicyDocumentRow(
             doc_id=doc.doc_id,
@@ -108,6 +119,20 @@ def _record(row: TicketHistoryRow) -> TicketRecord:
         sentiment=Sentiment(row.sentiment) if row.sentiment else None,
         resolved_on=row.resolved_on,
         summary=row.summary,
+    )
+
+
+def _rule(row: PolicyRuleRow) -> PolicyRule:
+    return PolicyRule(
+        rule_id=row.rule_id,
+        kind=RuleKind(row.kind),
+        applies_to=dict(row.applies_to),
+        window_days=row.window_days,
+        outcome=Outcome(row.outcome),
+        overrides=tuple(row.overrides),
+        evidence=Evidence(row.evidence),
+        doc_id=row.doc_id,
+        section_id=row.section_id,
     )
 
 

@@ -11,7 +11,7 @@ effective_date: 2026-01-01
 An order can be cancelled for a full refund at any time before it is dispatched.
 
 ```rules
-[{"rule_id": "CAN-PRE-DISPATCH", "kind": "exception", "applies_to": {}, "window_days": null, "outcome": "return", "overrides": [], "requires_evidence": "none"}]
+[{"rule_id": "CAN-PRE-DISPATCH", "kind": "cancellation", "applies_to": {}, "window_days": null, "outcome": "return", "overrides": [], "requires_evidence": "none"}]
 ```
 
 ## 2. After dispatch
