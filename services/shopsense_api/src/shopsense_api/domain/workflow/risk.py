@@ -16,6 +16,7 @@ from shopsense_api.domain.ticket.enums import IssueType, RiskFlag, Sentiment, Ur
 from shopsense_api.domain.ticket.support_ticket import SupportTicket
 
 AUTO_CAP_PAISE = 500_000
+EMAIL_CHANNEL = "email"
 REFUND_ISSUES = frozenset(
     {
         IssueType.REFUND_REQUEST,
@@ -43,7 +44,9 @@ class RiskVerdict:
     reasons: tuple[str, ...]
 
 
-def assess(ticket: SupportTicket, eligibility: Eligibility, amount_paise: int) -> RiskVerdict:
+def assess(
+    ticket: SupportTicket, eligibility: Eligibility, amount_paise: int, channel: str = "chat"
+) -> RiskVerdict:
     if HUMAN_FLAGS & set(ticket.flags):
         return RiskVerdict(Route.HUMAN, ("risk flag needs a specialist",))
     if ticket.issue_type not in REFUND_ISSUES:
@@ -52,9 +55,12 @@ def assess(ticket: SupportTicket, eligibility: Eligibility, amount_paise: int) -
         return RiskVerdict(Route.HUMAN, (f"policy result: {eligibility.value}",))
     if eligibility is Eligibility.NOT_ELIGIBLE or amount_paise <= 0:
         return RiskVerdict(Route.REPLY, ("not refundable under policy",))
-    reasons = _approval_reasons(ticket, amount_paise)
+    reasons = list(_approval_reasons(ticket, amount_paise))
+    if channel == EMAIL_CHANNEL:
+        # M6: a refund requested by email is always reviewed, whatever its amount (D8d)
+        reasons.append("refund requested by email")
     if reasons:
-        return RiskVerdict(Route.APPROVAL, reasons)
+        return RiskVerdict(Route.APPROVAL, tuple(reasons))
     return RiskVerdict(Route.AUTO, ())
 
 

@@ -5,6 +5,9 @@ from typing import Any, TypedDict
 
 class TicketState(TypedDict, total=False):
     ticket_id: str
+    channel: str
+    agent_note: dict[str, Any] | None
+    brief: dict[str, Any] | None
     customer_no: str
     message: str
     ticket: dict[str, Any]

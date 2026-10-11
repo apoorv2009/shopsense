@@ -1,0 +1,44 @@
+{
+  "senders": [
+    {
+      "email": "priya.sharma@example.in",
+      "customer_no": "C0001"
+    },
+    {
+      "email": "rahul.verma@example.in",
+      "customer_no": "C0002"
+    },
+    {
+      "email": "ananya.iyer@example.in",
+      "customer_no": "C0003"
+    },
+    {
+      "email": "vikram.singh@example.in",
+      "customer_no": "C0004"
+    },
+    {
+      "email": "meera.nair@example.in",
+      "customer_no": "C0005"
+    },
+    {
+      "email": "arjun.reddy@example.in",
+      "customer_no": "C0006"
+    },
+    {
+      "email": "sneha.gupta@example.in",
+      "customer_no": "C0007"
+    },
+    {
+      "email": "karan.mehta@example.in",
+      "customer_no": "C0008"
+    },
+    {
+      "email": "fatima.khan@example.in",
+      "customer_no": "C0009"
+    },
+    {
+      "email": "rohan.das@example.in",
+      "customer_no": "C0010"
+    }
+  ]
+}

@@ -34,6 +34,9 @@ class Settings(BaseSettings):
     claude_enabled: bool = False
     claude_deployment: str = "claude-opus-5-5"
 
+    # M6: order tools go through the MCP server (LLD-4); the caller context is signed with this key
+    mcp_url: str = "http://localhost:8100"
+    context_key: SecretStr = SecretStr("local-development-only-key-change-me")
     order_platform_url: str = "http://localhost:8001"
     order_platform_timeout_s: float = 15.0
     agent_max_tokens: int = 1_500

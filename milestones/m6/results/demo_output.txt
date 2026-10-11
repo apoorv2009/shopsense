@@ -1,0 +1,22 @@
+﻿
+=== 1. The same ticket on two channels ===
+email                        outcome=pending_human_approval | route=approval | eligibility=eligible | rule_id=APP-RET-45 | amount_paise=149900
+                             held for reviewer: refund requested by email
+chat                         outcome=resolved | route=auto | eligibility=eligible | rule_id=APP-RET-45 | amount_paise=149900
+                             reply: Your refund of ₹1,499 has been processed.
+
+Same eligibility and rule on both channels. Email refunds always wait for a reviewer.
+unregistered sender -> HTTP 202: sender is not a registered customer
+
+=== 2. Agents cannot reach system tools ===
+read token -> /mcp/read        HTTP 200
+read token -> /mcp/system      HTTP 403
+forged token -> /mcp/read      HTTP 401
+system token -> /mcp/system    HTTP 200
+
+=== 3. Tools the model is offered ===
+Order-Actions agent (read-only): calculate_refund, get_order, get_refund_status, list_my_orders, submit_result, track_shipment
+Refund and replacement writes are not offered to any agent:
+  writes withheld from the model: request_refund, request_replacement
+
+Summary: {"channels": "chat+email", "mcp": "read/system scopes enforced"}

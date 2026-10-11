@@ -18,18 +18,24 @@ def build_graph(flow: TicketFlow, checkpointer: BaseCheckpointSaver[Any]) -> Any
     graph: StateGraph[TicketState] = StateGraph(TicketState)
     graph.add_node("triage", flow.triage_step)
     graph.add_node("lookup", flow.lookup_step)
+    graph.add_node("advise", flow.advise_step)
     graph.add_node("assess", flow.assess_step)
+    graph.add_node("review", flow.review_step)
     graph.add_node("execute_auto", flow.execute_auto)
     graph.add_node("approval", _approval)
     graph.add_node("execute_approved", flow.execute_approved)
     graph.add_node("respond", flow.respond_step)
     graph.add_edge(START, "triage")
     graph.add_edge("triage", "lookup")
-    graph.add_conditional_edges("lookup", _after_lookup, {"assess": "assess", "respond": "respond"})
+    graph.add_conditional_edges("lookup", _after_lookup, {"advise": "advise", "respond": "respond"})
+    graph.add_edge("advise", "assess")
     graph.add_conditional_edges(
         "assess",
         _after_assess,
-        {"auto": "execute_auto", "approval": "approval", "respond": "respond"},
+        {"auto": "execute_auto", "review": "review", "respond": "respond"},
+    )
+    graph.add_conditional_edges(
+        "review", _after_review, {"approval": "approval", "respond": "respond"}
     )
     graph.add_edge("execute_auto", "respond")
     graph.add_edge("approval", "execute_approved")
@@ -39,14 +45,20 @@ def build_graph(flow: TicketFlow, checkpointer: BaseCheckpointSaver[Any]) -> Any
 
 
 def _after_lookup(state: TicketState) -> str:
-    return "respond" if state.get("outcome") else "assess"
+    return "respond" if state.get("outcome") else "advise"
 
 
 def _after_assess(state: TicketState) -> str:
     route = state.get("route")
-    if route in ("auto", "approval"):
-        return route
+    if route == "auto":
+        return "auto"
+    if route in ("approval", "human"):
+        return "review"
     return "respond"
+
+
+def _after_review(state: TicketState) -> str:
+    return "approval" if state.get("route") == "approval" else "respond"
 
 
 async def _approval(state: TicketState) -> dict[str, Any]:
@@ -57,6 +69,7 @@ async def _approval(state: TicketState) -> dict[str, Any]:
             "sku": state.get("sku"),
             "amount_paise": state.get("amount_paise"),
             "reasons": state.get("reasons", []),
+            "brief": state.get("brief"),
         }
     )
     return {"decision": decision}

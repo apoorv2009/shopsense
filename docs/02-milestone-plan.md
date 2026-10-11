@@ -86,6 +86,8 @@ The project is assessed milestone by milestone against the course brief. **Each 
 | Acceptance | Routing suite; checkpoint round-trip; no write without passing the risk gate |
 
 ## M6 Multi-agent team and MCP
+**Status:** ✅ Done (2026-10-11), with Azure deployments deferred: MCP server (official SDK, read and system endpoints, signed caller context), four agents as graph nodes, chat and email channels, channel parity 5/5 live. Plan: [plans/m6.md](plans/m6.md) · Demo: [`milestones/m6`](../milestones/m6/README.md).
+
 **Brief:** *Multi-agent team (Triage, Policy RAG, Order-Actions, Escalation Reviewer) with an MCP server exposing order/refund/shipping mock APIs so the same tools work across chat and email channels.*
 
 | | |

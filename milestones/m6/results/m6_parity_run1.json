@@ -1,0 +1,157 @@
+[
+  {
+    "id": "PC1",
+    "note": "calm kurta refund: chat auto-resolves, email waits for a reviewer",
+    "chat": {
+      "outcome": "resolved",
+      "route": "auto",
+      "eligibility": "eligible",
+      "rule_id": "APP-RET-45",
+      "amount_paise": 149900
+    },
+    "email": {
+      "outcome": "pending_human_approval",
+      "route": "approval",
+      "eligibility": "eligible",
+      "rule_id": "APP-RET-45",
+      "amount_paise": 149900
+    },
+    "expected": {
+      "chat_route": "auto",
+      "email_route": "approval",
+      "eligibility": "eligible",
+      "rule_id": "APP-RET-45"
+    },
+    "judge": {
+      "parity": true,
+      "chat_route_ok": true,
+      "email_route_ok": true,
+      "email_never_auto": true,
+      "correct": true
+    }
+  },
+  {
+    "id": "PC2",
+    "note": "headphones returned on day 21 of 15: same policy answer on both channels",
+    "chat": {
+      "outcome": "answered",
+      "route": "reply",
+      "eligibility": "not_eligible",
+      "rule_id": "ELE-RET-15",
+      "amount_paise": 299900
+    },
+    "email": {
+      "outcome": "answered",
+      "route": "reply",
+      "eligibility": "not_eligible",
+      "rule_id": "ELE-RET-15",
+      "amount_paise": 299900
+    },
+    "expected": {
+      "chat_route": "reply",
+      "email_route": "reply",
+      "eligibility": "not_eligible",
+      "rule_id": "ELE-RET-15"
+    },
+    "judge": {
+      "parity": true,
+      "chat_route_ok": true,
+      "email_route_ok": true,
+      "email_never_auto": true,
+      "correct": true
+    }
+  },
+  {
+    "id": "PC3",
+    "note": "injection: hand-off on both channels",
+    "chat": {
+      "outcome": "handed_off",
+      "route": "human",
+      "eligibility": "not_eligible",
+      "rule_id": "ELE-RET-15",
+      "amount_paise": 299900
+    },
+    "email": {
+      "outcome": "handed_off",
+      "route": "human",
+      "eligibility": "not_eligible",
+      "rule_id": "ELE-RET-15",
+      "amount_paise": 299900
+    },
+    "expected": {
+      "chat_route": "human",
+      "email_route": "human",
+      "eligibility": null,
+      "rule_id": null
+    },
+    "judge": {
+      "parity": true,
+      "chat_route_ok": true,
+      "email_route_ok": true,
+      "email_never_auto": true,
+      "correct": true
+    }
+  },
+  {
+    "id": "PC4",
+    "note": "no order number: ask on both channels",
+    "chat": {
+      "outcome": "needs_customer_info",
+      "route": null,
+      "eligibility": null,
+      "rule_id": null,
+      "amount_paise": null
+    },
+    "email": {
+      "outcome": "needs_customer_info",
+      "route": null,
+      "eligibility": null,
+      "rule_id": null,
+      "amount_paise": null
+    },
+    "expected": {
+      "chat_route": null,
+      "email_route": null,
+      "eligibility": null,
+      "rule_id": null
+    },
+    "judge": {
+      "parity": true,
+      "chat_route_ok": true,
+      "email_route_ok": true,
+      "email_never_auto": true,
+      "correct": true
+    }
+  },
+  {
+    "id": "PC5",
+    "note": "shoes, partial amount: chat auto, email waits",
+    "chat": {
+      "outcome": "resolved",
+      "route": "auto",
+      "eligibility": "eligible",
+      "rule_id": "APP-RET-45",
+      "amount_paise": 50000
+    },
+    "email": {
+      "outcome": "pending_human_approval",
+      "route": "approval",
+      "eligibility": "eligible",
+      "rule_id": "APP-RET-45",
+      "amount_paise": 50000
+    },
+    "expected": {
+      "chat_route": "auto",
+      "email_route": "approval",
+      "eligibility": "eligible",
+      "rule_id": "APP-RET-45"
+    },
+    "judge": {
+      "parity": true,
+      "chat_route_ok": true,
+      "email_route_ok": true,
+      "email_never_auto": true,
+      "correct": true
+    }
+  }
+]

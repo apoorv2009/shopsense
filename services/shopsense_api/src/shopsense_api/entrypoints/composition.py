@@ -27,13 +27,14 @@ from shopsense_api.adapters.llm.anthropic_foundry import AnthropicFoundryProvide
 from shopsense_api.adapters.llm.foundry_openai import FoundryOpenAIProvider
 from shopsense_api.adapters.llm.gateway import AgentProfile, LLMGateway
 from shopsense_api.adapters.llm.provider import ModelProvider, ModelRoute
-from shopsense_api.adapters.orders.http_order_tools import HttpOrderTools
+from shopsense_api.adapters.orders.mcp_order_tools import McpOrderTools
 from shopsense_api.adapters.policy.fastembed_reranker import FastEmbedReranker
 from shopsense_api.adapters.policy.foundry_embedder import FoundryEmbedder
 from shopsense_api.adapters.policy.qdrant_index import QdrantPolicyIndex
 from shopsense_api.adapters.prompts.file_repository import FilePromptRepository
 from shopsense_api.adapters.workflow.langgraph_ticket import build_graph
 from shopsense_api.adapters.workflow.runner import TicketRunner
+from shopsense_api.application.agents.escalation_reviewer import EscalationReviewer
 from shopsense_api.application.agents.order_actions import OrderActionsAgent
 from shopsense_api.application.ports.memory import MemoryStore
 from shopsense_api.application.ports.orders import OrderTools
@@ -75,7 +76,7 @@ class Container:
         return OrderActionsAgent(
             llm=self.gateway(primary_provider),
             prompts=FilePromptRepository(),
-            tools=HttpOrderTools(self.order_http),
+            tools=self.order_tools(),
         )
 
     def embedder(self) -> Embedder:
@@ -115,7 +116,10 @@ class Container:
         return DecideReturn(self.policy_store(), self.policy_index(), hashes)
 
     def order_tools(self) -> OrderTools:
-        return HttpOrderTools(self.order_http)
+        key = self.settings.context_key.get_secret_value().encode("utf-8")
+        return McpOrderTools(
+            self.settings.mcp_url, key, timeout_s=self.settings.order_platform_timeout_s
+        )
 
     def ticket_runner(
         self,
@@ -123,7 +127,17 @@ class Container:
         checkpointer: BaseCheckpointSaver[Any],
         orders: OrderTools | None = None,
     ) -> TicketRunner:
-        flow = TicketFlow(self.triage(), orders or self.order_tools(), self.decide_return(corpus))
+        tools = orders or self.order_tools()
+        flow = TicketFlow(
+            self.triage(),
+            tools,
+            self.decide_return(corpus),
+            advisor=OrderActionsAgent(
+                llm=self.gateway(), prompts=FilePromptRepository(), tools=tools, read_only=True
+            ),
+            answerer=self.answer_policy(),
+            reviewer=EscalationReviewer(self.gateway(), FilePromptRepository()),
+        )
         return TicketRunner(build_graph(flow, checkpointer))
 
     def judge(self, primary_provider: str | None = None) -> GroundednessJudge:
@@ -256,4 +270,5 @@ def build_profiles(settings: Settings) -> dict[str, AgentProfile]:
         "triage": AgentProfile(tuple(routes)),
         "order_actions": AgentProfile(agent_routes),
         "policy": AgentProfile(tuple(routes)),
+        "review": AgentProfile(tuple(routes)),
     }

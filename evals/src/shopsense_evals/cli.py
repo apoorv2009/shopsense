@@ -12,6 +12,7 @@ from dataclasses import asdict
 from datetime import date
 from pathlib import Path
 
+import httpx
 from rich.console import Console
 from rich.table import Table
 
@@ -25,7 +26,7 @@ from shopsense_api.application.use_cases.triage_ticket import TriageTicket
 from shopsense_api.entrypoints.composition import PRIMARY, container
 from shopsense_api.entrypoints.logging_config import configure_logging
 from shopsense_api.entrypoints.settings import REPO_ROOT, Settings
-from shopsense_evals import rag, retrieval, routing
+from shopsense_evals import parity, rag, retrieval, routing
 from shopsense_evals.bitext import load_rows
 from shopsense_evals.cases import EvalCase, load_cases
 from shopsense_evals.generator import generate, write_suite
@@ -189,6 +190,29 @@ async def cmd_routing(args: argparse.Namespace) -> int:
     return 0 if passed else 1
 
 
+async def cmd_parity(args: argparse.Namespace) -> int:
+    from shopsense_api.entrypoints.channels import load_senders
+
+    cases = parity.load_parity(DATA / "channel_parity.jsonl")
+    senders = load_senders()
+    passed = True
+    async with httpx.AsyncClient(base_url=args.api, timeout=180) as client:
+        for run in range(1, args.runs + 1):
+            await _reseed()
+            results = [await parity.run_case(client, c, senders, f"run{run}") for c in cases]
+            for r in results:
+                r["judge"] = parity.judge(r)
+            correct = sum(r["judge"]["correct"] for r in results)
+            passed = passed and correct == len(results)
+            console.print(
+                f"Run {run}/{args.runs} · channel parity · {correct}/{len(results)} correct"
+            )
+            RESULTS.mkdir(parents=True, exist_ok=True)
+            out = RESULTS / f"m6_parity_run{run}.json"
+            out.write_text(json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8")
+    return 0 if passed else 1
+
+
 async def _reseed() -> None:
     database = Database(OrderPlatformSettings())
     try:
@@ -293,6 +317,9 @@ def main() -> None:
         choices=["dense", "hybrid", "hybrid_rerank"],
         default=["dense", "hybrid", "hybrid_rerank"],
     )
+    parity_cmd = sub.add_parser("parity")
+    parity_cmd.add_argument("--runs", type=int, default=1)
+    parity_cmd.add_argument("--api", default="http://localhost:8000")
     routing_cmd = sub.add_parser("routing")
     routing_cmd.add_argument("--runs", type=int, default=1)
     retrieval = sub.add_parser("retrieval")
@@ -311,6 +338,7 @@ def main() -> None:
         "retrieval": cmd_retrieval,
         "rag": cmd_rag,
         "routing": cmd_routing,
+        "parity": cmd_parity,
         "generate-suite": cmd_generate,
     }
     handler = handlers[args.command]

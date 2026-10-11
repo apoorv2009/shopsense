@@ -104,13 +104,15 @@ class OrderActionsAgent:
         tools: OrderTools,
         limits: AgentLimits = DEFAULT_LIMITS,
         block_ids: BlockIdFactory = random_block_id,
+        read_only: bool = False,
     ) -> None:
         self._llm, self._prompts, self._tools = llm, prompts, tools
         self._limits, self._block_ids = limits, block_ids
+        self._read_only = read_only
 
     async def run(self, command: OrderActionsCommand) -> OrderActionsRun:
         # Deterministic guard: a ticket that tries to instruct the system never triggers a write
-        writes_allowed = not looks_like_injection(command.message.value)
+        writes_allowed = not self._read_only and not looks_like_injection(command.message.value)
         named = frozenset(m.upper() for m in ORDER_NO.findall(command.message.value))
         executor = ToolExecutor(
             self._tools,
@@ -141,7 +143,9 @@ class OrderActionsAgent:
             messages.insert(0, ChatMessage("user", block))
         tool_calls = 0
         for run.turns in range(1, self._limits.max_turns + 1):
-            request = ToolTurnRequest(PROFILE, prompt.text, tuple(messages), _specs())
+            request = ToolTurnRequest(
+                PROFILE, prompt.text, tuple(messages), _specs(self._read_only)
+            )
             turn = await self._llm.complete_with_tools(request)
             run.usage = TokenUsage(
                 run.usage.input_tokens + turn.usage.input_tokens,
@@ -181,13 +185,14 @@ class OrderActionsAgent:
         )
 
 
-def _specs() -> tuple[ToolSpec, ...]:
+def _specs(read_only: bool = False) -> tuple[ToolSpec, ...]:
     submit = ToolSpec(
         SUBMIT,
         "Submit the final result. Call exactly once, last.",
         OrderActionsResult.model_json_schema(),
     )
-    return (*(t.spec() for t in TOOLS.values()), submit)
+    offered = [t for t in TOOLS.values() if not (read_only and t.writes)]
+    return (*(t.spec() for t in offered), submit)
 
 
 def _parse_result(call: ToolCall) -> OrderActionsResult | None:

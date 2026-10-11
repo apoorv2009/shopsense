@@ -9,7 +9,7 @@ dependencies = []
 package = false
 
 [tool.uv.workspace]
-members = ["services/shopsense_api", "services/order_platform", "libs/contracts", "evals"]
+members = ["services/shopsense_api", "services/order_platform", "services/mcp_server", "libs/contracts", "evals"]
 
 [dependency-groups]
 dev = [
@@ -43,7 +43,7 @@ known-local-folder = ["support", "memory"]
 strict = true
 python_version = "3.13"
 plugins = ["pydantic.mypy"]
-mypy_path = ["services/shopsense_api/src", "services/shopsense_api/tests/unit", "services/order_platform/src", "services/order_platform/tests/unit", "libs/contracts/src", "evals/src"]
+mypy_path = ["services/mcp_server/src", "services/shopsense_api/src", "services/shopsense_api/tests/unit", "services/order_platform/src", "services/order_platform/tests/unit", "libs/contracts/src", "evals/src"]
 explicit_package_bases = true
 
 [tool.pytest.ini_options]

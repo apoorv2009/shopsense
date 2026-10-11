@@ -9,7 +9,9 @@ from collections.abc import Callable
 from datetime import UTC, date, datetime
 from typing import Any, Protocol
 
+from shopsense_api.application.agents.order_actions import OrderActionsCommand, OrderActionsRun
 from shopsense_api.application.ports.orders import OrderTools
+from shopsense_api.application.use_cases.answer_policy import PolicyAnswer
 from shopsense_api.application.use_cases.decide_return import DecideReturn
 from shopsense_api.application.use_cases.triage_ticket import (
     TriageCommand,
@@ -17,11 +19,11 @@ from shopsense_api.application.use_cases.triage_ticket import (
 )
 from shopsense_api.application.workflow.state import TicketState
 from shopsense_api.domain.exceptions import OrderToolError
-from shopsense_api.domain.policy.rules_engine import ReturnCase
+from shopsense_api.domain.policy.rules_engine import Eligibility, ReturnCase
 from shopsense_api.domain.ticket.enums import IssueType
 from shopsense_api.domain.ticket.support_ticket import SupportTicket
 from shopsense_api.domain.values.untrusted_text import UntrustedText
-from shopsense_api.domain.workflow.risk import Route, assess
+from shopsense_api.domain.workflow.risk import REFUND_ISSUES, Route, assess
 
 Clock = Callable[[], datetime]
 
@@ -46,18 +48,71 @@ def refund_key(ticket_id: str, sku: str, amount_paise: int, stage: str) -> str:
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:32]
 
 
+class OrderAdvisor(Protocol):
+    async def run(self, command: OrderActionsCommand) -> OrderActionsRun: ...
+
+
+class Answerer(Protocol):
+    async def run(self, question: UntrustedText, category: str | None = None) -> PolicyAnswer: ...
+
+
+class Reviewer(Protocol):
+    async def run(self, message: UntrustedText, facts: dict[str, Any]) -> dict[str, Any]: ...
+
+
 class TicketFlow:
+    """Steps of the ticket workflow. Agents are optional so each step can be tested alone."""
+
     def __init__(
         self,
         triage: Triager,
         orders: OrderTools,
         decide: DecideReturn,
         clock: Clock = lambda: datetime.now(UTC),
+        *,
+        advisor: OrderAdvisor | None = None,
+        answerer: Answerer | None = None,
+        reviewer: Reviewer | None = None,
     ) -> None:
         self._triage = triage
         self._orders = orders
         self._decide = decide
         self._clock = clock
+        self._advisor = advisor
+        self._answerer = answerer
+        self._reviewer = reviewer
+
+    async def advise_step(self, state: TicketState) -> dict[str, Any]:
+        """Order-Actions agent, read-only: an explanation for the case, never a write."""
+        if self._advisor is None:
+            return {"agent_note": None}
+        command = OrderActionsCommand(
+            state["customer_no"], state["ticket_id"], UntrustedText(state["message"])
+        )
+        run = await self._advisor.run(command)
+        return {
+            "agent_note": {
+                "outcome": run.result.outcome.value,
+                "reason": run.result.reason,
+                "reply": run.result.customer_reply,
+            }
+        }
+
+    async def review_step(self, state: TicketState) -> dict[str, Any]:
+        """Escalation Reviewer: a brief for the human decision-maker. Advisory, no tools."""
+        if self._reviewer is None:
+            return {"brief": None}
+        facts = {
+            "order": state.get("order_no"),
+            "item_sku": state.get("sku"),
+            "amount_paise": state.get("amount_paise"),
+            "policy_result": state.get("eligibility"),
+            "rule_id": state.get("rule_id"),
+            "held_because": ", ".join(state.get("reasons", [])),
+            "channel": state.get("channel", "chat"),
+        }
+        brief = await self._reviewer.run(UntrustedText(state["message"]), facts)
+        return {"brief": brief}
 
     async def triage_step(self, state: TicketState) -> dict[str, Any]:
         result = await self._triage.execute(TriageCommand(UntrustedText(state["message"])))
@@ -81,6 +136,14 @@ class TicketFlow:
 
     async def assess_step(self, state: TicketState) -> dict[str, Any]:
         ticket = SupportTicket.model_validate(state["ticket"])
+        if ticket.issue_type not in REFUND_ISSUES:
+            verdict = assess(ticket, Eligibility.ELIGIBLE, 0)
+            return {
+                "route": verdict.route.value,
+                "reasons": list(verdict.reasons),
+                "outcome": "answered",
+                "reply": await self._info_reply(ticket, state),
+            }
         case = _case_from_state(state["case"])
         policy = await self._decide.run(case)
         try:
@@ -92,7 +155,7 @@ class TicketFlow:
         refundable = int(quote["refundable_paise"])
         claimed = ticket.claimed_amount_paise
         amount = refundable if claimed is None else min(claimed, refundable)
-        verdict = assess(ticket, policy.eligibility, amount)
+        verdict = assess(ticket, policy.eligibility, amount, state.get("channel", "chat"))
         update: dict[str, Any] = {
             "eligibility": policy.eligibility.value,
             "rule_id": policy.rule_id,
@@ -105,6 +168,12 @@ class TicketFlow:
         if verdict.route is Route.HUMAN:
             update |= {"outcome": "handed_off", "reply": _HANDOFF}
         return update
+
+    async def _info_reply(self, ticket: SupportTicket, state: TicketState) -> str:
+        if ticket.issue_type is IssueType.POLICY_QUESTION and self._answerer is not None:
+            answer = await self._answerer.run(UntrustedText(state["message"]))
+            return answer.reply
+        return _INFO_REPLY
 
     async def execute_auto(self, state: TicketState) -> dict[str, Any]:
         """The only write for a calm, in-cap refund; reached only from the AUTO route."""
@@ -144,6 +213,10 @@ class TicketFlow:
         return _done("handed_off", _HANDOFF) | {"refund_no": result.get("refund_no")}
 
 
+_INFO_REPLY = (
+    "Thanks for your message. Your order status is in your order tracker, "
+    "and a specialist can help with anything else."
+)
 _HANDOFF = "A support specialist will review your request and get back to you shortly."
 _REJECTED = "We could not approve this refund. A support specialist will contact you with details."
 
