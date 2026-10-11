@@ -27,8 +27,8 @@ class Settings(BaseSettings):
 
     # Primary model and a second vendor on the same Foundry resource (D15)
     primary_deployment: str = "gpt-4.1-mini"
-    second_vendor_deployment: str = "mistral-medium-2505"
-    second_vendor_output_mode: str = "json_schema"
+    second_vendor_deployment: str = "Llama-3.3-70B-Instruct"
+    second_vendor_output_mode: str = "json_object"
 
     # Claude adapter: enabled only where the subscription has Claude quota
     claude_enabled: bool = False

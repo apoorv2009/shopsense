@@ -19,7 +19,7 @@
 | `TriageTicket` use case (random-ID delimiters, one retry, fail closed) | `.../application/use_cases/triage_ticket.py` |
 | Triage prompt v1 | `.../application/prompts/triage/v1.md` |
 | LLM gateway (routing, fallback, token metering) | `.../adapters/llm/gateway.py` |
-| Providers: OpenAI `gpt-4.1-mini` and Mistral AI `mistral-medium-2505` on Foundry (OpenAI-compatible adapter); Claude adapter (disabled on the free trial) | `.../adapters/llm/foundry_openai.py`, `anthropic_foundry.py` |
+| Providers: OpenAI `gpt-4.1-mini` and Meta `Llama-3.3-70B-Instruct` on Foundry (OpenAI-compatible adapter; JSON mode for Llama); Claude adapter (disabled on the free trial) | `.../adapters/llm/foundry_openai.py`, `anthropic_foundry.py` |
 | Golden set (20) + Bitext-based suite generator | `evals/` |
 | Infrastructure (Foundry, both model deployments) | `infra/m1/` |
 
@@ -29,11 +29,11 @@
 | Parse support tickets | `TriageTicket` use case; untrusted text wrapped in per-request random-ID tags |
 | Validated Pydantic `SupportTicket` | Frozen model, `extra="forbid"`; order ID format, amount ≥ 0, summary length enforced; invalid output retried once then fails closed |
 | Issue type, order ID, sentiment, urgency | Required fields (plus category hint, amount in paise, risk flags, language, summary) |
-| Provider-agnostic client | Use case depends only on the `LLMClient` port; the gateway routes the `triage` profile to OpenAI, Mistral AI or Claude by configuration, with fallback between vendors |
+| Provider-agnostic client | Use case depends only on the `LLMClient` port; the gateway routes the `triage` profile to OpenAI, Meta Llama or Claude by configuration, with fallback between vendors |
 
 ## Setup
 1. Install the [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) and sign in: `az login`.
-2. Deploy M1 infrastructure (gpt-4.1-mini + mistral-medium-2505; add `deployClaude=true claudeOrganizationName=...` only with Claude quota):
+2. Deploy M1 infrastructure (gpt-4.1-mini + Llama-3.3-70B-Instruct; add `deployClaude=true claudeOrganizationName=...` only with Claude quota):
    ```bash
    az deployment sub create --location eastus2 --template-file infra/m1/main.bicep --parameters principalId=$(az ad signed-in-user show --query id -o tsv)
    ```

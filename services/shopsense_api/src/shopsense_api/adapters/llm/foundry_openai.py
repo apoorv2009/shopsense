@@ -1,7 +1,7 @@
 """Foundry models through the OpenAI-compatible v1 endpoint.
 
 One adapter serves several vendors deployed on the same Foundry resource (OpenAI GPT,
-Mistral, ...); each registered instance has its own provider name for routing.
+Meta Llama, ...); each registered instance has its own provider name for routing.
 """
 
 import json

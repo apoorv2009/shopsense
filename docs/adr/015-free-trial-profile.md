@@ -17,7 +17,7 @@ The project is for learning and runs on a one-month Azure free account: a one-ti
 | Area | Choice |
 |---|---|
 | Region | **East US 2** (single region; broad Foundry model availability). India data residency documented as the production consideration |
-| Model | **Primary: OpenAI `gpt-4.1-mini`; second vendor: Mistral AI `mistral-medium-2505`**, both on the same Foundry resource and within trial credits. **Amended 2026-10-11:** the trial subscription has zero quota for every Claude model, and the project has no requirement to use Claude. The Claude adapter stays in the code, enabled by configuration where quota exists |
+| Model | **Primary: OpenAI `gpt-4.1-mini`; second vendor: Meta `Llama-3.3-70B-Instruct`** (JSON mode + Pydantic validation), both sold directly by Azure on the same Foundry resource and within trial credits. **Amended 2026-10-11:** the trial subscription has zero quota for every Claude model, and Marketplace-billed models (Claude, Mistral Medium) cannot be purchased on a free subscription; the project has no requirement to use Claude. The Claude adapter stays in the code, enabled by configuration where quota exists |
 | Embeddings | Azure OpenAI `text-embedding-3-small` on Foundry |
 | APIM | **Consumption** if it supports the required AI-gateway policies; otherwise **Developer**. Verified at M1 setup |
 | PostgreSQL | Flexible Server **B1ms** (12-month free allowance) |
@@ -33,7 +33,8 @@ The project is for learning and runs on a one-month Azure free account: a one-ti
 |---|---|
 | All Claude models | 0 |
 | gpt-4.1-mini (GlobalStandard) | 200 |
-| mistral-medium-2505 | 20 |
+| mistral-medium-2505 | 20 (but Marketplace: not purchasable on a free subscription) |
+| Llama-3.3-70B-Instruct | 20 |
 | text-embedding-3-small (GlobalStandard) | 1,000 |
 | Cohere Rerank v4 (Fast / Pro) | 20 |
 

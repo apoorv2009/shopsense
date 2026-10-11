@@ -1,5 +1,5 @@
 // ShopSense M1 infrastructure: resource group + Foundry with two model vendors for the
-// provider-agnostic client (OpenAI gpt-4.1-mini, Mistral AI mistral-medium) and an optional
+// provider-agnostic client (OpenAI gpt-4.1-mini, Meta Llama 3.3 70B) and an optional
 // Claude deployment. Free-trial profile (D15), East US 2.
 //
 // IMPORTANT: deployClaude=true accepts the Anthropic Marketplace offer
@@ -32,8 +32,8 @@ param openAiModel string = 'gpt-4.1-mini'
 param openAiModelVersion string = '2025-04-14'
 param openAiCapacity int = 10
 
-param secondModel string = 'mistral-medium-2505'
-param secondModelFormat string = 'Mistral AI'
+param secondModel string = 'Llama-3.3-70B-Instruct'
+param secondModelFormat string = 'Meta'
 param secondModelVersion string = '1'
 param secondCapacity int = 10
 

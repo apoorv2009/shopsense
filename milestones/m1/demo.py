@@ -58,7 +58,7 @@ async def main(run_eval: bool) -> None:
     console.rule("[bold]Provider-agnostic client: same ticket, two providers[/bold]")
     sample = SHOWCASE["Angry, high value, legal threat"]
     await show(primary, f"OpenAI · {settings.primary_deployment}", sample)
-    await show(second, f"Mistral AI · {settings.second_vendor_deployment}", sample)
+    await show(second, f"Meta · {settings.second_vendor_deployment}", sample)
     if run_eval:
         console.rule("[bold]Golden set (20 tickets)[/bold]")
         cases = load_suite("golden")

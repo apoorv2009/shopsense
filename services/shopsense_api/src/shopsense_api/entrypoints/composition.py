@@ -16,7 +16,7 @@ from shopsense_api.application.use_cases.triage_ticket import TriageTicket
 from shopsense_api.entrypoints.settings import AuthMode, Settings
 
 PRIMARY = "azure-openai"
-SECOND_VENDOR = "foundry-mistral"
+SECOND_VENDOR = "foundry-llama"
 TokenProvider = Callable[[], Awaitable[str]]
 
 

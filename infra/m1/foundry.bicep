@@ -1,5 +1,5 @@
 // M1: Foundry account + project + model deployments: primary (OpenAI), second vendor
-// (Mistral AI), optional Claude (needs Claude quota)
+// (Meta Llama, sold directly by Azure), optional Claude (needs Claude quota)
 // + least-privilege inference role for the developer (Entra auth, no keys).
 // Schema follows the Azure-Samples Claude-on-Foundry starter kit.
 param location string

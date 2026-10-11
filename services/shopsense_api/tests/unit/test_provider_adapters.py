@@ -130,7 +130,7 @@ async def test_openai_failures_are_translated(outcome: object, error: type[Excep
 
 
 JSON_ROUTE = ModelRoute(
-    provider="p", model="mistral", max_tokens=100, timeout_s=5, output_mode="json_object"
+    provider="p", model="llama", max_tokens=100, timeout_s=5, output_mode="json_object"
 )
 
 
@@ -143,9 +143,9 @@ def json_completion(content: str | None, finish_reason: str = "stop") -> SimpleN
 
 async def test_json_object_mode_validates_with_pydantic() -> None:
     client = FakeClient(json_completion(make_ticket().model_dump_json()))
-    provider = FoundryOpenAIProvider("foundry-mistral", cast("openai.AsyncOpenAI", client))
+    provider = FoundryOpenAIProvider("foundry-llama", cast("openai.AsyncOpenAI", client))
     response = await provider.generate(JSON_ROUTE, REQUEST)
-    assert response.provider == "foundry-mistral"
+    assert response.provider == "foundry-llama"
     assert client.kwargs["response_format"] == {"type": "json_object"}
     assert "JSON object matching this schema" in client.kwargs["messages"][0]["content"]
 

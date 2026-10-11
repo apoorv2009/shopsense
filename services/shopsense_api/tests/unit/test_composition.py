@@ -14,7 +14,8 @@ def settings(**overrides: object) -> Settings:
 def test_triage_routes_primary_then_second_vendor() -> None:
     routes = build_profiles(settings())["triage"].routes
     assert [r.provider for r in routes] == [PRIMARY, SECOND_VENDOR]
-    assert routes[1].model == "mistral-medium-2505"
+    assert routes[1].model == "Llama-3.3-70B-Instruct"
+    assert routes[1].output_mode == "json_object"
 
 
 def test_claude_route_first_only_when_enabled() -> None:
