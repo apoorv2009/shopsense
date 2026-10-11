@@ -26,7 +26,7 @@ from shopsense_api.application.use_cases.triage_ticket import TriageTicket
 from shopsense_api.entrypoints.composition import PRIMARY, container
 from shopsense_api.entrypoints.logging_config import configure_logging
 from shopsense_api.entrypoints.settings import REPO_ROOT, Settings
-from shopsense_evals import parity, rag, retrieval, routing
+from shopsense_evals import parity, rag, resilience, retrieval, routing
 from shopsense_evals.bitext import load_rows
 from shopsense_evals.cases import EvalCase, load_cases
 from shopsense_evals.generator import generate, write_suite
@@ -213,6 +213,28 @@ async def cmd_parity(args: argparse.Namespace) -> int:
     return 0 if passed else 1
 
 
+async def cmd_resilience(args: argparse.Namespace) -> int:
+    import os
+
+    from langgraph.checkpoint.memory import MemorySaver
+
+    token = os.environ.get("ORDER_PLATFORM_ADMIN_TOKEN", "")
+    if not token:
+        raise SystemExit("set ORDER_PLATFORM_ADMIN_TOKEN (the Order Platform's admin token)")
+    await _reseed()
+    corpus = load_corpus(Path(Settings().policy_dir))
+    async with container(Settings()) as app:
+        runner = app.ticket_runner(corpus, MemorySaver())
+        result = await resilience.run_resilience(app, runner, args.admin, token, args.mcp)
+    RESULTS.mkdir(parents=True, exist_ok=True)
+    (RESULTS / "m7_resilience.json").write_text(
+        json.dumps(result, ensure_ascii=False, indent=2, default=str), encoding="utf-8"
+    )
+    console.print(f"Resilience gates: {result['gates']}")
+    console.print(f"Passed: {result['passed']}")
+    return 0 if result["passed"] else 1
+
+
 async def _reseed() -> None:
     database = Database(OrderPlatformSettings())
     try:
@@ -320,6 +342,9 @@ def main() -> None:
     parity_cmd = sub.add_parser("parity")
     parity_cmd.add_argument("--runs", type=int, default=1)
     parity_cmd.add_argument("--api", default="http://localhost:8000")
+    resilience_cmd = sub.add_parser("resilience")
+    resilience_cmd.add_argument("--admin", default="http://localhost:8001")
+    resilience_cmd.add_argument("--mcp", default="http://localhost:8100")
     routing_cmd = sub.add_parser("routing")
     routing_cmd.add_argument("--runs", type=int, default=1)
     retrieval = sub.add_parser("retrieval")
@@ -339,6 +364,7 @@ def main() -> None:
         "rag": cmd_rag,
         "routing": cmd_routing,
         "parity": cmd_parity,
+        "resilience": cmd_resilience,
         "generate-suite": cmd_generate,
     }
     handler = handlers[args.command]

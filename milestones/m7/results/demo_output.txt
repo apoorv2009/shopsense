@@ -1,0 +1,36 @@
+﻿
+=== 1. Healthy: a refund from email waits for a reviewer ===
+ticket TKT-EM-7f80f7a798e7: pending_human_approval · approval
+circuit breaker: {'state': 'closed', 'failures': 0, 'trips': 0}
+
+=== 2. The order system goes down ===
+fault injected for 40 s (it expires on its own)
+
+=== 3. A new ticket during the outage is parked for a human ===
+ticket TKT-CH-9ccd5fa018: parked_human_queue
+reply: We are having trouble reaching our order system. A specialist will check your order and follow up.
+circuit breaker: {'state': 'open', 'failures': 3, 'trips': 1}
+
+=== 4. The reviewer approves during the outage: queued, not lost ===
+ticket TKT-EM-7f80f7a798e7: queued_for_retry
+reply: Your refund is approved and is being processed. We will confirm once it has settled.
+
+=== 5. The outage ends; the outbox worker settles the refund ===
+drained 1: done 1 · dead 0 · still pending 0
+ticket TKT-EM-7f80f7a798e7 after the worker: resolved
+circuit breaker: {'state': 'closed', 'failures': 0, 'trips': 1}
+
+=== 6. The trace: every step, PII masked ===
+TKT-EM-7f80f7a798e7 triage           ok       4130.8 ms  {'ticket': 'dict'}
+TKT-EM-7f80f7a798e7 lookup           ok      10951.0 ms  {'order_no': 'ORD-100005', 'sku': 'ELE-SMARTWATCH', 'case': 'dict'}
+TKT-EM-7f80f7a798e7 advise           ok      22363.0 ms  {'agent_note': 'dict'}
+TKT-EM-7f80f7a798e7 assess           ok       9281.7 ms  {'eligibility': 'eligible', 'rule_id': 'ELE-RET-15', 'amount_paise': 1299900, 'route': 'approval', 'reasons': 'list'}
+TKT-EM-7f80f7a798e7 review           ok       1910.1 ms  {'brief': 'dict'}
+TKT-EM-7f80f7a798e7 approval         paused      0.1 ms  {}
+TKT-CH-9ccd5fa018  triage           ok       1157.7 ms  {'ticket': 'dict'}
+TKT-CH-9ccd5fa018  lookup           ok       1759.2 ms  {'outcome': 'parked_human_queue', 'reply': 'We are having trouble reaching our order system. A specialist will check your order and follow up.'}
+TKT-CH-9ccd5fa018  respond          ok          0.0 ms  {}
+TKT-EM-7f80f7a798e7 approval         ok          0.1 ms  {'decision': 'dict'}
+TKT-EM-7f80f7a798e7 execute_approved ok       5280.0 ms  {'outcome': 'queued_for_retry', 'reply': 'Your refund is approved and is being processed. We will confirm once it has settled.', 'refund_no': None}
+TKT-EM-7f80f7a798e7 respond          ok          0.0 ms  {}
+total spans recorded in traces\shopsense.jsonl: 60

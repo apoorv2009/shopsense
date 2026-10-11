@@ -55,3 +55,17 @@ class PolicyRuleRow(ShopSenseBase):
     outcome: Mapped[str] = mapped_column(String(24))
     overrides: Mapped[list[str]] = mapped_column(JSONB)
     evidence: Mapped[str] = mapped_column(String(8))
+
+
+class OutboxRow(ShopSenseBase):
+    __tablename__ = "outbox_items"
+    key: Mapped[str] = mapped_column(String(64), primary_key=True)
+    ticket_id: Mapped[str] = mapped_column(String(40), index=True)
+    action: Mapped[str] = mapped_column(String(24))
+    payload: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    status: Mapped[str] = mapped_column(String(16), index=True)
+    attempts: Mapped[int] = mapped_column(Integer)
+    last_error: Mapped[str | None] = mapped_column(String(300))
+    result: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))

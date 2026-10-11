@@ -1,0 +1,59 @@
+{
+  "A_transient": {
+    "reads": 10,
+    "ok": 3,
+    "outcomes": [
+      "ok",
+      "ok",
+      "ok",
+      "ORDER_SYSTEM_UNAVAILABLE",
+      "ORDER_SYSTEM_UNAVAILABLE",
+      "ORDER_SYSTEM_UNAVAILABLE",
+      "ORDER_SYSTEM_UNAVAILABLE",
+      "ORDER_SYSTEM_UNAVAILABLE",
+      "ORDER_SYSTEM_UNAVAILABLE",
+      "ORDER_SYSTEM_UNAVAILABLE"
+    ]
+  },
+  "A_recovered": true,
+  "B_outage": {
+    "outcomes": [
+      "injected fault",
+      "order system circuit open",
+      "order system circuit open",
+      "order system circuit open"
+    ],
+    "breaker": {
+      "state": "open",
+      "failures": 3,
+      "trips": 2
+    },
+    "breaker_opened": true
+  },
+  "C_parked": {
+    "outcome": "parked_human_queue",
+    "parked": true
+  },
+  "D_approved_during_outage": {
+    "outcome": "queued_for_retry"
+  },
+  "D_queued": true,
+  "D_drain": {
+    "pending_left": 0
+  },
+  "breaker_after": {
+    "state": "closed",
+    "failures": 0,
+    "trips": 2
+  },
+  "D_refunded_paise": 149900,
+  "D_refunded_once": true,
+  "gates": {
+    "breaker_opened": true,
+    "ticket_parked": true,
+    "approved_refund_queued": true,
+    "approved_refund_settled_once": true,
+    "no_approved_action_lost": true
+  },
+  "passed": true
+}

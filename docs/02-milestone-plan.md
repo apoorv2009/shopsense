@@ -98,6 +98,8 @@ The project is assessed milestone by milestone against the course brief. **Each 
 | Acceptance | Channel-parity suite; agents cannot reach system tools |
 
 ## M7 Tracing and reliability
+**Status:** ✅ Done (2026-10-11): retries, circuit breaker and human-queue parking live; outbox settles approved writes exactly once across a scripted outage (resilience gates pass); traces written per node with PII masked. Langfuse adapter in place, live check needs the owner's keys. Plan: [plans/m7.md](plans/m7.md) · Demo: [`milestones/m7`](../milestones/m7/README.md).
+
 **Brief:** *LangFuse tracing of ticket-resolution flows; reliability hardening for order-system API flakiness (retries, fallback to human queue, circuit breaker).*
 
 | | |

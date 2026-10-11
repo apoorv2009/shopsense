@@ -5,6 +5,7 @@ from typing import Any
 
 from langgraph.types import Command
 
+from shopsense_api.application.ports.outbox import DEAD, DONE, OutboxStore
 from shopsense_api.application.workflow.state import TicketState
 
 
@@ -22,8 +23,9 @@ class TicketView:
 
 
 class TicketRunner:
-    def __init__(self, graph: Any) -> None:
+    def __init__(self, graph: Any, outbox: OutboxStore | None = None) -> None:
         self._graph = graph
+        self._outbox = outbox
 
     async def start(
         self, ticket_id: str, customer_no: str, message: str, channel: str = "chat"
@@ -51,12 +53,18 @@ class TicketRunner:
         if paused and snapshot.tasks and snapshot.tasks[0].interrupts:
             approval = dict(snapshot.tasks[0].interrupts[0].value)
         outcome = "pending_human_approval" if paused else values.get("outcome")
+        reply = values.get("reply")
+        refund_no = values.get("refund_no")
+        if outcome == "queued_for_retry" and self._outbox is not None:
+            outcome, reply, refund_no = await _settled_from_outbox(
+                self._outbox, ticket_id, outcome, reply, refund_no
+            )
         return TicketView(
             ticket_id=ticket_id,
             outcome=outcome,
             paused=paused,
             route=values.get("route"),
-            reply=values.get("reply"),
+            reply=reply,
             approval=approval,
             eligibility=values.get("eligibility"),
             rule_id=values.get("rule_id"),
@@ -70,3 +78,25 @@ class TicketRunner:
 
 def _config(ticket_id: str) -> dict[str, Any]:
     return {"configurable": {"thread_id": ticket_id}}
+
+
+async def _settled_from_outbox(
+    outbox: OutboxStore, ticket_id: str, outcome: str, reply: str | None, refund_no: str | None
+) -> tuple[str, str | None, str | None]:
+    """A queued write reads its outcome from the outbox: the worker may have settled it since."""
+    items = await outbox.for_ticket(ticket_id)
+    if any(item.status == DONE for item in items):
+        done = next(item for item in items if item.status == DONE)
+        amount = int(done.payload["amount_paise"])
+        return (
+            "resolved",
+            f"Your refund of ₹{amount // 100:,} has been processed.",
+            done.result.get("refund_no"),
+        )
+    if any(item.status == DEAD for item in items):
+        return (
+            "handed_off",
+            "A support specialist will review your request and get back to you shortly.",
+            None,
+        )
+    return outcome, reply, refund_no

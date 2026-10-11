@@ -1,9 +1,15 @@
 """Order Platform client used by the MCP tools. The customer comes only from the verified
-caller context (X-Customer-Id), never from a tool argument."""
+caller context (X-Customer-Id), never from a tool argument.
 
+Resilience (M7-3, M7-4): reads and keyed writes are retried with bounded backoff; every call
+passes through the circuit breaker, which fails fast while the order system is down."""
+
+import asyncio
 from typing import Any
 
 import httpx
+
+from mcp_server.resilience import CircuitBreaker
 
 
 class ToolFailureError(Exception):
@@ -16,8 +22,18 @@ class ToolFailureError(Exception):
 
 
 class OrderClient:
-    def __init__(self, client: httpx.AsyncClient) -> None:
+    def __init__(
+        self,
+        client: httpx.AsyncClient,
+        breaker: CircuitBreaker | None = None,
+        *,
+        retries: int = 2,
+        backoff_s: float = 0.2,
+    ) -> None:
         self._client = client
+        self.breaker = breaker or CircuitBreaker()
+        self._retries = retries
+        self._backoff_s = backoff_s
 
     async def get(self, customer_no: str, path: str, params: dict[str, Any] | None = None) -> Any:
         return await self._call("GET", path, customer_no, params=params)
@@ -33,6 +49,28 @@ class OrderClient:
         return await self._call("POST", path, customer_no, json=body, headers=headers)
 
     async def _call(self, method: str, path: str, customer_no: str | None, **kwargs: Any) -> Any:
+        if not self.breaker.allow():
+            raise ToolFailureError("ORDER_SYSTEM_UNAVAILABLE", "order system circuit open", True)
+        # Retry reads, and writes that carry an idempotency key (a replay returns the original)
+        keyed = bool(kwargs.get("headers", {}).get("Idempotency-Key"))
+        attempts = self._retries + 1 if (method == "GET" or keyed) else 1
+        for attempt in range(attempts):
+            try:
+                result = await self._once(method, path, customer_no, **kwargs)
+            except ToolFailureError as exc:
+                if not exc.retryable:
+                    self.breaker.record_success()  # the order system answered: not a fault
+                    raise
+                self.breaker.record_failure()
+                if attempt == attempts - 1:
+                    raise
+                await asyncio.sleep(self._backoff_s * (attempt + 1))
+                continue
+            self.breaker.record_success()
+            return result
+        raise AssertionError("unreachable")
+
+    async def _once(self, method: str, path: str, customer_no: str | None, **kwargs: Any) -> Any:
         headers = dict(kwargs.pop("headers", {}))
         if customer_no is not None:
             headers["X-Customer-Id"] = customer_no
@@ -42,7 +80,7 @@ class OrderClient:
             raise ToolFailureError("TIMEOUT", "order system too slow", retryable=True) from exc
         except httpx.TransportError as exc:
             raise ToolFailureError(
-                "ORDER_SYSTEM_UNAVAILABLE", "order system unreachable", True
+                "ORDER_SYSTEM_UNAVAILABLE", "order system unreachable", retryable=True
             ) from exc
         if response.is_success:
             return response.json()

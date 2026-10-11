@@ -4,6 +4,7 @@ from datetime import date
 from enum import StrEnum
 from pathlib import Path
 
+from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 REPO_ROOT = Path(__file__).resolve().parents[5]
@@ -24,4 +25,6 @@ class Settings(BaseSettings):
     # OAuth scope for Azure PostgreSQL Entra tokens; not a secret
     db_token_scope: str = "https://ossrdbms-aad.database.windows.net/.default"  # noqa: S105
     anchor_date: date | None = None  # seed dates relative to this; None = today
+    # Enables /admin/faults for resilience tests; unset = the admin routes do not exist
+    admin_token: SecretStr | None = None
     log_json: bool = True

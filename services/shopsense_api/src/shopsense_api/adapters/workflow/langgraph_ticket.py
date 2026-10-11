@@ -10,21 +10,29 @@ from langgraph.checkpoint.base import BaseCheckpointSaver
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import interrupt
 
+from shopsense_api.adapters.workflow.tracing import Node, traced
+from shopsense_api.application.ports.tracing import Tracer
 from shopsense_api.application.workflow.flow import TicketFlow
 from shopsense_api.application.workflow.state import TicketState
 
 
-def build_graph(flow: TicketFlow, checkpointer: BaseCheckpointSaver[Any]) -> Any:
+def build_graph(
+    flow: TicketFlow, checkpointer: BaseCheckpointSaver[Any], tracer: Tracer | None = None
+) -> Any:
+    def node(name: str, fn: Node) -> Any:
+        # LangGraph's node overloads are narrower than our awaitable alias; the callable is the same
+        return traced(name, fn, tracer) if tracer is not None else fn
+
     graph: StateGraph[TicketState] = StateGraph(TicketState)
-    graph.add_node("triage", flow.triage_step)
-    graph.add_node("lookup", flow.lookup_step)
-    graph.add_node("advise", flow.advise_step)
-    graph.add_node("assess", flow.assess_step)
-    graph.add_node("review", flow.review_step)
-    graph.add_node("execute_auto", flow.execute_auto)
-    graph.add_node("approval", _approval)
-    graph.add_node("execute_approved", flow.execute_approved)
-    graph.add_node("respond", flow.respond_step)
+    graph.add_node("triage", node("triage", flow.triage_step))
+    graph.add_node("lookup", node("lookup", flow.lookup_step))
+    graph.add_node("advise", node("advise", flow.advise_step))
+    graph.add_node("assess", node("assess", flow.assess_step))
+    graph.add_node("review", node("review", flow.review_step))
+    graph.add_node("execute_auto", node("execute_auto", flow.execute_auto))
+    graph.add_node("approval", node("approval", _approval))
+    graph.add_node("execute_approved", node("execute_approved", flow.execute_approved))
+    graph.add_node("respond", node("respond", flow.respond_step))
     graph.add_edge(START, "triage")
     graph.add_edge("triage", "lookup")
     graph.add_conditional_edges("lookup", _after_lookup, {"advise": "advise", "respond": "respond"})

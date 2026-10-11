@@ -18,4 +18,8 @@ async def _lifespan(_: FastAPI) -> AsyncIterator[None]:
     await _database.aclose()
 
 
-app = create_app(build_services(_database.engine), lifespan=_lifespan)
+_token = Settings().admin_token
+app = create_app(
+    build_services(_database.engine, _token.get_secret_value() if _token else None),
+    lifespan=_lifespan,
+)

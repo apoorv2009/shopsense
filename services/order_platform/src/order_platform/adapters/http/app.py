@@ -9,6 +9,8 @@ from fastapi import APIRouter, FastAPI, Header, Query, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
+from order_platform.adapters.http.faults import FaultState
+from order_platform.adapters.http.faults import install as install_faults
 from order_platform.adapters.http.schemas import (
     ErrorOut,
     OrderOut,
@@ -58,6 +60,8 @@ class Services:
     refunds: RequestRefund
     replacements: RequestReplacement
     decisions: DecideRefund
+    faults: FaultState | None = None
+    admin_token: str | None = None
 
 
 def create_app(services: Services, lifespan: Lifespan | None = None) -> FastAPI:
@@ -65,6 +69,8 @@ def create_app(services: Services, lifespan: Lifespan | None = None) -> FastAPI:
     app.include_router(_routes(services))
     app.add_exception_handler(OrderPlatformError, _domain_error)
     app.add_exception_handler(RequestValidationError, _validation_error)
+    if services.faults is not None and services.admin_token:
+        install_faults(app, services.faults, services.admin_token)
 
     @app.get("/health/live", include_in_schema=False)
     async def live() -> dict[str, str]:

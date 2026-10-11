@@ -7,10 +7,12 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from shopsense_api.adapters.db.shopsense_tables import (
     CustomerProfileRow,
+    OutboxRow,
     PolicyDocumentRow,
     PolicyRuleRow,
     TicketHistoryRow,
 )
+from shopsense_api.application.ports.outbox import OutboxItem
 from shopsense_api.domain.memory.model import (
     Channel,
     CustomerPreferences,
@@ -147,4 +149,79 @@ def _rule_row(rule: PolicyRule) -> PolicyRuleRow:
         outcome=rule.outcome.value,
         overrides=list(rule.overrides),
         evidence=rule.evidence.value,
+    )
+
+
+class SqlOutboxStore:
+    """Approved writes waiting to be sent (M7-6). Enqueue is idempotent on the key."""
+
+    def __init__(self, sessions: async_sessionmaker[AsyncSession]) -> None:
+        self._sessions = sessions
+
+    async def enqueue(self, item: OutboxItem) -> None:
+        now = datetime.now(UTC)
+        async with self._sessions.begin() as session:
+            if await session.get(OutboxRow, item.key) is not None:
+                return
+            session.add(_outbox_row(item, now))
+
+    async def get(self, key: str) -> OutboxItem | None:
+        async with self._sessions() as session:
+            row = await session.get(OutboxRow, key)
+        return _outbox_item(row) if row is not None else None
+
+    async def pending(self, limit: int) -> list[OutboxItem]:
+        stmt = (
+            select(OutboxRow)
+            .where(OutboxRow.status == "pending")
+            .order_by(OutboxRow.created_at)
+            .limit(limit)
+        )
+        async with self._sessions() as session:
+            rows = (await session.scalars(stmt)).all()
+        return [_outbox_item(row) for row in rows]
+
+    async def for_ticket(self, ticket_id: str) -> list[OutboxItem]:
+        stmt = select(OutboxRow).where(OutboxRow.ticket_id == ticket_id)
+        async with self._sessions() as session:
+            rows = (await session.scalars(stmt)).all()
+        return [_outbox_item(row) for row in rows]
+
+    async def update(self, item: OutboxItem) -> None:
+        async with self._sessions.begin() as session:
+            row = await session.get(OutboxRow, item.key)
+            if row is None:
+                raise KeyError(item.key)
+            row.status = item.status
+            row.attempts = item.attempts
+            row.last_error = item.last_error
+            row.result = dict(item.result)
+            row.updated_at = datetime.now(UTC)
+
+
+def _outbox_row(item: OutboxItem, now: datetime) -> OutboxRow:
+    return OutboxRow(
+        key=item.key,
+        ticket_id=item.ticket_id,
+        action=item.action,
+        payload=dict(item.payload),
+        status=item.status,
+        attempts=item.attempts,
+        last_error=item.last_error,
+        result=dict(item.result),
+        created_at=now,
+        updated_at=now,
+    )
+
+
+def _outbox_item(row: OutboxRow) -> OutboxItem:
+    return OutboxItem(
+        key=row.key,
+        ticket_id=row.ticket_id,
+        action=row.action,
+        payload=dict(row.payload),
+        status=row.status,
+        attempts=row.attempts,
+        last_error=row.last_error,
+        result=dict(row.result),
     )

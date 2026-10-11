@@ -11,8 +11,10 @@ from typing import Any, Protocol
 
 from shopsense_api.application.agents.order_actions import OrderActionsCommand, OrderActionsRun
 from shopsense_api.application.ports.orders import OrderTools
+from shopsense_api.application.ports.outbox import DONE, PENDING, OutboxItem, OutboxStore
 from shopsense_api.application.use_cases.answer_policy import PolicyAnswer
 from shopsense_api.application.use_cases.decide_return import DecideReturn
+from shopsense_api.application.use_cases.drain_outbox import DrainOutbox
 from shopsense_api.application.use_cases.triage_ticket import (
     TriageCommand,
     TriageResult,
@@ -73,6 +75,8 @@ class TicketFlow:
         advisor: OrderAdvisor | None = None,
         answerer: Answerer | None = None,
         reviewer: Reviewer | None = None,
+        outbox: OutboxStore | None = None,
+        drainer: DrainOutbox | None = None,
     ) -> None:
         self._triage = triage
         self._orders = orders
@@ -81,6 +85,8 @@ class TicketFlow:
         self._advisor = advisor
         self._answerer = answerer
         self._reviewer = reviewer
+        self._outbox = outbox
+        self._drainer = drainer
 
     async def advise_step(self, state: TicketState) -> dict[str, Any]:
         """Order-Actions agent, read-only: an explanation for the case, never a write."""
@@ -124,7 +130,9 @@ class TicketFlow:
             return _done("needs_customer_info", "Could you share your order number (ORD-xxxxxx)?")
         try:
             order = await self._orders.get_order(state["customer_no"], ticket.order_id)
-        except OrderToolError:
+        except OrderToolError as exc:
+            if exc.retryable:  # outage: we cannot check the order, so a person follows up (M7-5)
+                return _done("parked_human_queue", _PARKED)
             return _done("needs_customer_info", "I could not find that order on your account.")
         if order.get("delivered_at") is None:
             return _done("cannot_help", f"Order {ticket.order_id} has not been delivered yet.")
@@ -199,6 +207,8 @@ class TicketFlow:
         sku, amount = state["sku"], int(state["amount_paise"])
         ticket = SupportTicket.model_validate(state["ticket"])
         key = refund_key(state["ticket_id"], sku, amount, stage)
+        if self._outbox is not None and self._drainer is not None:
+            return await self._refund_via_outbox(state, key, approve_pending, ticket)
         try:
             result = await self._orders.request_refund(
                 state["customer_no"], state["order_no"], sku, amount, _reason(ticket), key
@@ -212,11 +222,41 @@ class TicketFlow:
             return _done("resolved", _approved_reply(amount)) | {"refund_no": result["refund_no"]}
         return _done("handed_off", _HANDOFF) | {"refund_no": result.get("refund_no")}
 
+    async def _refund_via_outbox(
+        self, state: TicketState, key: str, approve_pending: bool, ticket: SupportTicket
+    ) -> dict[str, Any]:
+        """Record the write, then send it. A failure leaves it pending for the worker (M7-6)."""
+        if self._outbox is None or self._drainer is None:
+            raise RuntimeError("outbox path needs an outbox and a drainer")
+        amount = int(state["amount_paise"])
+        payload = {
+            "customer_no": state["customer_no"],
+            "order_no": state["order_no"],
+            "sku": state["sku"],
+            "amount_paise": amount,
+            "reason": _reason(ticket),
+            "approved": approve_pending,
+        }
+        item = OutboxItem(key=key, ticket_id=state["ticket_id"], action="refund", payload=payload)
+        await self._outbox.enqueue(item)
+        settled = await self._drainer.drain_item(item)
+        if settled.status == DONE:
+            refund_no = settled.result.get("refund_no")
+            return _done("resolved", _approved_reply(amount)) | {"refund_no": refund_no}
+        if settled.status == PENDING:
+            return _done("queued_for_retry", _QUEUED) | {"refund_no": None}
+        return _done("handed_off", _HANDOFF) | {"refund_no": None}
+
 
 _INFO_REPLY = (
     "Thanks for your message. Your order status is in your order tracker, "
     "and a specialist can help with anything else."
 )
+_PARKED = (
+    "We are having trouble reaching our order system. "
+    "A specialist will check your order and follow up."
+)
+_QUEUED = "Your refund is approved and is being processed. We will confirm once it has settled."
 _HANDOFF = "A support specialist will review your request and get back to you shortly."
 _REJECTED = "We could not approve this refund. A support specialist will contact you with details."
 

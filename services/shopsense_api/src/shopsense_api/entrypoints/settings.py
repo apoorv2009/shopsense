@@ -58,6 +58,11 @@ class Settings(BaseSettings):
     # Local cross-encoder for reranking (fastembed ONNX; downloaded once)
     rerank_model: str = "Xenova/ms-marco-MiniLM-L-6-v2"
     policy_dir: str = "data/policies"
+    # M7: local JSONL trace (always) and optional Langfuse ingestion (when keys are set)
+    trace_path: str = "traces/shopsense.jsonl"
+    langfuse_host: str = ""
+    langfuse_public_key: str = ""
+    langfuse_secret_key: SecretStr | None = None
     # Empty URL = no database; memory and policy rules then need one (see infra/m3)
     database_url: str = ""
     db_token_scope: str = "https://ossrdbms-aad.database.windows.net/.default"  # noqa: S105

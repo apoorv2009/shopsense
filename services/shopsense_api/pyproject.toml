@@ -27,6 +27,7 @@ dependencies = [
 [project.scripts]
 shopsense-ingest = "shopsense_api.entrypoints.cli:main"
 shopsense-workflow = "shopsense_api.entrypoints.workflow_cli:main"
+shopsense-outbox = "shopsense_api.entrypoints.outbox_cli:main"
 
 [tool.uv.sources]
 shopsense-contracts = { workspace = true }

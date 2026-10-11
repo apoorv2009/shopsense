@@ -17,6 +17,7 @@ from sqlalchemy.ext.asyncio import (
 
 from order_platform.adapters.db.repository import SqlUnitOfWork
 from order_platform.adapters.http.app import Services
+from order_platform.adapters.http.faults import FaultState
 from order_platform.application.use_cases import (
     DecideRefund,
     OrderQueries,
@@ -56,7 +57,7 @@ class Database:
             await self._credential.close()
 
 
-def build_services(engine: AsyncEngine) -> Services:
+def build_services(engine: AsyncEngine, admin_token: str | None = None) -> Services:
     sessions = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
     def uow() -> SqlUnitOfWork:
@@ -68,6 +69,8 @@ def build_services(engine: AsyncEngine) -> Services:
         refunds=RequestRefund(uow, clock, ids),
         replacements=RequestReplacement(uow, clock, ids),
         decisions=DecideRefund(uow),
+        faults=FaultState() if admin_token else None,
+        admin_token=admin_token,
     )
 
 

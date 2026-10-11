@@ -11,3 +11,5 @@ coverage.xml
 evals/results/
 .azure/
 data/qdrant-local/
+traces/
+data/qdrant-eval*/

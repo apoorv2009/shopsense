@@ -7,6 +7,7 @@ Qdrant client) and closes them on exit; callers never construct adapters themsel
 from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import AsyncExitStack, asynccontextmanager
 from dataclasses import dataclass, replace
+from pathlib import Path
 from typing import Any
 
 import httpx
@@ -22,7 +23,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-from shopsense_api.adapters.db.sql_stores import SqlMemoryStore, SqlPolicyStore
+from shopsense_api.adapters.db.sql_stores import SqlMemoryStore, SqlOutboxStore, SqlPolicyStore
 from shopsense_api.adapters.llm.anthropic_foundry import AnthropicFoundryProvider
 from shopsense_api.adapters.llm.foundry_openai import FoundryOpenAIProvider
 from shopsense_api.adapters.llm.gateway import AgentProfile, LLMGateway
@@ -32,15 +33,21 @@ from shopsense_api.adapters.policy.fastembed_reranker import FastEmbedReranker
 from shopsense_api.adapters.policy.foundry_embedder import FoundryEmbedder
 from shopsense_api.adapters.policy.qdrant_index import QdrantPolicyIndex
 from shopsense_api.adapters.prompts.file_repository import FilePromptRepository
+from shopsense_api.adapters.tracing.composite import CompositeTracer
+from shopsense_api.adapters.tracing.jsonl import JsonlTracer
+from shopsense_api.adapters.tracing.langfuse import LangfuseTracer
 from shopsense_api.adapters.workflow.langgraph_ticket import build_graph
 from shopsense_api.adapters.workflow.runner import TicketRunner
 from shopsense_api.application.agents.escalation_reviewer import EscalationReviewer
 from shopsense_api.application.agents.order_actions import OrderActionsAgent
 from shopsense_api.application.ports.memory import MemoryStore
 from shopsense_api.application.ports.orders import OrderTools
+from shopsense_api.application.ports.outbox import OutboxStore
 from shopsense_api.application.ports.policy import Embedder, PolicyIndex, PolicyStore, Reranker
+from shopsense_api.application.ports.tracing import Tracer
 from shopsense_api.application.use_cases.answer_policy import AnswerPolicyQuestion
 from shopsense_api.application.use_cases.decide_return import DecideReturn
+from shopsense_api.application.use_cases.drain_outbox import DrainOutbox
 from shopsense_api.application.use_cases.hybrid_search import HybridSearch
 from shopsense_api.application.use_cases.ingest_policies import IngestPolicies
 from shopsense_api.application.use_cases.judge_groundedness import GroundednessJudge
@@ -61,9 +68,10 @@ class Container:
     providers: dict[str, ModelProvider]
     order_http: httpx.AsyncClient
     embeddings: AsyncOpenAI | None
-    qdrant: AsyncQdrantClient
+    qdrant: AsyncQdrantClient | None
     engine: AsyncEngine | None
     sessions: async_sessionmaker[AsyncSession] | None
+    langfuse_tracer: LangfuseTracer | None = None
 
     def gateway(self, primary_provider: str | None = None) -> LLMGateway:
         gateway = LLMGateway(build_profiles(self.settings), self.providers)
@@ -85,6 +93,8 @@ class Container:
         return FoundryEmbedder(self.embeddings, self.settings.embedding_deployment)
 
     def policy_index(self) -> PolicyIndex:
+        if self.qdrant is None:
+            raise RuntimeError("this process was started without the policy index")
         return QdrantPolicyIndex(
             self.qdrant, self.settings.qdrant_collection, self.settings.embedding_dim
         )
@@ -126,8 +136,10 @@ class Container:
         corpus: list[PolicyDocument],
         checkpointer: BaseCheckpointSaver[Any],
         orders: OrderTools | None = None,
+        tracer: Tracer | None = None,
     ) -> TicketRunner:
         tools = orders or self.order_tools()
+        outbox = self.outbox_store()
         flow = TicketFlow(
             self.triage(),
             tools,
@@ -137,8 +149,19 @@ class Container:
             ),
             answerer=self.answer_policy(),
             reviewer=EscalationReviewer(self.gateway(), FilePromptRepository()),
+            outbox=outbox,
+            drainer=DrainOutbox(outbox, tools),
         )
-        return TicketRunner(build_graph(flow, checkpointer))
+        return TicketRunner(build_graph(flow, checkpointer, tracer or self.tracer()), outbox)
+
+    def outbox_store(self) -> OutboxStore:
+        return SqlOutboxStore(self._require_db())
+
+    def tracer(self) -> Tracer:
+        local = JsonlTracer(Path(self.settings.trace_path))
+        if self.langfuse_tracer is None:
+            return local
+        return CompositeTracer(local, self.langfuse_tracer)
 
     def judge(self, primary_provider: str | None = None) -> GroundednessJudge:
         return GroundednessJudge(self.gateway(primary_provider), FilePromptRepository())
@@ -156,7 +179,7 @@ class Container:
 
 
 @asynccontextmanager
-async def container(settings: Settings) -> AsyncIterator[Container]:
+async def container(settings: Settings, *, qdrant: bool = True) -> AsyncIterator[Container]:
     async with AsyncExitStack() as stack:
         token: TokenProvider | None = None
         if settings.auth_mode is AuthMode.ENTRA:
@@ -170,19 +193,33 @@ async def container(settings: Settings) -> AsyncIterator[Container]:
             base_url=settings.order_platform_url, timeout=settings.order_platform_timeout_s
         )
         stack.push_async_callback(order_http.aclose)
-        qdrant = build_qdrant(settings)
-        stack.push_async_callback(qdrant.close)
+        qdrant_client = build_qdrant(settings) if qdrant else None
+        if qdrant_client is not None:
+            stack.push_async_callback(qdrant_client.close)
         engine = await build_database(settings, stack)
         sessions = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+        langfuse = await build_langfuse(settings, stack)
         yield Container(
             settings=settings,
             providers=build_providers(openai_client, claude_client),
             order_http=order_http,
             embeddings=openai_client,
-            qdrant=qdrant,
+            qdrant=qdrant_client,
             engine=engine,
             sessions=sessions if engine is not None else None,
+            langfuse_tracer=langfuse,
         )
+
+
+async def build_langfuse(settings: Settings, stack: AsyncExitStack) -> LangfuseTracer | None:
+    """Langfuse ingestion is on only when host and keys are all set (M7-1)."""
+    if not (settings.langfuse_host and settings.langfuse_secret_key):
+        return None
+    client = httpx.AsyncClient(base_url=settings.langfuse_host, timeout=10.0)
+    stack.push_async_callback(client.aclose)
+    return LangfuseTracer(
+        client, settings.langfuse_public_key, settings.langfuse_secret_key.get_secret_value()
+    )
 
 
 def build_qdrant(settings: Settings) -> AsyncQdrantClient:
