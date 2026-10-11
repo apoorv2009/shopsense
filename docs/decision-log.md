@@ -20,7 +20,7 @@ Every architecture decision is recorded as an ADR in [`adr/`](adr/). Status valu
 | [D9](adr/009-conversation-and-memory.md) | Conversation model and long-term memory | Accepted | 2026-10-11 |
 | [D10](adr/010-mcp-server-and-tool-safety.md) | MCP server design and tool safety | Accepted | 2026-10-11 |
 | [D11](adr/011-policy-as-data.md) | Policy as data | Accepted | 2026-10-11 |
-| [D12](adr/012-guardrails.md) | Guardrail map and risk gate | Proposed | 2026-10-11 |
+| [D12](adr/012-guardrails.md) | Guardrail map and risk gate | Accepted | 2026-10-11 |
 | D13 | Resilience and observability | Not started | |
 | D14 | Evaluation strategy and data sources | Not started | |
 

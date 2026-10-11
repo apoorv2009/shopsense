@@ -1,6 +1,6 @@
 # High-Level Design
 
-> Status: in progress. Sections reflect decisions D1–D11 (final) and D12 (proposed). Resilience, observability and evaluation (D13–D14) are still to be decided.
+> Status: in progress. Sections reflect decisions D1–D12 (accepted). Resilience, observability and evaluation (D13–D14) are still to be decided.
 
 ## Table of contents
 - [1. Architecture principles](#1-architecture-principles)
@@ -20,7 +20,7 @@
 3. **Defence in depth.** Every threat is stopped by at least two independent layers; the last layer is never an LLM.
 4. **Boundaries follow ownership.** Service boundaries match real-world ownership (support product vs order system), not code modules.
 5. **Everything behind interfaces.** Model providers, evaluators and safety services are swappable by configuration.
-6. **Fail closed.** When a safety dependency is unavailable, the ticket goes to a human (proposed, D12).
+6. **Fail closed.** When a safety dependency is unavailable, the ticket goes to a human (D12).
 
 ## 2. System context and components
 
@@ -178,7 +178,6 @@ The full layered map is in [D12](adr/012-guardrails.md).
 ## 10. Open items
 | # | Topic |
 |---|---|
-| D12 | Guardrail map and risk gate (proposed; 5 open points) |
 | D13 | Resilience and observability |
 | D14 | Evaluation strategy and data sources (Bitext, synthetic tickets, golden set) |
 | LLD | Per-component design: interfaces, `TicketState` schema, data models, tool contracts, prompts, error handling |

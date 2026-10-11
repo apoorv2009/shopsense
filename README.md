@@ -40,7 +40,7 @@ Guiding principle: **LLMs understand and explain; code decides and enforces.**
 | [D9](docs/adr/009-conversation-and-memory.md) | 1 ticket = 1 workflow thread; structured long-term memory; anti-poisoning rule |
 | [D10](docs/adr/010-mcp-server-and-tool-safety.md) | Own MCP server; LLM gets read-only tools; signed approval grants for large refunds |
 | [D11](docs/adr/011-policy-as-data.md) | Policy as data: rules engine decides, RAG explains and cites |
-| [D12](docs/adr/012-guardrails.md) | Layered guardrail map and risk gate *(proposed)* |
+| [D12](docs/adr/012-guardrails.md) | Layered guardrail map and risk gate; fail closed |
 
 ## Milestones
 | # | Scope |

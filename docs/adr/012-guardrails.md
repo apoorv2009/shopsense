@@ -1,12 +1,12 @@
 # D12: Guardrail map and risk gate
 
-**Status:** Proposed · **Date:** 2026-10-11
+**Status:** Accepted · **Date:** 2026-10-11
 
 ## Table of contents
 - [Context](#context)
 - [Guardrail map](#guardrail-map)
 - [Risk gate rules](#risk-gate-rules)
-- [Open points](#open-points)
+- [Resolved points](#resolved-points)
 
 ## Context
 Guardrails decided in D4–D11 are collected into one layered map. Principle: every threat is stopped by at least two independent layers, and the last layer is never an LLM.
@@ -51,8 +51,8 @@ First match wins.
 
 Rule 9 is subsumed by rule 8 but kept separately so the recorded reason matches the escalation-triggers policy.
 
-## Open points
-| # | Question | Proposed answer |
+## Resolved points
+| # | Question | Decision |
 |---|---|---|
 | D12a | Guardrail service unavailable: fail open or closed? | **Fail closed**: route to a human |
 | D12b | When does live groundedness evaluation run? | **Only replies making policy claims**; numeric check on every reply |
