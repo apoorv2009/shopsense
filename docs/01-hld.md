@@ -199,5 +199,5 @@ Details in [D13](adr/013-resilience-and-observability.md).
 ## 11. Open items
 | # | Topic |
 |---|---|
-| Verify at M1 setup | Claude deployable on the trial subscription (else Azure OpenAI fallback); APIM Consumption support for AI-gateway policies (else Developer) |
+| Verify at M1 setup | APIM Consumption support for AI-gateway policies (else Developer); Claude model versions and region offered on Foundry |
 | Revisit ~2026-11-11 | End of free trial: upgrade or tear down ([D15](adr/015-free-trial-profile.md)) |

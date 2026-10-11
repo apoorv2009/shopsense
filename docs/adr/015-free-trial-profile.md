@@ -17,7 +17,7 @@ The project is for learning and runs on a one-month Azure free account: a one-ti
 | Area | Choice |
 |---|---|
 | Region | **East US 2** (single region; broad Foundry model availability). India data residency documented as the production consideration |
-| Model | **Claude on Foundry if deployable on the trial; otherwise an Azure OpenAI chat model on Foundry** (within credits). Selected by configuration in the LLM gateway; prompts and evals rerun on switch |
+| Model | **Claude on Foundry** — confirmed available on the trial subscription (2026-10-11). Azure OpenAI chat model on Foundry remains the configured fallback in the LLM gateway |
 | Embeddings | Azure OpenAI `text-embedding-3-small` on Foundry |
 | APIM | **Consumption** if it supports the required AI-gateway policies; otherwise **Developer**. Verified at M1 setup |
 | PostgreSQL | Flexible Server **B1ms** (12-month free allowance) |
@@ -30,5 +30,4 @@ The project is for learning and runs on a one-month Azure free account: a one-ti
 
 ## Consequences
 - Every choice is a tier or configuration value in the Bicep parameter file; moving to a production profile changes parameters, not architecture.
-- If Claude is not available, deck and documentation state the substitution and the reason.
 - Revisit around 2026-11-11: upgrade to pay-as-you-go or tear down (`azd down`).
