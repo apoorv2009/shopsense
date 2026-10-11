@@ -34,6 +34,7 @@ shopsense/
     contracts/
   frontend/
   infra/
+  milestones/             # m1..m8: README + demo script per milestone (D16)
   evals/
   data/
   docs/
@@ -112,6 +113,8 @@ Dependency rule: `entrypoints → adapters → application → domain`. LangGrap
 | Finalize turn | `turn_history`, memory, audit | No |
 
 ## API endpoints
+Endpoints are introduced in the milestone that needs them ([milestone plan](../02-milestone-plan.md)): email inbound and approvals in M5–M6, the full packaged API with demo chat endpoint in M8.
+
 | Endpoint | Caller | Purpose |
 |---|---|---|
 | `POST /v1/chat/messages` | Customer | Send a message; SSE stream of progress events and the final reply |

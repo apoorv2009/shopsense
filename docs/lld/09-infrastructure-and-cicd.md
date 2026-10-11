@@ -26,6 +26,8 @@
 | L9j | **Log Analytics + workspace-based Application Insights**; Langfuse Cloud (masked traces); Azure Workbook for D13 metrics |
 
 ## Resources
+Resources are provisioned incrementally in the milestone that first needs them ([D16](../adr/016-milestone-alignment.md), [HLD §10](../01-hld.md#10-component-to-milestone-map)).
+
 | Resource | Tier (free-trial profile) |
 |---|---|
 | Resource group | `rg-shopsense-dev-eus2` |

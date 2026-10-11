@@ -14,7 +14,7 @@ Every architecture decision is recorded as an ADR in [`adr/`](adr/). Status valu
 | [D2](adr/002-quality-bar.md) | Quality bar: portfolio-grade | Accepted | 2026-10-10 |
 | [D3](adr/003-service-decomposition.md) | Service decomposition: 3 services | Accepted | 2026-10-10 |
 | [D4](adr/004-gateways.md) | API gateway and AI gateway | Accepted | 2026-10-10 |
-| [D5](adr/005-hosting.md) | Hosting: Azure Container Apps for all milestones | Accepted | 2026-10-10 |
+| [D5](adr/005-hosting.md) | Hosting: Azure Container Apps | Accepted (partly superseded by D16) | 2026-10-10 |
 | [D6](adr/006-data-stores.md) | Data stores | Accepted | 2026-10-10 |
 | [D7](adr/007-agent-topology.md) | Agent topology and shared state | Accepted | 2026-10-11 |
 | [D8](adr/008-channels-ui-identity.md) | Channels, UI, identity and email trust | Accepted | 2026-10-11 |
@@ -25,6 +25,7 @@ Every architecture decision is recorded as an ADR in [`adr/`](adr/). Status valu
 | [D13](adr/013-resilience-and-observability.md) | Resilience and observability | Accepted | 2026-10-11 |
 | [D14](adr/014-evaluation-and-data.md) | Evaluation strategy and data sources | Accepted | 2026-10-11 |
 | [D15](adr/015-free-trial-profile.md) | Free-trial cost profile (revisit ~2026-11-11) | Accepted | 2026-10-11 |
+| [D16](adr/016-milestone-alignment.md) | Milestone alignment (supersedes part of D5) | Accepted | 2026-10-11 |
 
 ## Low-level design
 LLD documents live in [`lld/`](lld/).

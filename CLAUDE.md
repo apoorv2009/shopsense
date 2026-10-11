@@ -9,6 +9,7 @@
    - **Security / Prompt Injection**: Ticket text, user inputs, and untrusted tool outputs MUST be wrapped in explicit trust bounds (`UntrustedText`). Decisions rely strictly on sanitized/parsed domain fields.
    - **Safety Limits**: Refund caps and write operations MUST be enforced downstream in the Order Platform / Payment Gateway, not solely relied upon in LLM prompt checks.
 4. **Scope Constraint**: These standards apply strictly to the Python backend services (`services/`). The Angular frontend application will define its own standards when designed.
+5. **Milestone Fidelity**: The project is assessed against course milestones M1–M8. Each milestone must deliver exactly its brief line, demonstrable from `milestones/mN/`; follow [`docs/02-milestone-plan.md`](docs/02-milestone-plan.md). Enhancements are additive and never replace or delay a brief requirement.
 
 ---
 
@@ -32,7 +33,7 @@ Strictly enforce the dependency rule (Dependencies point INWARD only):
 
 ## 2. Low-Level Design (LLD) & Python Best Practices
 - **Type Safety**: Mandatory 100% type annotations on all signatures (`mypy --strict`).
-- **Data Structures**: Use `dataclasses` (or Pydantic `BaseModel` for validation at edge/adapters). Prefer immutable dataclasses (`frozen=True`) for Domain Entities and Value Objects.
+- **Data Structures**: Use `dataclasses` (or Pydantic `BaseModel` for validation at edge/adapters). Prefer immutable dataclasses (`frozen=True`) for Domain Entities and Value Objects. **Project exception ([D16](docs/adr/016-milestone-alignment.md))**: Pydantic is allowed in the Domain layer as a validation library for entities and value objects (frozen models, no I/O, no framework coupling); `SupportTicket` is a frozen Pydantic model as required by the M1 brief.
 - **SOLID Principles**:
   - Single Responsibility: Keep functions small (<30 lines) and single-purpose.
   - Dependency Inversion: Always depend on abstractions (Python `typing.Protocol` or `abc.ABC`), never on concrete implementations inside Domain/Application layers.

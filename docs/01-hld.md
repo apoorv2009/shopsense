@@ -185,16 +185,18 @@ Details in [D13](adr/013-resilience-and-observability.md).
 - **Observability:** Langfuse for AI traces (steps, model calls, tokens, cost, tools, retrieval, decisions); Application Insights for system telemetry; one trace ID across services; personal data masked before export.
 
 ## 10. Component-to-milestone map
-| Milestone | Components added | Infrastructure first used |
+Built in milestone order; each milestone delivers exactly its brief line ([D16](adr/016-milestone-alignment.md)). Full detail: [milestone plan](02-milestone-plan.md).
+
+| Milestone | Brief deliverable | Infrastructure first used |
 |---|---|---|
-| M1 | LLM gateway module, triage, `SupportTicket` | APIM (both gateways), Foundry, Container Apps, Entra ID |
-| M2 | Order Platform API, order tools, single Order-Actions agent | PostgreSQL `order_platform` |
-| M3 | Customer memory, policy ingestion, Qdrant index, rules table | Qdrant, PostgreSQL `shopsense` |
-| M4 | Hybrid search, reranking, consistency check, groundedness evaluation | Foundry evaluators |
-| M5 | LangGraph workflow, risk gate, human-approval interrupt, checkpoints, reviewer API | Checkpoint tables |
-| M6 | 4 agents, MCP server, chat + email channels, Angular SPA | Logic Apps, Storage queue, Static Web Apps |
-| M7 | Langfuse tracing, retries, circuit breaker, human-queue fallback, fault injection | Langfuse, APIM AI-gateway policies |
-| M8 | Prompt Shields, output guard, approval grants hardening, golden eval, demo endpoint | Content Safety |
+| M1 | Pydantic `SupportTicket` via provider-agnostic client (Claude + Azure OpenAI) | Foundry deployments |
+| M2 | Single Order-Actions agent with order, refund/replace, tracking, calculator tools (guarded) | PostgreSQL (`order_platform`) |
+| M3 | Per-customer memory; Qdrant policy index | Qdrant, PostgreSQL (`shopsense`), embeddings |
+| M4 | Hybrid search, reranking, groundedness evaluation | Foundry evaluators |
+| M5 | LangGraph workflow, routing, human-approval interrupt, checkpointing | Checkpoint tables |
+| M6 | Four-agent team; MCP server; chat and email channels | MCP server, Logic Apps, Storage queue |
+| M7 | Langfuse tracing; retries, circuit breaker, human-queue fallback | Langfuse, Application Insights, APIM AI gateway |
+| M8 | Golden eval; refund-cap and fabrication guardrails; FastAPI packaging with demo chat endpoint | Container Apps, APIM API gateway, Entra, Content Safety, Static Web Apps |
 
 ## 11. Open items
 | # | Topic |

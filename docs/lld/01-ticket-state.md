@@ -22,7 +22,7 @@
 |---|---|
 | L1a | **Sectioned state with strict ownership**: each step writes only its own section; enforced by tests |
 | L1b | **Per-turn sections cleared at each new customer turn**; a compact `turn_history` record is kept; whole-ticket sections persist |
-| L1c | **Sections are frozen dataclasses in the domain layer**; Pydantic only at the edges (LLM structured output, API bodies, MCP payloads); LangGraph is an adapter that maps its state to and from domain objects |
+| L1c | **Sections are frozen dataclasses in the domain layer, except `SupportTicket`, which is a frozen Pydantic model** as the M1 brief requires ([D16](../adr/016-milestone-alignment.md)); other Pydantic use only at the edges (LLM structured output, API bodies, MCP payloads); LangGraph is an adapter that maps its state to and from domain objects |
 | L1d | **Money is an integer number of paise** (`Money` value object); never float or decimal |
 | L1e | **Trust labels**: text from customers or tools is wrapped as `UntrustedText`; fields extracted from it are untrusted; the risk gate and execution use trusted fields only |
 | L1f | **Raw text retained 90 days after ticket closure**; then checkpoints are deleted, keeping the audit log and system-derived summary |
@@ -30,7 +30,7 @@
 ## Layer placement
 | Layer | TicketState-related contents |
 |---|---|
-| Domain | `TicketState` and section dataclasses, `SupportTicket`, `Money`, `UntrustedText`, enums, domain exceptions |
+| Domain | `TicketState` and section dataclasses, `SupportTicket` (frozen Pydantic model), `Money`, `UntrustedText`, enums, domain exceptions |
 | Application | Use cases that take the current state and return **only their own section** |
 | Adapters | LangGraph state schema and mappers; Pydantic models for LLM output and API payloads; Postgres checkpointer |
 

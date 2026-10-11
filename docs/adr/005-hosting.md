@@ -1,6 +1,6 @@
 # D5: Hosting — Azure Container Apps for all milestones
 
-**Status:** Accepted · **Date:** 2026-10-10
+**Status:** Accepted, partly superseded by [D16](016-milestone-alignment.md) (platform built incrementally per milestone) · **Date:** 2026-10-10
 
 ## Context
 APIM as an API gateway needs a backend it can reach ([D4](004-gateways.md)). We also want one consistent environment from M1 to M8.

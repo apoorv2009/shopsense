@@ -1,6 +1,6 @@
 # D10: MCP server design and tool safety
 
-**Status:** Accepted · **Date:** 2026-10-11
+**Status:** Accepted · **Date:** 2026-10-11 · **Milestone note:** in M2 the single agent's refund/replace tools pass through a deterministic code guard; from M5 onwards execution is a code step as described here ([D16](016-milestone-alignment.md))
 
 ## Context
 The MCP server is where money moves. The design goal is that no LLM, even one fully compromised by prompt injection, can cause an unauthorized action.

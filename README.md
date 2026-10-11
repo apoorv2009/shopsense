@@ -28,6 +28,7 @@ Guiding principle: **LLMs understand and explain; code decides and enforces.**
 | Document | Contents |
 |---|---|
 | [Requirements](docs/00-requirements.md) | Actors, channels, scope, success criteria, constraints |
+| [Milestone plan](docs/02-milestone-plan.md) | What each milestone M1–M8 delivers, its demo and acceptance criteria |
 | [High-level design](docs/01-hld.md) | System context, components, deployment, data, request flows |
 | [Decision log](docs/decision-log.md) | Index of every architecture and LLD decision and its status |
 | [LLD](docs/lld/) | Low-level design, one document per component |
@@ -53,8 +54,11 @@ Guiding principle: **LLMs understand and explain; code decides and enforces.**
 | [D13](docs/adr/013-resilience-and-observability.md) | Timeouts, retries, circuit breaker, outbox; Langfuse + Application Insights |
 | [D14](docs/adr/014-evaluation-and-data.md) | Bitext + generated data; 10 eval suites; zero-tolerance safety gates |
 | [D15](docs/adr/015-free-trial-profile.md) | Free-trial cost profile: cheapest tiers, East US 2, model fallback within Azure credits |
+| [D16](docs/adr/016-milestone-alignment.md) | Milestone alignment: each milestone delivers exactly its brief line |
 
 ## Milestones
+Assessment follows these milestones exactly; see the [milestone plan](docs/02-milestone-plan.md).
+
 | # | Scope |
 |---|---|
 | M1 | Ticket → validated `SupportTicket` through a provider-agnostic client |
