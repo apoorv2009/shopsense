@@ -27,6 +27,8 @@
 
 ![ShopSense high-level architecture](diagrams/hld.svg)
 
+Editable source: [`diagrams/hld.excalidraw`](diagrams/hld.excalidraw) (open at [excalidraw.com](https://excalidraw.com) → menu → Open).
+
 The same view as Mermaid, for quick edits:
 
 ```mermaid
