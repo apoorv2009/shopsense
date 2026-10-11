@@ -1,0 +1,55 @@
+﻿─────────────────────────────────────────────────────────── M3 · Memory and policy index ────────────────────────────────────────────────────────────
+┌──────────────────────────────────────────────────── Trusted customer context (system records) ────────────────────────────────────────────────────┐
+│ Customer C0001 previous tickets (system records):                                                                                                 │
+│ - 2026-10-02 TKT-DEMO-2: delivery delay for ORD-100002: resolved                                                                                  │
+│ - 2026-09-20 TKT-DEMO-1: refund request for ORD-100001: resolved                                                                                  │
+│ Preferences: language=hinglish, refund_method=original_payment                                                                                    │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────── 1. Returning customer ──────────────────────────────────────────────────────────────┐
+│ C0001: The refund for ORD-100001 I asked about last month still has not reached me.                                                               │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌───────────────────┬────────────────────────────┬──────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ tool              │ arguments                  │ result                                                                                           │
+├───────────────────┼────────────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ get_refund_status │ {'order_no': 'ORD-100001'} │ {'ok': True, 'data': []}                                                                         │
+├───────────────────┼────────────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ list_my_orders    │ {'limit': 5}               │ {'ok': True, 'data': [{'order_no': 'ORD-100013', 'status': 'delivered', 'placed_at':             │
+│                   │                            │ '2026-10-06T11:00:00Z', 'total_pais                                                              │
+├───────────────────┼────────────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ get_order         │ {'order_no': 'ORD-100001'} │ {'ok': True, 'data': {'order_no': 'ORD-100001', 'status': 'delivered', 'payment_method_type':    │
+│                   │                            │ 'UPI', 'placed_at': '2026-                                                                       │
+├───────────────────┼────────────────────────────┼──────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ get_refund_status │ {'order_no': 'ORD-100001'} │ {'ok': True, 'data': []}                                                                         │
+└───────────────────┴────────────────────────────┴──────────────────────────────────────────────────────────────────────────────────────────────────┘
+outcome: resolved · I have checked the refund status for order ORD-100001 and there is no record of any refund being processed for that order. The 
+order was delivered on 21st September 2026. If you want, I can help you request the refund again. Please let me know.
+
+────────────────────────────────────────────────────────────── Memory after the ticket ──────────────────────────────────────────────────────────────
+┌──────────────────────────────────────────────────── Trusted customer context (system records) ────────────────────────────────────────────────────┐
+│ Customer C0001 previous tickets (system records):                                                                                                 │
+│ - 2026-10-11 TKT-DEMO-3: refund status for ORD-100001: resolved                                                                                   │
+│ - 2026-10-02 TKT-DEMO-2: delivery delay for ORD-100002: resolved                                                                                  │
+│ - 2026-09-20 TKT-DEMO-1: refund request for ORD-100001: resolved                                                                                  │
+│ Preferences: language=hinglish, refund_method=original_payment                                                                                    │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+──────────────────────────────────────────────────── Policy answers (retrieved sections, cited) ─────────────────────────────────────────────────────
+┌───────────────────────────────────────────────────── Can I return an opened vitamin C serum? ─────────────────────────────────────────────────────┐
+│ Opened or used beauty products, including a vitamin C serum, are non-returnable for hygiene reasons unless they are faulty or the seal was broken │
+│ before delivery.                                                                                                                                  │
+│ citations: returns-beauty#2                                                                                                                       │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────── I bought a power bank 10 days ago. Can I still return it? ────────────────────────────────────────────┐
+│ You cannot return your power bank now because it has been 10 days, and power banks sealed in original packaging can only be returned within 7     │
+│ days. Opened power banks can only be returned if faulty.                                                                                          │
+│ citations: returns-electronics-accessories#3, returns-electronics-accessories#1                                                                   │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────── How do I get a refund for a cash on delivery order? ───────────────────────────────────────────────┐
+│ For cash on delivery orders, refunds are sent by bank transfer to an account in the customer's own name, which is verified before the transfer.   │
+│ Customers need to provide the account holder name, account number, and IFSC code securely. Bank transfers are initiated within 7 days of          │
+│ receiving the returned item and typically reach the account within 3 to 5 business days. Alternatively, store credit can be offered.              │
+│ citations: cash-on-delivery#1, cash-on-delivery#2, cash-on-delivery#3                                                                             │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────── Do you deliver to Mars? ─────────────────────────────────────────────────────────────┐
+│ I could not find a clear answer in our policies, so I have passed your question to a support specialist.                                          │
+│ citations: none                                                                                                                                   │
+└───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘

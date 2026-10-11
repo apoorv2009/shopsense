@@ -52,7 +52,7 @@ The project is assessed milestone by milestone against the course brief. **Each 
 | Acceptance | Tool-use suite: right tool, right arguments; no refund above cap executes |
 
 ## M3 Memory and policy index
-**Status:** Planned. Execution plan: [plans/m3.md](plans/m3.md).
+**Status:** ✅ Done (2026-10-11): 14 policy documents indexed (44 chunks); retrieval hit@4 97%, MRR@10 0.858 (dense baseline); memory recall and write-back live. Execution plan: [plans/m3.md](plans/m3.md) · Demo: [`milestones/m3`](../milestones/m3/README.md). Qdrant Container App deferred to M8 packaging.
 
 **Brief:** *Persistent per-customer memory (past tickets, preferences) + a Qdrant index over returns/shipping/warranty policy documents.*
 

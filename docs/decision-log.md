@@ -15,7 +15,7 @@ Every architecture decision is recorded as an ADR in [`adr/`](adr/). Status valu
 | [D3](adr/003-service-decomposition.md) | Service decomposition: 3 services | Accepted | 2026-10-10 |
 | [D4](adr/004-gateways.md) | API gateway and AI gateway | Accepted | 2026-10-10 |
 | [D5](adr/005-hosting.md) | Hosting: Azure Container Apps | Accepted (partly superseded by D16) | 2026-10-10 |
-| [D6](adr/006-data-stores.md) | Data stores | Accepted | 2026-10-10 |
+| [D6](adr/006-data-stores.md) | Data stores (amended 2026-10-11: Qdrant on ephemeral storage, rebuilt by ingestion) | Accepted | 2026-10-10 |
 | [D7](adr/007-agent-topology.md) | Agent topology and shared state | Accepted | 2026-10-11 |
 | [D8](adr/008-channels-ui-identity.md) | Channels, UI, identity and email trust | Accepted | 2026-10-11 |
 | [D9](adr/009-conversation-and-memory.md) | Conversation model and long-term memory | Accepted | 2026-10-11 |

@@ -44,6 +44,19 @@ class Settings(BaseSettings):
     llm_max_retries: int = 5  # SDK retries 429/5xx with backoff, honouring Retry-After
     log_json: bool = True
 
+    # M3: embeddings, policy index (Qdrant) and the shopsense PostgreSQL database
+    embedding_deployment: str = "text-embedding-3-small"
+    embedding_dim: int = 1_536
+    # Empty URL = Qdrant embedded mode on local disk (no server needed for demos and eval)
+    qdrant_url: str = ""
+    qdrant_path: str = "data/qdrant-local"
+    qdrant_api_key: SecretStr | None = None
+    qdrant_collection: str = "policy_chunks"
+    policy_dir: str = "data/policies"
+    # Empty URL = no database; memory and policy rules then need one (see infra/m3)
+    database_url: str = ""
+    db_token_scope: str = "https://ossrdbms-aad.database.windows.net/.default"  # noqa: S105
+
     @property
     def foundry_openai_base_url(self) -> str:
         return f"https://{self.foundry_resource}.openai.azure.com/openai/v1/"

@@ -1,7 +1,7 @@
 """Composition root: builds adapters and wires them into use cases (L2f).
 
-`container()` owns every network resource (Entra credential, SDK clients) and closes
-them on exit; callers never construct adapters themselves.
+`container()` owns every network resource (Entra credential, SDK clients, database engine,
+Qdrant client) and closes them on exit; callers never construct adapters themselves.
 """
 
 from collections.abc import AsyncIterator, Awaitable, Callable
@@ -12,14 +12,30 @@ import httpx
 from anthropic import AsyncAnthropicFoundry
 from azure.identity.aio import DefaultAzureCredential, get_bearer_token_provider
 from openai import AsyncOpenAI
+from qdrant_client import AsyncQdrantClient
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 
+from shopsense_api.adapters.db.sql_stores import SqlMemoryStore, SqlPolicyStore
 from shopsense_api.adapters.llm.anthropic_foundry import AnthropicFoundryProvider
 from shopsense_api.adapters.llm.foundry_openai import FoundryOpenAIProvider
 from shopsense_api.adapters.llm.gateway import AgentProfile, LLMGateway
 from shopsense_api.adapters.llm.provider import ModelProvider, ModelRoute
 from shopsense_api.adapters.orders.http_order_tools import HttpOrderTools
+from shopsense_api.adapters.policy.foundry_embedder import FoundryEmbedder
+from shopsense_api.adapters.policy.qdrant_index import QdrantPolicyIndex
 from shopsense_api.adapters.prompts.file_repository import FilePromptRepository
 from shopsense_api.application.agents.order_actions import OrderActionsAgent
+from shopsense_api.application.ports.memory import MemoryStore
+from shopsense_api.application.ports.policy import Embedder, PolicyIndex, PolicyStore
+from shopsense_api.application.use_cases.answer_policy import AnswerPolicyQuestion
+from shopsense_api.application.use_cases.ingest_policies import IngestPolicies
+from shopsense_api.application.use_cases.memory import RecallCustomer, RememberTicket
+from shopsense_api.application.use_cases.search_policy import SearchPolicy
 from shopsense_api.application.use_cases.triage_ticket import TriageTicket
 from shopsense_api.entrypoints.settings import AuthMode, Settings
 
@@ -33,6 +49,10 @@ class Container:
     settings: Settings
     providers: dict[str, ModelProvider]
     order_http: httpx.AsyncClient
+    embeddings: AsyncOpenAI | None
+    qdrant: AsyncQdrantClient
+    engine: AsyncEngine | None
+    sessions: async_sessionmaker[AsyncSession] | None
 
     def gateway(self, primary_provider: str | None = None) -> LLMGateway:
         gateway = LLMGateway(build_profiles(self.settings), self.providers)
@@ -47,6 +67,46 @@ class Container:
             prompts=FilePromptRepository(),
             tools=HttpOrderTools(self.order_http),
         )
+
+    def embedder(self) -> Embedder:
+        if self.embeddings is None:
+            raise RuntimeError("embeddings need SHOPSENSE_FOUNDRY_RESOURCE")
+        return FoundryEmbedder(self.embeddings, self.settings.embedding_deployment)
+
+    def policy_index(self) -> PolicyIndex:
+        return QdrantPolicyIndex(
+            self.qdrant, self.settings.qdrant_collection, self.settings.embedding_dim
+        )
+
+    def policy_store(self) -> PolicyStore:
+        return SqlPolicyStore(self._require_db())
+
+    def memory_store(self) -> MemoryStore:
+        return SqlMemoryStore(self._require_db())
+
+    def ingest_policies(self) -> IngestPolicies:
+        return IngestPolicies(self.policy_store(), self.policy_index(), self.embedder())
+
+    def search_policy(self) -> SearchPolicy:
+        return SearchPolicy(self.embedder(), self.policy_index())
+
+    def answer_policy(self, primary_provider: str | None = None) -> AnswerPolicyQuestion:
+        return AnswerPolicyQuestion(
+            llm=self.gateway(primary_provider),
+            prompts=FilePromptRepository(),
+            search=self.search_policy(),
+        )
+
+    def recall(self) -> RecallCustomer:
+        return RecallCustomer(self.memory_store())
+
+    def remember(self) -> RememberTicket:
+        return RememberTicket(self.memory_store())
+
+    def _require_db(self) -> async_sessionmaker[AsyncSession]:
+        if self.sessions is None:
+            raise RuntimeError("memory and policy rules need SHOPSENSE_DATABASE_URL")
+        return self.sessions
 
 
 @asynccontextmanager
@@ -64,7 +124,41 @@ async def container(settings: Settings) -> AsyncIterator[Container]:
             base_url=settings.order_platform_url, timeout=settings.order_platform_timeout_s
         )
         stack.push_async_callback(order_http.aclose)
-        yield Container(settings, build_providers(openai_client, claude_client), order_http)
+        qdrant = build_qdrant(settings)
+        stack.push_async_callback(qdrant.close)
+        engine = await build_database(settings, stack)
+        sessions = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+        yield Container(
+            settings=settings,
+            providers=build_providers(openai_client, claude_client),
+            order_http=order_http,
+            embeddings=openai_client,
+            qdrant=qdrant,
+            engine=engine,
+            sessions=sessions if engine is not None else None,
+        )
+
+
+def build_qdrant(settings: Settings) -> AsyncQdrantClient:
+    if settings.qdrant_url:
+        key = settings.qdrant_api_key.get_secret_value() if settings.qdrant_api_key else None
+        return AsyncQdrantClient(url=settings.qdrant_url, api_key=key)
+    return AsyncQdrantClient(path=settings.qdrant_path)
+
+
+async def build_database(settings: Settings, stack: AsyncExitStack) -> AsyncEngine | None:
+    if not settings.database_url:
+        return None
+    connect_args: dict[str, str] = {}
+    if settings.auth_mode is AuthMode.ENTRA:
+        credential = await stack.enter_async_context(DefaultAzureCredential())
+        access = await credential.get_token(settings.db_token_scope)
+        connect_args = {"password": access.token, "ssl": "require"}
+    engine = create_async_engine(
+        settings.database_url, connect_args=connect_args, pool_pre_ping=True
+    )
+    stack.push_async_callback(engine.dispose)
+    return engine
 
 
 def build_clients(
@@ -126,4 +220,8 @@ def build_profiles(settings: Settings) -> dict[str, AgentProfile]:
             effort=settings.triage_effort,
         )
         routes.insert(0, claude)
-    return {"triage": AgentProfile(tuple(routes)), "order_actions": AgentProfile(agent_routes)}
+    return {
+        "triage": AgentProfile(tuple(routes)),
+        "order_actions": AgentProfile(agent_routes),
+        "policy": AgentProfile(tuple(routes)),
+    }

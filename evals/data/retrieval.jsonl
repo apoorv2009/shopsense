@@ -1,0 +1,31 @@
+{"id": "R01", "question": "I bought headphones 12 days ago, can I still return them?", "category": "electronics", "expected": ["returns-electronics#1"]}
+{"id": "R02", "question": "How many days do I have to return a fast charger?", "category": "electronics", "expected": ["returns-electronics-accessories#1"]}
+{"id": "R03", "question": "return window for a power bank", "category": "electronics", "expected": ["returns-electronics-accessories#1"]}
+{"id": "R04", "question": "I want to return a smartphone bought 14 days ago", "category": "electronics", "expected": ["returns-electronics#1"]}
+{"id": "R05", "question": "Bluetooth speaker returned on day 14, is that allowed?", "category": "electronics", "expected": ["returns-electronics#1"]}
+{"id": "R06", "question": "return window for a mixer grinder", "category": "electronics", "expected": ["returns-electronics#1"]}
+{"id": "R07", "question": "return a cotton kurta I bought 40 days ago", "category": "apparel", "expected": ["returns-apparel#1"]}
+{"id": "R08", "question": "running shoes size exchange policy", "category": "apparel", "expected": ["returns-apparel#1", "returns-apparel#3"]}
+{"id": "R09", "question": "can I return basmati rice I ordered by mistake", "category": "groceries", "expected": ["returns-groceries#1"]}
+{"id": "R10", "question": "the cold-pressed oil bottle arrived leaking, what should I do", "category": "groceries", "expected": ["returns-groceries#2", "damaged-wrong-missing#2"]}
+{"id": "R11", "question": "return a pressure cooker I already used for cooking", "category": "home_kitchen", "expected": ["returns-home-kitchen#1"]}
+{"id": "R12", "question": "return window for cookware sets", "category": "home_kitchen", "expected": ["returns-home-kitchen#1"]}
+{"id": "R13", "question": "can I return an opened vitamin C serum", "category": "beauty", "expected": ["returns-beauty#2"]}
+{"id": "R14", "question": "unopened sunscreen return within how many days", "category": "beauty", "expected": ["returns-beauty#1"]}
+{"id": "R15", "question": "my laptop arrived with a cracked screen, how do I claim", "category": null, "expected": ["damaged-wrong-missing#2"]}
+{"id": "R16", "question": "I received the wrong item in my order", "category": null, "expected": ["damaged-wrong-missing#3"]}
+{"id": "R17", "question": "one item was missing from my delivery box", "category": null, "expected": ["damaged-wrong-missing#3"]}
+{"id": "R18", "question": "how long do I have to report a damaged delivery", "category": null, "expected": ["damaged-wrong-missing#1"]}
+{"id": "R19", "question": "how long until my refund reaches my card", "category": null, "expected": ["refund-methods#2"]}
+{"id": "R20", "question": "refund to the original payment method for UPI orders", "category": null, "expected": ["refund-methods#1"]}
+{"id": "R21", "question": "is a refund above 5000 rupees released immediately", "category": null, "expected": ["refund-methods#3"]}
+{"id": "R22", "question": "is the shipping fee refunded when the item arrives damaged", "category": null, "expected": ["shipping-delivery#2"]}
+{"id": "R23", "question": "what is the shipping charge for an order below 499 rupees", "category": null, "expected": ["shipping-delivery#1"]}
+{"id": "R24", "question": "can I cancel my order after it was dispatched", "category": null, "expected": ["order-cancellation#2"]}
+{"id": "R25", "question": "cancel my order before it ships, will I get a full refund", "category": null, "expected": ["order-cancellation#1", "order-cancellation#3"]}
+{"id": "R26", "question": "how long is the warranty on a smartwatch", "category": "electronics", "expected": ["warranty#1"]}
+{"id": "R27", "question": "cash on delivery order refund, which method is used", "category": null, "expected": ["cash-on-delivery#1"]}
+{"id": "R28", "question": "how many business days until the bank transfer for a cash on delivery refund", "category": null, "expected": ["cash-on-delivery#2"]}
+{"id": "R29", "question": "support asked for my bank account number, is that safe", "category": null, "expected": ["cash-on-delivery#3"]}
+{"id": "R30", "question": "store credit for a late delivery", "category": null, "expected": ["goodwill-compensation#1"]}
+{"id": "R31", "question": "can support give me 2000 rupees for the inconvenience", "category": null, "expected": ["goodwill-compensation#2"]}

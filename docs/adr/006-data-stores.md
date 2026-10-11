@@ -28,8 +28,11 @@ Container Apps have no permanent disk, so file databases such as SQLite are not 
 |---|---|---|
 | PostgreSQL `order_platform` | Customers, products, orders, shipments, refunds | Order Platform only |
 | PostgreSQL `shopsense` | Tickets, memory, checkpoints, approvals, audit log, policy rules table | ShopSense API only |
-| Qdrant (Container App, Azure Files) | Policy chunks, dense and sparse vectors | ShopSense API |
+| Qdrant (Container App, ephemeral storage; see amendment) | Policy chunks, dense and sparse vectors | ShopSense API |
 | Key Vault | Secrets, approval-grant signing key | All, via managed identity |
+
+## Amendment (2026-10-11, M3)
+Qdrant does not support network file systems, and Azure Files is SMB, so option (b) risks a corrupted index. Qdrant now runs as a Container App with **ephemeral storage**, scale 0–1, external ingress with an API key (the ShopSense API runs locally until M8). The index is derived data: the policy files in git and the rules table in PostgreSQL are the source of truth, and an idempotent ingestion step rebuilds it in seconds; demo and evaluation scripts ingest first. Tests use the Qdrant client's in-process local mode. Plan: [plans/m3.md](../plans/m3.md).
 
 ## Consequences
 - Each service owns its database; no cross-service database access.
