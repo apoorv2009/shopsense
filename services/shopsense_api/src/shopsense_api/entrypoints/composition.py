@@ -8,6 +8,7 @@ from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import AsyncExitStack, asynccontextmanager
 from dataclasses import dataclass, replace
 
+import httpx
 from anthropic import AsyncAnthropicFoundry
 from azure.identity.aio import DefaultAzureCredential, get_bearer_token_provider
 from openai import AsyncOpenAI
@@ -16,7 +17,9 @@ from shopsense_api.adapters.llm.anthropic_foundry import AnthropicFoundryProvide
 from shopsense_api.adapters.llm.foundry_openai import FoundryOpenAIProvider
 from shopsense_api.adapters.llm.gateway import AgentProfile, LLMGateway
 from shopsense_api.adapters.llm.provider import ModelProvider, ModelRoute
+from shopsense_api.adapters.orders.http_order_tools import HttpOrderTools
 from shopsense_api.adapters.prompts.file_repository import FilePromptRepository
+from shopsense_api.application.agents.order_actions import OrderActionsAgent
 from shopsense_api.application.use_cases.triage_ticket import TriageTicket
 from shopsense_api.entrypoints.settings import AuthMode, Settings
 
@@ -29,6 +32,7 @@ TokenProvider = Callable[[], Awaitable[str]]
 class Container:
     settings: Settings
     providers: dict[str, ModelProvider]
+    order_http: httpx.AsyncClient
 
     def gateway(self, primary_provider: str | None = None) -> LLMGateway:
         gateway = LLMGateway(build_profiles(self.settings), self.providers)
@@ -36,6 +40,13 @@ class Container:
 
     def triage(self, primary_provider: str | None = None) -> TriageTicket:
         return TriageTicket(llm=self.gateway(primary_provider), prompts=FilePromptRepository())
+
+    def order_actions(self, primary_provider: str | None = None) -> OrderActionsAgent:
+        return OrderActionsAgent(
+            llm=self.gateway(primary_provider),
+            prompts=FilePromptRepository(),
+            tools=HttpOrderTools(self.order_http),
+        )
 
 
 @asynccontextmanager
@@ -49,7 +60,11 @@ async def container(settings: Settings) -> AsyncIterator[Container]:
         for client in (openai_client, claude_client):
             if client is not None:
                 stack.push_async_callback(client.close)
-        yield Container(settings, build_providers(openai_client, claude_client))
+        order_http = httpx.AsyncClient(
+            base_url=settings.order_platform_url, timeout=settings.order_platform_timeout_s
+        )
+        stack.push_async_callback(order_http.aclose)
+        yield Container(settings, build_providers(openai_client, claude_client), order_http)
 
 
 def build_clients(
@@ -102,6 +117,7 @@ def build_profiles(settings: Settings) -> dict[str, AgentProfile]:
         output_mode=settings.second_vendor_output_mode,
     )
     routes = [base, second]
+    agent_routes = tuple(replace(r, max_tokens=settings.agent_max_tokens) for r in routes)
     if settings.claude_enabled:
         claude = replace(
             base,
@@ -110,4 +126,4 @@ def build_profiles(settings: Settings) -> dict[str, AgentProfile]:
             effort=settings.triage_effort,
         )
         routes.insert(0, claude)
-    return {"triage": AgentProfile(tuple(routes))}
+    return {"triage": AgentProfile(tuple(routes)), "order_actions": AgentProfile(agent_routes)}

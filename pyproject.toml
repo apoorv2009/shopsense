@@ -9,7 +9,7 @@ dependencies = []
 package = false
 
 [tool.uv.workspace]
-members = ["services/shopsense_api", "libs/contracts", "evals"]
+members = ["services/shopsense_api", "services/order_platform", "libs/contracts", "evals"]
 
 [dependency-groups]
 dev = [
@@ -29,8 +29,8 @@ select = ["E", "F", "W", "I", "N", "UP", "B", "A", "C4", "SIM", "RUF", "ASYNC", 
 ignore = ["S101"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["shopsense_api", "shopsense_contracts", "shopsense_evals"]
-known-local-folder = ["support"]
+known-first-party = ["shopsense_api", "shopsense_contracts", "shopsense_evals", "order_platform"]
+known-local-folder = ["support", "memory"]
 
 [tool.ruff.lint.flake8-tidy-imports.banned-api]
 "pydantic_settings".msg = "Settings belong in entrypoints only."
@@ -43,13 +43,16 @@ known-local-folder = ["support"]
 strict = true
 python_version = "3.13"
 plugins = ["pydantic.mypy"]
-mypy_path = ["services/shopsense_api/src", "services/shopsense_api/tests/unit", "libs/contracts/src", "evals/src"]
+mypy_path = ["services/shopsense_api/src", "services/shopsense_api/tests/unit", "services/order_platform/src", "services/order_platform/tests/unit", "libs/contracts/src", "evals/src"]
 explicit_package_bases = true
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
-testpaths = ["services/shopsense_api/tests", "evals/tests"]
-pythonpath = ["services/shopsense_api/tests/unit"]
-markers = ["integration: calls real cloud services (costs tokens); opt-in with -m integration"]
+testpaths = ["services/shopsense_api/tests", "services/order_platform/tests", "evals/tests"]
+pythonpath = ["services/shopsense_api/tests/unit", "services/order_platform/tests/unit"]
+markers = [
+    "integration: calls real cloud services (costs tokens); opt-in with -m integration",
+    "db: needs PostgreSQL (ORDER_PLATFORM_TEST_DATABASE_URL); skipped when not set",
+]
 addopts = "-m 'not integration' --import-mode=importlib"

@@ -6,14 +6,16 @@ Refusals and invalid output are not retried on another provider: the caller deci
 """
 
 import time
-from collections.abc import Mapping
+from collections.abc import Awaitable, Callable, Mapping
 from dataclasses import dataclass
+from typing import Protocol
 
 import structlog
 from pydantic import BaseModel
 
 from shopsense_api.adapters.llm.provider import ModelProvider, ModelRoute, ProviderError
-from shopsense_api.application.ports.llm import StructuredRequest, StructuredResponse
+from shopsense_api.application.ports.llm import StructuredRequest, StructuredResponse, TokenUsage
+from shopsense_api.application.ports.tool_llm import ToolTurn, ToolTurnRequest
 from shopsense_api.domain.exceptions import LLMUnavailable
 
 log = structlog.get_logger(__name__)
@@ -22,6 +24,17 @@ log = structlog.get_logger(__name__)
 @dataclass(frozen=True, slots=True)
 class AgentProfile:
     routes: tuple[ModelRoute, ...]
+
+
+class _Metered(Protocol):
+    @property
+    def provider(self) -> str: ...
+
+    @property
+    def model(self) -> str: ...
+
+    @property
+    def usage(self) -> TokenUsage: ...
 
 
 class LLMGateway:
@@ -34,20 +47,14 @@ class LLMGateway:
     async def generate_structured[T: BaseModel](
         self, request: StructuredRequest[T]
     ) -> StructuredResponse[T]:
-        profile = self._profiles[request.profile]
-        failures: list[str] = []
-        for route in profile.routes:
-            provider = self._providers.get(route.provider)
-            if provider is None:
-                failures.append(f"{route.provider}: not configured")
-                continue
-            try:
-                return await self._call(provider, route, request)
-            except ProviderError as exc:
-                failures.append(f"{route.provider}: {exc}")
-                if not exc.transient:
-                    break
-        raise LLMUnavailable("; ".join(failures) or "no routes configured")
+        return await self._route(
+            request.profile, lambda provider, route: provider.generate(route, request)
+        )
+
+    async def complete_with_tools(self, request: ToolTurnRequest) -> ToolTurn:
+        return await self._route(
+            request.profile, lambda provider, route: provider.complete_with_tools(route, request)
+        )
 
     def with_primary(self, provider_name: str) -> "LLMGateway":
         """Return a gateway whose profiles try the named provider first (demos, comparisons)."""
@@ -57,18 +64,34 @@ class LLMGateway:
         }
         return LLMGateway(reordered, self._providers)
 
-    async def _call[T: BaseModel](
-        self, provider: ModelProvider, route: ModelRoute, request: StructuredRequest[T]
-    ) -> StructuredResponse[T]:
-        started = time.perf_counter()
-        response = await provider.generate(route, request)
-        log.info(
-            "llm_call",
-            profile=request.profile,
-            provider=response.provider,
-            model=response.model,
-            input_tokens=response.usage.input_tokens,
-            output_tokens=response.usage.output_tokens,
-            latency_ms=round((time.perf_counter() - started) * 1000),
-        )
-        return response
+    async def _route[R: _Metered](
+        self, profile: str, call: Callable[[ModelProvider, ModelRoute], Awaitable[R]]
+    ) -> R:
+        failures: list[str] = []
+        for route in self._profiles[profile].routes:
+            provider = self._providers.get(route.provider)
+            if provider is None:
+                failures.append(f"{route.provider}: not configured")
+                continue
+            try:
+                return await _metered(profile, call(provider, route))
+            except ProviderError as exc:
+                failures.append(f"{route.provider}: {exc}")
+                if not exc.transient:
+                    break
+        raise LLMUnavailable("; ".join(failures) or "no routes configured")
+
+
+async def _metered[R: _Metered](profile: str, pending: Awaitable[R]) -> R:
+    started = time.perf_counter()
+    response = await pending
+    log.info(
+        "llm_call",
+        profile=profile,
+        provider=response.provider,
+        model=response.model,
+        input_tokens=response.usage.input_tokens,
+        output_tokens=response.usage.output_tokens,
+        latency_ms=round((time.perf_counter() - started) * 1000),
+    )
+    return response

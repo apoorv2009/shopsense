@@ -34,6 +34,10 @@ class Settings(BaseSettings):
     claude_enabled: bool = False
     claude_deployment: str = "claude-opus-5-5"
 
+    order_platform_url: str = "http://localhost:8001"
+    order_platform_timeout_s: float = 5.0
+    agent_max_tokens: int = 1_500
+
     triage_effort: str = "low"
     triage_max_tokens: int = 2_000
     llm_timeout_s: float = 60.0

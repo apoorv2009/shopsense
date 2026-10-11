@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from shopsense_api.adapters.llm.gateway import AgentProfile, LLMGateway
 from shopsense_api.adapters.llm.provider import ModelRoute, ProviderError
 from shopsense_api.application.ports.llm import StructuredRequest, StructuredResponse, TokenUsage
+from shopsense_api.application.ports.tool_llm import ToolTurn, ToolTurnRequest
 from shopsense_api.domain.exceptions import LLMRefused, LLMUnavailable
 from shopsense_api.domain.ticket.support_ticket import SupportTicket
 
@@ -25,6 +26,12 @@ class FakeProvider:
         output = make()
         assert isinstance(output, request.output_type)
         return StructuredResponse(output, self.name, route.model, TokenUsage(1, 1))
+
+    async def complete_with_tools(self, route: ModelRoute, request: ToolTurnRequest) -> ToolTurn:
+        self.calls += 1
+        if self._outcome is not None:
+            raise self._outcome
+        return ToolTurn("done", (), self.name, route.model, TokenUsage(1, 1))
 
 
 def route(provider: str) -> ModelRoute:
@@ -81,3 +88,11 @@ async def test_with_primary_reorders_routes() -> None:
     response = await gateway(a, b).with_primary("b").generate_structured(REQUEST)
     assert response.provider == "b"
     assert a.calls == 0
+
+
+async def test_tool_turns_use_the_same_routing_and_fallback() -> None:
+    primary = FakeProvider("a", ProviderError("RateLimitError", transient=True))
+    secondary = FakeProvider("b")
+    request = ToolTurnRequest(profile="triage", system_prompt="s", messages=(), tools=())
+    turn = await gateway(primary, secondary).complete_with_tools(request)
+    assert turn.provider == "b"

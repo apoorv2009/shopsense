@@ -6,6 +6,7 @@ from typing import Protocol
 from pydantic import BaseModel, ValidationError
 
 from shopsense_api.application.ports.llm import StructuredRequest, StructuredResponse
+from shopsense_api.application.ports.tool_llm import ToolTurn, ToolTurnRequest
 
 
 @dataclass(frozen=True, slots=True)
@@ -37,6 +38,10 @@ class ModelProvider(Protocol):
         self, route: ModelRoute, request: StructuredRequest[T]
     ) -> StructuredResponse[T]:
         """Raise ProviderError, LLMRefused or LLMOutputInvalid on failure."""
+        ...
+
+    async def complete_with_tools(self, route: ModelRoute, request: ToolTurnRequest) -> ToolTurn:
+        """One tool-calling turn. Raise ProviderError or LLMRefused on failure."""
         ...
 
 

@@ -1,0 +1,19 @@
+# Local development database for the Order Platform (M2, P1).
+#   docker compose -f infra/local/compose.yml up -d
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: shopsense
+      POSTGRES_PASSWORD: shopsense   # local-only development credential
+      POSTGRES_DB: order_platform
+    ports:
+      - "5432:5432"
+    volumes:
+      - shopsense-pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shopsense -d order_platform"]
+      interval: 5s
+      retries: 10
+volumes:
+  shopsense-pg:

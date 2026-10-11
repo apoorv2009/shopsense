@@ -13,6 +13,7 @@ from pydantic import BaseModel, ValidationError
 
 from shopsense_api.adapters.llm.provider import ModelRoute, ProviderError, validation_problems
 from shopsense_api.application.ports.llm import StructuredRequest, StructuredResponse, TokenUsage
+from shopsense_api.application.ports.tool_llm import ToolTurn, ToolTurnRequest
 from shopsense_api.domain.exceptions import LLMOutputInvalid, LLMRefused
 
 _TRANSIENT = (
@@ -48,6 +49,11 @@ class AnthropicFoundryProvider:
         except anthropic.APIStatusError as exc:
             raise ProviderError(f"HTTP {exc.status_code}", transient=False) from exc
         return self._to_response(route, message)
+
+    async def complete_with_tools(self, route: ModelRoute, request: ToolTurnRequest) -> ToolTurn:
+        # Claude is disabled on the free-trial subscription (D15); tool calling for it is
+        # added when a Claude deployment is enabled.
+        raise ProviderError("tool calling not implemented for claude-foundry", transient=False)
 
     def _to_response[T: BaseModel](
         self, route: ModelRoute, message: "anthropic.types.ParsedMessage[T]"

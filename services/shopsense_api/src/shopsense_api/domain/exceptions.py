@@ -31,3 +31,13 @@ class LLMOutputInvalid(DomainException):
     def __init__(self, problems: tuple[str, ...]) -> None:
         super().__init__("; ".join(problems))
         self.problems = problems
+
+
+class OrderToolError(DomainException):
+    """The order system rejected or could not complete a tool call (LLD-4 error model)."""
+
+    def __init__(self, code: str, message: str, *, retryable: bool = False) -> None:
+        super().__init__(f"{code}: {message}")
+        self.code = code
+        self.message = message
+        self.retryable = retryable
