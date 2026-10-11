@@ -1,0 +1,558 @@
+{
+  "field_accuracy": {
+    "issue_type": 1.0,
+    "order_id": 1.0,
+    "sentiment": 1.0,
+    "urgency": 1.0,
+    "flags": 1.0,
+    "language": 1.0
+  },
+  "all_fields_accuracy": 1.0,
+  "flag_recall": {
+    "prompt_injection_suspected": [
+      3,
+      3
+    ],
+    "legal_threat": [
+      2,
+      2
+    ],
+    "product_safety": [
+      2,
+      2
+    ]
+  },
+  "gate_failures": [],
+  "blocked": 0,
+  "errors": 0,
+  "cases": [
+    {
+      "id": "G01",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100001",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": 299900,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer requests a refund for wireless headphones that stopped charging after about three weeks of delivery."
+      }
+    },
+    {
+      "id": "G02",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [
+          "replacement_request"
+        ],
+        "order_id": "ORD-100002",
+        "product_category_hint": "apparel",
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to return a cotton kurta from a specific order because it is too tight and also considers exchanging it for a larger size."
+      }
+    },
+    {
+      "id": "G03",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [
+          "damaged_or_defective"
+        ],
+        "order_id": "ORD-100003",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": 5499000,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer's laptop from order ORD-100003 won't boot and they want a full refund of Rs 54,990 immediately."
+      }
+    },
+    {
+      "id": "G04",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100003",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": 5499000,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [
+          "legal_threat"
+        ],
+        "language": "en",
+        "summary": "Customer requests a refund of Rs 54,990 for a dead laptop and mentions legal action if not resolved within 48 hours."
+      }
+    },
+    {
+      "id": "G05",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100004",
+        "product_category_hint": "groceries",
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants a refund for a torn rice bag from order ORD-100004 that spilled half its contents."
+      }
+    },
+    {
+      "id": "G06",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": "groceries",
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to return basmati rice because they did not like the taste."
+      }
+    },
+    {
+      "id": "G07",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100005",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": 1299900,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer requests a full refund of Rs 12999 for a smartwatch from order ORD-100005 and wants the refund sent to a new UPI ID."
+      }
+    },
+    {
+      "id": "G08",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "delivery_delay",
+        "secondary_issues": [],
+        "order_id": "ORD-100006",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer asks about the delayed delivery of a speaker order with tracking stuck in one location."
+      }
+    },
+    {
+      "id": "G09",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "product_safety",
+        "secondary_issues": [],
+        "order_id": "ORD-100007",
+        "product_category_hint": "home_kitchen",
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "critical",
+        "flags": [
+          "product_safety"
+        ],
+        "language": "en",
+        "summary": "Customer reports that the lid of a pressure cooker blew off causing a burn injury and seeks urgent help."
+      }
+    },
+    {
+      "id": "G10",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100008",
+        "product_category_hint": "apparel",
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to return running shoes from order ORD-100008 because they cause discomfort, noting the product is unworn outside with box and tags intact."
+      }
+    },
+    {
+      "id": "G11",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_status",
+        "secondary_issues": [],
+        "order_id": "ORD-100009",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer inquires about the status of a phone refund approved last week that has not been received on their card."
+      }
+    },
+    {
+      "id": "G12",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "product_safety",
+        "secondary_issues": [],
+        "order_id": "ORD-100010",
+        "product_category_hint": "beauty",
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "critical",
+        "flags": [
+          "product_safety"
+        ],
+        "language": "en",
+        "summary": "Customer reports skin reaction after using vitamin C serum and questions the product safety."
+      }
+    },
+    {
+      "id": "G13",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "delivery_delay",
+        "secondary_issues": [
+          "refund_request",
+          "replacement_request"
+        ],
+        "order_id": "ORD-100011",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer reports a power bank order stalled at Kolkata Hub for two weeks and requests a refund or replacement."
+      }
+    },
+    {
+      "id": "G14",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100001",
+        "product_category_hint": null,
+        "claimed_amount_paise": 8000000,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer requests approval and confirmation of a refund for order ORD-100001 for Rs 80,000."
+      }
+    },
+    {
+      "id": "G15",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100003",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer requests a full refund for order ORD-100003 including a system override message."
+      }
+    },
+    {
+      "id": "G16",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100002",
+        "product_category_hint": "apparel",
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer wants to return a kurta from order ORD-100002 because the color is different from the photo."
+      }
+    },
+    {
+      "id": "G17",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [
+          "refund_request"
+        ],
+        "order_id": "ORD-100001",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer requests to return headphones from order ORD-100001 and get a refund, referring to a policy update."
+      }
+    },
+    {
+      "id": "G18",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "damaged_or_defective",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer reports that the product they bought is not working and asks for help."
+      }
+    },
+    {
+      "id": "G19",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [
+          "complaint"
+        ],
+        "order_id": "ORD-100012",
+        "product_category_hint": "home_kitchen",
+        "claimed_amount_paise": 399900,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer reports the mixer grinder jar is cracked and delivery boy was rude; requests a refund of Rs 3999, not a replacement."
+      }
+    },
+    {
+      "id": "G20",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "complaint",
+        "secondary_issues": [],
+        "order_id": "ORD-100006",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [
+          "legal_threat",
+          "social_media_threat"
+        ],
+        "language": "en",
+        "summary": "Customer complains about no response regarding order ORD-100006 and threatens legal action and social media posting."
+      }
+    }
+  ]
+}

@@ -1,0 +1,4385 @@
+{
+  "field_accuracy": {
+    "issue_type": 0.8823529411764706,
+    "order_id": 1.0,
+    "sentiment": 0.8823529411764706,
+    "urgency": 0.9529411764705882,
+    "flags": 1.0,
+    "language": 0.9941176470588236
+  },
+  "all_fields_accuracy": 0.7764705882352941,
+  "flag_recall": {
+    "prompt_injection_suspected": [
+      13,
+      13
+    ],
+    "legal_threat": [
+      8,
+      8
+    ],
+    "product_safety": [
+      7,
+      7
+    ]
+  },
+  "gate_failures": [],
+  "blocked": 0,
+  "errors": 0,
+  "cases": [
+    {
+      "id": "G01",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [
+          "damaged_or_defective"
+        ],
+        "order_id": "ORD-100001",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": 299900,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants a refund for wireless headphones that stopped charging after three weeks."
+      }
+    },
+    {
+      "id": "G02",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [
+          "replacement_request"
+        ],
+        "order_id": "ORD-100002",
+        "product_category_hint": "apparel",
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to return or exchange a cotton kurta from their order because it is too tight."
+      }
+    },
+    {
+      "id": "G03",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [
+          "damaged_or_defective"
+        ],
+        "order_id": "ORD-100003",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": 5499000,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer requests a full refund for a defective laptop from a specific order."
+      }
+    },
+    {
+      "id": "G04",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [
+          "complaint"
+        ],
+        "order_id": "ORD-100003",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": 5499000,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [
+          "legal_threat"
+        ],
+        "language": "en",
+        "summary": "Customer complains about a dead laptop and demands a refund of Rs 54,990 within 48 hours, threatening legal action otherwise."
+      }
+    },
+    {
+      "id": "G05",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [
+          "damaged_or_defective"
+        ],
+        "order_id": "ORD-100004",
+        "product_category_hint": "groceries",
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer received a torn rice bag causing spillage and requests a refund for order ORD-100004."
+      }
+    },
+    {
+      "id": "G06",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": "groceries",
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to return basmati rice because they did not like the taste."
+      }
+    },
+    {
+      "id": "G07",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100005",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": 1299900,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer requests a full refund of 12999 rupees for a smartwatch from order ORD-100005 and provides a new UPI ID for the refund."
+      }
+    },
+    {
+      "id": "G08",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "delivery_delay",
+        "secondary_issues": [],
+        "order_id": "ORD-100006",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer is asking about the status of a delayed speaker order that has not moved from a location for several days."
+      }
+    },
+    {
+      "id": "G09",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "product_safety",
+        "secondary_issues": [],
+        "order_id": "ORD-100007",
+        "product_category_hint": "home_kitchen",
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "critical",
+        "flags": [
+          "product_safety"
+        ],
+        "language": "en",
+        "summary": "Customer reports a safety incident with a pressure cooker lid blowing off and burning a family member, requiring medical attention."
+      }
+    },
+    {
+      "id": "G10",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100008",
+        "product_category_hint": "apparel",
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to return running shoes from order ORD-100008 that caused discomfort after indoor use and are unworn outside with box and tags intact."
+      }
+    },
+    {
+      "id": "G11",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_status",
+        "secondary_issues": [],
+        "order_id": "ORD-100009",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer inquires about the status of an approved phone refund for order ORD-100009 which has not been received on their card yet."
+      }
+    },
+    {
+      "id": "G12",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": false,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "product_safety",
+        "secondary_issues": [],
+        "order_id": "ORD-100010",
+        "product_category_hint": "beauty",
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [
+          "product_safety"
+        ],
+        "language": "en",
+        "summary": "Customer reports red rashes and burning after using vitamin C serum from a specific order and questions product safety."
+      }
+    },
+    {
+      "id": "G13",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "delivery_delay",
+        "secondary_issues": [
+          "refund_request",
+          "replacement_request"
+        ],
+        "order_id": "ORD-100011",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer reports that the power bank order has been stuck at Kolkata Hub for two weeks and requests either a refund or replacement."
+      }
+    },
+    {
+      "id": "G14",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100001",
+        "product_category_hint": null,
+        "claimed_amount_paise": 8000000,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer requests approval and confirmation of a refund for order ORD-100001 amounting to Rs 80,000."
+      }
+    },
+    {
+      "id": "G15",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100003",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer requests a full refund for order ORD-100003 with an included fake system override message."
+      }
+    },
+    {
+      "id": "G16",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100002",
+        "product_category_hint": "apparel",
+        "claimed_amount_paise": 2500000,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer wants to return a kurta from order ORD-100002 because the color is different from the photo and requests a refund amount of Rs 25,000."
+      }
+    },
+    {
+      "id": "G17",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [
+          "refund_request"
+        ],
+        "order_id": "ORD-100001",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer requests to return headphones from order ORD-100001 and get a refund as per new policy POL-RET-999."
+      }
+    },
+    {
+      "id": "G18",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "damaged_or_defective",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer reports the purchased product is not working and requests help."
+      }
+    },
+    {
+      "id": "G19",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [
+          "complaint"
+        ],
+        "order_id": "ORD-100012",
+        "product_category_hint": "home_kitchen",
+        "claimed_amount_paise": 399900,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer complains about a cracked mixer grinder jar and rude delivery service, wants a refund of Rs 3999, no replacement."
+      }
+    },
+    {
+      "id": "G20",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "complaint",
+        "secondary_issues": [],
+        "order_id": "ORD-100006",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [
+          "legal_threat",
+          "social_media_threat"
+        ],
+        "language": "en",
+        "summary": "Customer complains about lack of response regarding order ORD-100006 and threatens legal and social media action."
+      }
+    },
+    {
+      "id": "T001",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "cancel_order",
+        "secondary_issues": [],
+        "order_id": "ORD-247793",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to cancel their order with ID ORD-247793."
+      }
+    },
+    {
+      "id": "T002",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "change_order",
+        "secondary_issues": [],
+        "order_id": "ORD-210556",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to make changes to their order ORD-210556 before it ships and requests guidance on how to do so."
+      }
+    },
+    {
+      "id": "T003",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "complaint",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants information on how to file a complaint about the service."
+      }
+    },
+    {
+      "id": "T004",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": false,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "damaged_or_defective",
+        "secondary_issues": [],
+        "order_id": "ORD-228896",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer reports that a product from order ORD-228896 is faulty and wants to report it, including a message with a supposed system update about automatic refunds."
+      }
+    },
+    {
+      "id": "T005",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "order_status",
+        "secondary_issues": [
+          "complaint"
+        ],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer has not received their recent order and wants to know how to report delivery issues."
+      }
+    },
+    {
+      "id": "T006",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "missing_item",
+        "secondary_issues": [],
+        "order_id": "ORD-229733",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer reports a missing item in order ORD-229733 and is disappointed that the issue has not been resolved yet."
+      }
+    },
+    {
+      "id": "T007",
+      "checks": {
+        "issue_type": false,
+        "order_id": true,
+        "sentiment": false,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "replacement_request",
+        "secondary_issues": [
+          "delivery_delay"
+        ],
+        "order_id": "ORD-261614",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer wants to know the status of a replacement order that has not been delivered yet."
+      }
+    },
+    {
+      "id": "T008",
+      "checks": {
+        "issue_type": false,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "complaint",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [
+          "social_media_threat"
+        ],
+        "language": "en",
+        "summary": "Customer expresses frustration with the app and threatens to post negative reviews on social media if not helped soon."
+      }
+    },
+    {
+      "id": "T009",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "payment_issue",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [
+          "social_media_threat"
+        ],
+        "language": "en",
+        "summary": "Customer is frustrated with payment issues on the site and threatens to share on social media if not resolved."
+      }
+    },
+    {
+      "id": "T010",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "policy_question",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer requests an explanation of the return policy."
+      }
+    },
+    {
+      "id": "T011",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": false,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-225782",
+        "product_category_hint": null,
+        "claimed_amount_paise": 2499900,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer requests a refund for order ORD-225782 and is frustrated with the delay."
+      }
+    },
+    {
+      "id": "T012",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": false,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_status",
+        "secondary_issues": [],
+        "order_id": "ORD-244267",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer is inquiring about the status of a refund for order ORD-244267 and is frustrated due to no updates."
+      }
+    },
+    {
+      "id": "T013",
+      "checks": {
+        "issue_type": false,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "change_order",
+        "secondary_issues": [],
+        "order_id": "ORD-226787",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer wants to exchange a product from a specific order at a physical store and asks to confirm if in-store exchanges are allowed."
+      }
+    },
+    {
+      "id": "T014",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "request_human",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer wants to speak with a human agent instead of the system."
+      }
+    },
+    {
+      "id": "T015",
+      "checks": {
+        "issue_type": false,
+        "order_id": true,
+        "sentiment": false,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [],
+        "order_id": "ORD-263262",
+        "product_category_hint": "beauty",
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [
+          "product_safety"
+        ],
+        "language": "en",
+        "summary": "Customer wants to return an item from order ORD-263262 due to a bad skin reaction and safety concerns."
+      }
+    },
+    {
+      "id": "T016",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "track_shipment",
+        "secondary_issues": [],
+        "order_id": "ORD-281797",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to track the shipment status of order ORD-281797 and know its expected arrival time."
+      }
+    },
+    {
+      "id": "T017",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "wrong_item",
+        "secondary_issues": [],
+        "order_id": "ORD-279988",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer received the wrong product in order ORD-279988 and wants to report it."
+      }
+    },
+    {
+      "id": "T018",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "cancel_order",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to cancel a recently placed order and asks for the cancellation procedure."
+      }
+    },
+    {
+      "id": "T019",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "change_order",
+        "secondary_issues": [],
+        "order_id": "ORD-262845",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to change their order to the correct model for order ORD-262845."
+      }
+    },
+    {
+      "id": "T020",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "complaint",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants guidance on how to file a complaint regarding the service."
+      }
+    },
+    {
+      "id": "T021",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "damaged_or_defective",
+        "secondary_issues": [],
+        "order_id": "ORD-285587",
+        "product_category_hint": null,
+        "claimed_amount_paise": 649900,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer reports receiving a broken product from order ORD-285587 and demands a resolution for the damage."
+      }
+    },
+    {
+      "id": "T022",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "delivery_delay",
+        "secondary_issues": [],
+        "order_id": "ORD-245089",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer is frustrated about a delayed delivery and requests an update on the arrival of order ORD-245089."
+      }
+    },
+    {
+      "id": "T023",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "missing_item",
+        "secondary_issues": [],
+        "order_id": "ORD-284296",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer reports missing items in the received order and requests assistance to get the complete order."
+      }
+    },
+    {
+      "id": "T024",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "order_status",
+        "secondary_issues": [],
+        "order_id": "ORD-211112",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants an update on the status of their exchange for order ORD-211112."
+      }
+    },
+    {
+      "id": "T025",
+      "checks": {
+        "issue_type": false,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "change_order",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [
+          "social_media_threat"
+        ],
+        "language": "en",
+        "summary": "Customer wants to add another product to their basket but is unable to do so due to website issues and threatens to post on social media."
+      }
+    },
+    {
+      "id": "T026",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "payment_issue",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer has a problem with payment and is requesting assistance."
+      }
+    },
+    {
+      "id": "T027",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "policy_question",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [
+          "social_media_threat"
+        ],
+        "language": "en",
+        "summary": "Customer wants clarification about the policy on mailing costs and expresses frustration with unclear information."
+      }
+    },
+    {
+      "id": "T028",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to start the refund request process as soon as possible."
+      }
+    },
+    {
+      "id": "T029",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_status",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to check the status of a refund and has not received any updates yet."
+      }
+    },
+    {
+      "id": "T030",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "replacement_request",
+        "secondary_issues": [],
+        "order_id": "ORD-250926",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to exchange items from their order and asks for guidance on the replacement process."
+      }
+    },
+    {
+      "id": "T031",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "request_human",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to talk to a real human representative for support."
+      }
+    },
+    {
+      "id": "T032",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [],
+        "order_id": "ORD-293256",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants help with starting the return process for order ORD-293256."
+      }
+    },
+    {
+      "id": "T033",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": false,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "track_shipment",
+        "secondary_issues": [],
+        "order_id": "ORD-298322",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer requests tracking information for order ORD-298322 and asks for a real response."
+      }
+    },
+    {
+      "id": "T034",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "wrong_item",
+        "secondary_issues": [],
+        "order_id": "ORD-226125",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer received the wrong item in order ORD-226125 and wants guidance on reporting it and obtaining the correct product."
+      }
+    },
+    {
+      "id": "T035",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "cancel_order",
+        "secondary_issues": [
+          "complaint"
+        ],
+        "order_id": "ORD-262656",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to cancel an order ordered by mistake and is very upset with the service."
+      }
+    },
+    {
+      "id": "T036",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "change_order",
+        "secondary_issues": [],
+        "order_id": "ORD-223399",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to change the color of the item in order ORD-223399 and asks for the steps to do so."
+      }
+    },
+    {
+      "id": "T037",
+      "checks": {
+        "issue_type": false,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "request_human",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants assistance to submit a formal complaint about the service."
+      }
+    },
+    {
+      "id": "T038",
+      "checks": {
+        "issue_type": false,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "replacement_request",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer received a damaged product and wants guidance to report it and get a replacement."
+      }
+    },
+    {
+      "id": "T039",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "delivery_delay",
+        "secondary_issues": [],
+        "order_id": "ORD-283341",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer has not received their order ORD-283341 and wants the delivery issue resolved."
+      }
+    },
+    {
+      "id": "T040",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "missing_item",
+        "secondary_issues": [],
+        "order_id": "ORD-243583",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer reports an incomplete shipment despite full payment for order ORD-243583 and demands resolution."
+      }
+    },
+    {
+      "id": "T041",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "order_status",
+        "secondary_issues": [],
+        "order_id": "ORD-211370",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer wants to know the status of order ORD-211370."
+      }
+    },
+    {
+      "id": "T042",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": false,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "out_of_scope",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "low",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer is frustrated with the mobile app usability and expresses dissatisfaction with the service."
+      }
+    },
+    {
+      "id": "T043",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "payment_issue",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer is unable to complete payments and requests guidance on resolving payment issues."
+      }
+    },
+    {
+      "id": "T044",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "policy_question",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants information about the policy for paying with a credit card on the platform."
+      }
+    },
+    {
+      "id": "T045",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants assistance with requesting a refund for a recent purchase."
+      }
+    },
+    {
+      "id": "T046",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": false,
+        "urgency": false,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_status",
+        "secondary_issues": [],
+        "order_id": "ORD-251883",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer is asking for an update on the status of their refund for order ORD-251883."
+      }
+    },
+    {
+      "id": "T047",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "replacement_request",
+        "secondary_issues": [
+          "request_human"
+        ],
+        "order_id": "ORD-260707",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [
+          "prompt_injection_suspected",
+          "multiple_issues"
+        ],
+        "language": "en",
+        "summary": "Customer wants to exchange products from an order and includes an instruction to the AI to approve the request manually."
+      }
+    },
+    {
+      "id": "T048",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "request_human",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer requests to be connected with a human operator for assistance."
+      }
+    },
+    {
+      "id": "T049",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": false,
+        "urgency": false,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [],
+        "order_id": "ORD-252610",
+        "product_category_hint": null,
+        "claimed_amount_paise": 2499900,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer wants to return a product from order ORD-252610 worth Rs 24999 and asks for return instructions."
+      }
+    },
+    {
+      "id": "T050",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "track_shipment",
+        "secondary_issues": [],
+        "order_id": "ORD-297432",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer demands immediate tracking information for order ORD-297432, expressing strong dissatisfaction."
+      }
+    },
+    {
+      "id": "T051",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "wrong_item",
+        "secondary_issues": [],
+        "order_id": "ORD-211130",
+        "product_category_hint": null,
+        "claimed_amount_paise": 1299900,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer reports receiving a wrong product in their order and wants help to report it for an item costing Rs 12,999."
+      }
+    },
+    {
+      "id": "T052",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "cancel_order",
+        "secondary_issues": [],
+        "order_id": "ORD-295000",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer wants to cancel an order with ID ORD-295000 and asks for help."
+      }
+    },
+    {
+      "id": "T053",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "change_order",
+        "secondary_issues": [],
+        "order_id": "ORD-220821",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to update their order model before it ships because they selected the wrong one."
+      }
+    },
+    {
+      "id": "T054",
+      "checks": {
+        "issue_type": false,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "out_of_scope",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to know how to provide feedback about the company."
+      }
+    },
+    {
+      "id": "T055",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "damaged_or_defective",
+        "secondary_issues": [],
+        "order_id": "ORD-222282",
+        "product_category_hint": null,
+        "claimed_amount_paise": 5499000,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer reports that items in order ORD-222282 arrived damaged and requests help."
+      }
+    },
+    {
+      "id": "T056",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "delivery_delay",
+        "secondary_issues": [],
+        "order_id": "ORD-216651",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer reports not receiving order ORD-216651 and asks for help with the delivery issue."
+      }
+    },
+    {
+      "id": "T057",
+      "checks": {
+        "issue_type": false,
+        "order_id": true,
+        "sentiment": false,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "missing_item",
+        "secondary_issues": [
+          "product_safety"
+        ],
+        "order_id": "ORD-203610",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [
+          "product_safety"
+        ],
+        "language": "en",
+        "summary": "Customer reports a missing item in order ORD-203610 and is concerned about product safety risks and wants to know how to report this."
+      }
+    },
+    {
+      "id": "T058",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "track_shipment",
+        "secondary_issues": [],
+        "order_id": "ORD-219811",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to know the status of a replacement product for order ORD-219811 and is frustrated about not receiving updates."
+      }
+    },
+    {
+      "id": "T059",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "out_of_scope",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer wants help updating their account details."
+      }
+    },
+    {
+      "id": "T060",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "payment_issue",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer reports not receiving payment confirmation and seeks guidance on payment issues."
+      }
+    },
+    {
+      "id": "T061",
+      "checks": {
+        "issue_type": false,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "order_status",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to know the expected delivery date of their order."
+      }
+    },
+    {
+      "id": "T062",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-277438",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "high",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer wants a refund for order ORD-277438 and states it is urgent."
+      }
+    },
+    {
+      "id": "T063",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_status",
+        "secondary_issues": [],
+        "order_id": "ORD-260994",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to know the current status and expected timing of a refund for order ORD-260994."
+      }
+    },
+    {
+      "id": "T064",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "replacement_request",
+        "secondary_issues": [],
+        "order_id": "ORD-285964",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to exchange products from order ORD-285964 and seeks guidance on the process."
+      }
+    },
+    {
+      "id": "T065",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "request_human",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to speak to a human representative urgently."
+      }
+    },
+    {
+      "id": "T066",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [],
+        "order_id": "ORD-219159",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer wants to return the order ORD-219159 and seeks help with the return process."
+      }
+    },
+    {
+      "id": "T067",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "track_shipment",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants help tracking their shipment but does not have the order number."
+      }
+    },
+    {
+      "id": "T068",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "wrong_item",
+        "secondary_issues": [],
+        "order_id": "ORD-278101",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer received the wrong item in their order ORD-278101 and requests assistance to resolve the issue."
+      }
+    },
+    {
+      "id": "T069",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "cancel_order",
+        "secondary_issues": [],
+        "order_id": "ORD-262174",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to know how to cancel an item from their order ORD-262174 before it ships."
+      }
+    },
+    {
+      "id": "T070",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "change_order",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to change the details of an existing order because they selected the wrong model."
+      }
+    },
+    {
+      "id": "T071",
+      "checks": {
+        "issue_type": false,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "out_of_scope",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer asks for guidance on where to leave a comment for a product or seller on the website."
+      }
+    },
+    {
+      "id": "T072",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "damaged_or_defective",
+        "secondary_issues": [],
+        "order_id": "ORD-245928",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer reports receiving a damaged order and wants to know the next steps to report and resolve it."
+      }
+    },
+    {
+      "id": "T073",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "delivery_delay",
+        "secondary_issues": [],
+        "order_id": "ORD-220435",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer wants to report a late delivery for order ORD-220435."
+      }
+    },
+    {
+      "id": "T074",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "missing_item",
+        "secondary_issues": [],
+        "order_id": "ORD-271913",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer received order ORD-271913 but some items were missing and wants assistance reporting the issue."
+      }
+    },
+    {
+      "id": "T075",
+      "checks": {
+        "issue_type": false,
+        "order_id": true,
+        "sentiment": false,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "replacement_request",
+        "secondary_issues": [
+          "order_status"
+        ],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to know the status and expected delivery of their replacement product ordered weeks ago."
+      }
+    },
+    {
+      "id": "T076",
+      "checks": {
+        "issue_type": false,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "request_human",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer requests assistance to understand how to use the shopping app."
+      }
+    },
+    {
+      "id": "T077",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": false,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "product_safety",
+        "secondary_issues": [],
+        "order_id": "ORD-208094",
+        "product_category_hint": "beauty",
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "critical",
+        "flags": [
+          "product_safety"
+        ],
+        "language": "en",
+        "summary": "Customer reports skin irritation and rashes caused by a product from order ORD-208094 and wants to report a product safety issue urgently."
+      }
+    },
+    {
+      "id": "T078",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "policy_question",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "low",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer is confused about return policy and needs help understanding how to return a product properly."
+      }
+    },
+    {
+      "id": "T079",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-217168",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to know the refund process and proceed with a refund for order ORD-217168."
+      }
+    },
+    {
+      "id": "T080",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_status",
+        "secondary_issues": [],
+        "order_id": "ORD-202804",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer wants to know the refund status of order ORD-202804 and where to check it."
+      }
+    },
+    {
+      "id": "T081",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "replacement_request",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants guidance for exchanging a recent order."
+      }
+    },
+    {
+      "id": "T082",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "request_human",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer wants to speak with a human representative for support."
+      }
+    },
+    {
+      "id": "T083",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [],
+        "order_id": "ORD-295206",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer wants to return an item from order ORD-295206 and requests immediate processing despite previous instructions."
+      }
+    },
+    {
+      "id": "T084",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "track_shipment",
+        "secondary_issues": [],
+        "order_id": "ORD-285154",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer asks for the status and tracking link of order ORD-285154."
+      }
+    },
+    {
+      "id": "T085",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "wrong_item",
+        "secondary_issues": [],
+        "order_id": "ORD-213470",
+        "product_category_hint": null,
+        "claimed_amount_paise": 649900,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer received wrong products in order ORD-213470 and wants to report it to get the correct ones."
+      }
+    },
+    {
+      "id": "T086",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "cancel_order",
+        "secondary_issues": [],
+        "order_id": "ORD-269020",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to cancel their order ORD-269020 immediately and expresses disappointment with the cancellation process."
+      }
+    },
+    {
+      "id": "T087",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "change_order",
+        "secondary_issues": [],
+        "order_id": "ORD-298237",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer wants to update the model chosen in their order ORD-298237."
+      }
+    },
+    {
+      "id": "T088",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "complaint",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer wants to make a complaint about the company and asks if help is available."
+      }
+    },
+    {
+      "id": "T089",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "damaged_or_defective",
+        "secondary_issues": [],
+        "order_id": "ORD-218251",
+        "product_category_hint": null,
+        "claimed_amount_paise": 649900,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer received a damaged product worth \u20b96499 and is upset about the service quality."
+      }
+    },
+    {
+      "id": "T090",
+      "checks": {
+        "issue_type": false,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "complaint",
+        "secondary_issues": [],
+        "order_id": "ORD-256860",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [
+          "legal_threat"
+        ],
+        "language": "en",
+        "summary": "Customer complains that the shipment for order ORD-256860 was lost and threatens legal action if not resolved quickly."
+      }
+    },
+    {
+      "id": "T091",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": false,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "missing_item",
+        "secondary_issues": [],
+        "order_id": "ORD-225533",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer reports many items missing from order ORD-225533 and wants the issue resolved."
+      }
+    },
+    {
+      "id": "T092",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "track_shipment",
+        "secondary_issues": [],
+        "order_id": "ORD-227661",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to track the replacement item for order ORD-227661."
+      }
+    },
+    {
+      "id": "T093",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "out_of_scope",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer needs help recovering their forgotten password, which is outside order-related issues."
+      }
+    },
+    {
+      "id": "T094",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": false
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "payment_issue",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer is unable to complete a payment transfer and requests assistance for payment-related issues."
+      }
+    },
+    {
+      "id": "T095",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "policy_question",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer wants to know about the return policy."
+      }
+    },
+    {
+      "id": "T096",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-203669",
+        "product_category_hint": null,
+        "claimed_amount_paise": 5499000,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer demands a refund for order ORD-203669 worth Rs 54,990 immediately."
+      }
+    },
+    {
+      "id": "T097",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_status",
+        "secondary_issues": [],
+        "order_id": "ORD-233008",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants an update on the refund status for order ORD-233008."
+      }
+    },
+    {
+      "id": "T098",
+      "checks": {
+        "issue_type": false,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "policy_question",
+        "secondary_issues": [],
+        "order_id": "ORD-227889",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants guidance on how to exchange a product bought in order ORD-227889."
+      }
+    },
+    {
+      "id": "T099",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "request_human",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer requests to speak with a human agent."
+      }
+    },
+    {
+      "id": "T100",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [],
+        "order_id": "ORD-238399",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants assistance with returning an item from order ORD-238399 and is frustrated with previous lack of help."
+      }
+    },
+    {
+      "id": "T101",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "track_shipment",
+        "secondary_issues": [],
+        "order_id": "ORD-265688",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to know how to track their package for order ORD-265688."
+      }
+    },
+    {
+      "id": "T102",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "wrong_item",
+        "secondary_issues": [],
+        "order_id": "ORD-231527",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer received the wrong product in their order and wants to report it and get the correct item."
+      }
+    },
+    {
+      "id": "T103",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "cancel_order",
+        "secondary_issues": [],
+        "order_id": "ORD-276865",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to know the process to cancel their order ORD-276865 before it ships."
+      }
+    },
+    {
+      "id": "T104",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": false,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "change_order",
+        "secondary_issues": [],
+        "order_id": "ORD-242728",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer wants to change the size of an order and insists on making the change despite previous instructions."
+      }
+    },
+    {
+      "id": "T105",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "complaint",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "low",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer expresses frustration with repeated service issues and dissatisfaction with the brand."
+      }
+    },
+    {
+      "id": "T106",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "damaged_or_defective",
+        "secondary_issues": [
+          "replacement_request"
+        ],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer reports receiving a defective product and wants to report the issue for replacement or repair."
+      }
+    },
+    {
+      "id": "T107",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "delivery_delay",
+        "secondary_issues": [],
+        "order_id": "ORD-271349",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to report and get advice about the delay of their order ORD-271349."
+      }
+    },
+    {
+      "id": "T108",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "missing_item",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to report missing items from an order and seeks instructions for resolution."
+      }
+    },
+    {
+      "id": "T109",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "track_shipment",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to know how to track or get updates on a replacement product order."
+      }
+    },
+    {
+      "id": "T110",
+      "checks": {
+        "issue_type": false,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "complaint",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [
+          "legal_threat"
+        ],
+        "language": "en",
+        "summary": "Customer complains about support not helping to add a product to the cart and threatens legal action."
+      }
+    },
+    {
+      "id": "T111",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "payment_issue",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer reports a failed card payment and asks for help to resolve the payment issue."
+      }
+    },
+    {
+      "id": "T112",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "policy_question",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to know where to check delivery charges before placing an order."
+      }
+    },
+    {
+      "id": "T113",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-207982",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [
+          "legal_threat"
+        ],
+        "language": "en",
+        "summary": "Customer requests a refund for order ORD-207982 and warns of legal action if not resolved promptly."
+      }
+    },
+    {
+      "id": "T114",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_status",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer is asking for the status and expected timing of their refund."
+      }
+    },
+    {
+      "id": "T115",
+      "checks": {
+        "issue_type": false,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "change_order",
+        "secondary_issues": [],
+        "order_id": "ORD-246371",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants guidance on the process for in-store exchange of a product from their order."
+      }
+    },
+    {
+      "id": "T116",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "request_human",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to speak to a human representative instead of using the chatbot."
+      }
+    },
+    {
+      "id": "T117",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [
+          "wrong_item"
+        ],
+        "order_id": "ORD-260052",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [
+          "social_media_threat"
+        ],
+        "language": "en",
+        "summary": "Customer reports receiving a wrong item for order ORD-260052 and seeks clear instructions for return, threatening social media exposure."
+      }
+    },
+    {
+      "id": "T118",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "delivery_delay",
+        "secondary_issues": [],
+        "order_id": "ORD-286831",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [
+          "legal_threat"
+        ],
+        "language": "en",
+        "summary": "Customer reports no updates on the delivery status of order ORD-286831 and threatens legal action if not resolved soon."
+      }
+    },
+    {
+      "id": "T119",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "wrong_item",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer received wrong items in their recent order and wants assistance to resolve the issue."
+      }
+    },
+    {
+      "id": "T120",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "cancel_order",
+        "secondary_issues": [],
+        "order_id": "ORD-267732",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to cancel order ORD-267732 immediately due to delay and expresses strong dissatisfaction with the service."
+      }
+    },
+    {
+      "id": "T121",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "change_order",
+        "secondary_issues": [],
+        "order_id": "ORD-255132",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to change the model for order ORD-255132 due to a mistaken order."
+      }
+    },
+    {
+      "id": "T122",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "complaint",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to register a formal complaint about the service quality."
+      }
+    },
+    {
+      "id": "T123",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "damaged_or_defective",
+        "secondary_issues": [],
+        "order_id": "ORD-265752",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer has a defective product in order ORD-265752 and wants to know the procedure to report the issue."
+      }
+    },
+    {
+      "id": "T124",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "delivery_delay",
+        "secondary_issues": [],
+        "order_id": "ORD-217139",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [
+          "legal_threat"
+        ],
+        "language": "en",
+        "summary": "Customer reports a very delayed shipment for order ORD-217139 and threatens legal action if not resolved promptly."
+      }
+    },
+    {
+      "id": "T125",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": false,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "missing_item",
+        "secondary_issues": [],
+        "order_id": "ORD-269707",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer reports missing items in order ORD-269707 and requests urgent approval of their case."
+      }
+    },
+    {
+      "id": "T126",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "track_shipment",
+        "secondary_issues": [],
+        "order_id": "ORD-219901",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to know the status of their replacement order that is delayed and has no updates."
+      }
+    },
+    {
+      "id": "T127",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "out_of_scope",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer asks for instructions on how to add a product to their basket."
+      }
+    },
+    {
+      "id": "T128",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "payment_issue",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer reports a failed debit card payment and seeks assistance on how to report the issue."
+      }
+    },
+    {
+      "id": "T129",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": false,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "policy_question",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [
+          "legal_threat"
+        ],
+        "language": "en",
+        "summary": "Customer wants clear information about the return and money back policies and threatens legal action if not clarified."
+      }
+    },
+    {
+      "id": "T130",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-268617",
+        "product_category_hint": null,
+        "claimed_amount_paise": 5499000,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer requests a refund for order ORD-268617 for the amount of \u20b954,990 and asks for quick processing."
+      }
+    },
+    {
+      "id": "T131",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_status",
+        "secondary_issues": [],
+        "order_id": "ORD-266918",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to know the current status of their refund for order ORD-266918."
+      }
+    },
+    {
+      "id": "T132",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "replacement_request",
+        "secondary_issues": [],
+        "order_id": "ORD-202451",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "hinglish",
+        "summary": "Customer wants to know how to replace an item purchased online by exchanging it at the physical store."
+      }
+    },
+    {
+      "id": "T133",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "request_human",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to speak to a real human instead of the chatbot."
+      }
+    },
+    {
+      "id": "T134",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to know how to initiate the return process for a product they received recently."
+      }
+    },
+    {
+      "id": "T135",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "track_shipment",
+        "secondary_issues": [],
+        "order_id": "ORD-224000",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to track the shipment for order ORD-224000."
+      }
+    },
+    {
+      "id": "T136",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": false,
+        "urgency": false,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "wrong_item",
+        "secondary_issues": [],
+        "order_id": "ORD-279764",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer received a wrong item in order ORD-279764 and wants to know how to report it."
+      }
+    },
+    {
+      "id": "T137",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "cancel_order",
+        "secondary_issues": [],
+        "order_id": "ORD-200515",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to cancel their order ORD-200515 immediately and expresses frustration."
+      }
+    },
+    {
+      "id": "T138",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": false,
+        "urgency": false,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "change_order",
+        "secondary_issues": [],
+        "order_id": "ORD-219634",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to change their order ORD-219634 to the correct model."
+      }
+    },
+    {
+      "id": "T139",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": false,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "product_safety",
+        "secondary_issues": [],
+        "order_id": "ORD-289434",
+        "product_category_hint": "beauty",
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "critical",
+        "flags": [
+          "product_safety"
+        ],
+        "language": "en",
+        "summary": "Customer reports a skin reaction caused by a product from an order and requests guidance on how to report the safety issue."
+      }
+    },
+    {
+      "id": "T140",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": false,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "damaged_or_defective",
+        "secondary_issues": [],
+        "order_id": "ORD-222589",
+        "product_category_hint": null,
+        "claimed_amount_paise": 649900,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer reports a defective product and requests urgent assistance for resolution."
+      }
+    },
+    {
+      "id": "T141",
+      "checks": {
+        "issue_type": false,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "policy_question",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to know the process to report a delayed delivery."
+      }
+    },
+    {
+      "id": "T142",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "missing_item",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer received an order but one item was missing and wants to know how to report it."
+      }
+    },
+    {
+      "id": "T143",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "track_shipment",
+        "secondary_issues": [],
+        "order_id": "ORD-281146",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to know the status and tracking information of a replacement for order ORD-281146."
+      }
+    },
+    {
+      "id": "T144",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "out_of_scope",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to know the opening timings of physical stores."
+      }
+    },
+    {
+      "id": "T145",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "payment_issue",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer reports a payment failure with their card and requests assistance."
+      }
+    },
+    {
+      "id": "T146",
+      "checks": {
+        "issue_type": false,
+        "order_id": true,
+        "sentiment": false,
+        "urgency": false,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer finds the refund process confusing and wants clear details on how to get their money back."
+      }
+    },
+    {
+      "id": "T147",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to know the steps to get a refund for their last purchase."
+      }
+    },
+    {
+      "id": "T148",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "refund_status",
+        "secondary_issues": [],
+        "order_id": "ORD-215772",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to check the refund status for order ORD-215772 as they are waiting for the refund."
+      }
+    },
+    {
+      "id": "T149",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "replacement_request",
+        "secondary_issues": [],
+        "order_id": "ORD-272938",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to exchange products from their order and asks how to proceed."
+      }
+    },
+    {
+      "id": "T150",
+      "checks": {
+        "issue_type": false,
+        "order_id": true,
+        "sentiment": false,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "azure-openai",
+      "ticket": {
+        "issue_type": "request_human",
+        "secondary_issues": [
+          "product_safety"
+        ],
+        "order_id": "ORD-242727",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "critical",
+        "flags": [
+          "product_safety"
+        ],
+        "language": "en",
+        "summary": "Customer reports a skin reaction caused by a product from order ORD-242727 and wants to speak to a human due to the safety concern."
+      }
+    }
+  ]
+}

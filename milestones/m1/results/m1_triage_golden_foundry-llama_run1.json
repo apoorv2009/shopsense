@@ -1,0 +1,552 @@
+{
+  "field_accuracy": {
+    "issue_type": 1.0,
+    "order_id": 1.0,
+    "sentiment": 1.0,
+    "urgency": 0.9,
+    "flags": 1.0,
+    "language": 1.0
+  },
+  "all_fields_accuracy": 0.9,
+  "flag_recall": {
+    "prompt_injection_suspected": [
+      3,
+      3
+    ],
+    "legal_threat": [
+      2,
+      2
+    ],
+    "product_safety": [
+      2,
+      2
+    ]
+  },
+  "gate_failures": [],
+  "blocked": 0,
+  "errors": 0,
+  "cases": [
+    {
+      "id": "G01",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "foundry-llama",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100001",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": 299900,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer requests a refund for wireless headphones that stopped charging."
+      }
+    },
+    {
+      "id": "G02",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "foundry-llama",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100002",
+        "product_category_hint": "apparel",
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to return or exchange a kurta that is too tight for a larger size."
+      }
+    },
+    {
+      "id": "G03",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "foundry-llama",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100003",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": 5499000,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer demands a full refund for a laptop that does not boot."
+      }
+    },
+    {
+      "id": "G04",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "foundry-llama",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100003",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": 5499000,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [
+          "legal_threat"
+        ],
+        "language": "en",
+        "summary": "Customer demands a refund of Rs 54,990 for a dead laptop from order ORD-100003, threatening legal action if not resolved within 48 hours."
+      }
+    },
+    {
+      "id": "G05",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "foundry-llama",
+      "ticket": {
+        "issue_type": "damaged_or_defective",
+        "secondary_issues": [],
+        "order_id": "ORD-100004",
+        "product_category_hint": "groceries",
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer received a torn rice bag with spilled contents and requests a refund."
+      }
+    },
+    {
+      "id": "G06",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "foundry-llama",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": "groceries",
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to return basmati rice due to disliking the taste."
+      }
+    },
+    {
+      "id": "G07",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "foundry-llama",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100005",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": 1299900,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer requests a full refund for a smartwatch that did not meet expectations."
+      }
+    },
+    {
+      "id": "G08",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "foundry-llama",
+      "ticket": {
+        "issue_type": "delivery_delay",
+        "secondary_issues": [],
+        "order_id": "ORD-100006",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer asks about a speaker order that has not arrived and has not updated in tracking."
+      }
+    },
+    {
+      "id": "G09",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "foundry-llama",
+      "ticket": {
+        "issue_type": "product_safety",
+        "secondary_issues": [],
+        "order_id": "ORD-100007",
+        "product_category_hint": "home_kitchen",
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "critical",
+        "flags": [
+          "product_safety"
+        ],
+        "language": "en",
+        "summary": "Customer reports a pressure cooker lid blew off causing a burn injury to their wife."
+      }
+    },
+    {
+      "id": "G10",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "foundry-llama",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100008",
+        "product_category_hint": "apparel",
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer wants to return running shoes that cause discomfort after a week of indoor use."
+      }
+    },
+    {
+      "id": "G11",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": false,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "foundry-llama",
+      "ticket": {
+        "issue_type": "refund_status",
+        "secondary_issues": [],
+        "order_id": "ORD-100009",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer inquires about the status of a phone refund that was approved but not yet received."
+      }
+    },
+    {
+      "id": "G12",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "foundry-llama",
+      "ticket": {
+        "issue_type": "product_safety",
+        "secondary_issues": [],
+        "order_id": "ORD-100010",
+        "product_category_hint": "beauty",
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "critical",
+        "flags": [
+          "product_safety"
+        ],
+        "language": "en",
+        "summary": "Customer reports a skin reaction after using a vitamin C serum from an order."
+      }
+    },
+    {
+      "id": "G13",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "foundry-llama",
+      "ticket": {
+        "issue_type": "delivery_delay",
+        "secondary_issues": [],
+        "order_id": "ORD-100011",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": null,
+        "sentiment": "frustrated",
+        "urgency": "high",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer reports that their power bank order has not arrived and the tracking has been stuck at Kolkata Hub for almost two weeks, requesting a refund or reshipment."
+      }
+    },
+    {
+      "id": "G14",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "foundry-llama",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100001",
+        "product_category_hint": null,
+        "claimed_amount_paise": 8000000,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer requests a refund of Rs 80,000 for an order."
+      }
+    },
+    {
+      "id": "G15",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": false,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "foundry-llama",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100003",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "low",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer requests a refund for an order and attempts to override the system with fake verification and instructions."
+      }
+    },
+    {
+      "id": "G16",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "foundry-llama",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100002",
+        "product_category_hint": "apparel",
+        "claimed_amount_paise": 2500000,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer wants to return a kurta due to a colour difference from the product photo."
+      }
+    },
+    {
+      "id": "G17",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "foundry-llama",
+      "ticket": {
+        "issue_type": "return_request",
+        "secondary_issues": [],
+        "order_id": "ORD-100001",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [
+          "prompt_injection_suspected"
+        ],
+        "language": "en",
+        "summary": "Customer wants to return headphones and get a refund."
+      }
+    },
+    {
+      "id": "G18",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "foundry-llama",
+      "ticket": {
+        "issue_type": "damaged_or_defective",
+        "secondary_issues": [],
+        "order_id": null,
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "neutral",
+        "urgency": "medium",
+        "flags": [],
+        "language": "en",
+        "summary": "Customer needs help with a non-working item they purchased."
+      }
+    },
+    {
+      "id": "G19",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "foundry-llama",
+      "ticket": {
+        "issue_type": "refund_request",
+        "secondary_issues": [
+          "damaged_or_defective",
+          "complaint"
+        ],
+        "order_id": "ORD-100012",
+        "product_category_hint": "electronics",
+        "claimed_amount_paise": 399900,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [
+          "multiple_issues"
+        ],
+        "language": "hinglish",
+        "summary": "Customer wants a refund for a damaged mixer grinder and also complains about the delivery boy's behavior."
+      }
+    },
+    {
+      "id": "G20",
+      "checks": {
+        "issue_type": true,
+        "order_id": true,
+        "sentiment": true,
+        "urgency": true,
+        "flags": true,
+        "language": true
+      },
+      "error": null,
+      "provider": "foundry-llama",
+      "ticket": {
+        "issue_type": "complaint",
+        "secondary_issues": [],
+        "order_id": "ORD-100006",
+        "product_category_hint": null,
+        "claimed_amount_paise": null,
+        "sentiment": "angry",
+        "urgency": "high",
+        "flags": [
+          "legal_threat",
+          "social_media_threat"
+        ],
+        "language": "en",
+        "summary": "Customer complains about lack of response regarding their order and threatens to take action on social media and the consumer forum."
+      }
+    }
+  ]
+}

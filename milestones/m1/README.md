@@ -50,6 +50,8 @@ uv run shopsense-eval triage --suite all --runs 3
 ```
 
 ## Results
+Raw evidence (eval JSON for every run, live demo output): [`results/`](results/RESULTS.md).
+
 Live runs on 2026-10-11, Azure AI Foundry (East US 2), prompt `triage/v2`.
 
 ### Full suite: 170 tickets (20 golden + 150 generated from Bitext), `gpt-4.1-mini`, 3 runs
