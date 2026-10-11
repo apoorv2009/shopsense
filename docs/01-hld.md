@@ -1,6 +1,6 @@
 # High-Level Design
 
-> Status: in progress. HLD complete: decisions D1–D14 accepted. Next: LLD.
+> Status: in progress. Complete: decisions D1–D15 and LLD-1 to LLD-9 accepted. Cost profile: [D15](adr/015-free-trial-profile.md).
 
 ## Table of contents
 - [1. Architecture principles](#1-architecture-principles)
@@ -199,5 +199,5 @@ Details in [D13](adr/013-resilience-and-observability.md).
 ## 11. Open items
 | # | Topic |
 |---|---|
-| Diagrams | Add Blob Storage and the evidence-check step ([LLD-6](lld/06-rules-engine-and-retrieval.md#photo-evidence)) after LLD-9 |
-| LLD | Per-component design: interfaces, `TicketState` schema, data models, tool contracts, prompts, error handling |
+| Verify at M1 setup | Claude deployable on the trial subscription (else Azure OpenAI fallback); APIM Consumption support for AI-gateway policies (else Developer) |
+| Revisit ~2026-11-11 | End of free trial: upgrade or tear down ([D15](adr/015-free-trial-profile.md)) |

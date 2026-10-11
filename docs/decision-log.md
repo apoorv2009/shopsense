@@ -24,6 +24,7 @@ Every architecture decision is recorded as an ADR in [`adr/`](adr/). Status valu
 | [D12](adr/012-guardrails.md) | Guardrail map and risk gate | Accepted | 2026-10-11 |
 | [D13](adr/013-resilience-and-observability.md) | Resilience and observability | Accepted | 2026-10-11 |
 | [D14](adr/014-evaluation-and-data.md) | Evaluation strategy and data sources | Accepted | 2026-10-11 |
+| [D15](adr/015-free-trial-profile.md) | Free-trial cost profile (revisit ~2026-11-11) | Accepted | 2026-10-11 |
 
 ## Low-level design
 LLD documents live in [`lld/`](lld/).
@@ -38,7 +39,7 @@ LLD documents live in [`lld/`](lld/).
 | [LLD-6](lld/06-rules-engine-and-retrieval.md) | Rules engine, rules-block format, retrieval, photo evidence | Accepted | 2026-10-11 |
 | [LLD-7](lld/07-order-platform-api.md) | Order Platform API | Accepted | 2026-10-11 |
 | [LLD-8](lld/08-angular-app.md) | Angular app | Accepted | 2026-10-11 |
-| LLD-9 | Infrastructure as code | Not started | |
+| [LLD-9](lld/09-infrastructure-and-cicd.md) | Infrastructure as code and CI/CD | Accepted | 2026-10-11 |
 
 ## ADR template
 ```

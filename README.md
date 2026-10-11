@@ -4,7 +4,7 @@ A multi-agent AI assistant for a mid-size Indian e-commerce marketplace. It tria
 
 IIT Hyderabad course project, Problem Statement 4 (Retail / E-commerce), built across 8 milestones (M1–M8).
 
-> **Status:** design phase. HLD complete; LLD in progress. No code until each design is accepted.
+> **Status:** design complete (HLD D1–D15, LLD-1 to LLD-9). Implementation follows milestones M1 → M8. Learning project on an Azure free trial ([D15](docs/adr/015-free-trial-profile.md)).
 
 ## Table of contents
 - [The problem](#the-problem)
@@ -52,6 +52,7 @@ Guiding principle: **LLMs understand and explain; code decides and enforces.**
 | [D12](docs/adr/012-guardrails.md) | Layered guardrail map and risk gate; fail closed |
 | [D13](docs/adr/013-resilience-and-observability.md) | Timeouts, retries, circuit breaker, outbox; Langfuse + Application Insights |
 | [D14](docs/adr/014-evaluation-and-data.md) | Bitext + generated data; 10 eval suites; zero-tolerance safety gates |
+| [D15](docs/adr/015-free-trial-profile.md) | Free-trial cost profile: cheapest tiers, East US 2, model fallback within Azure credits |
 
 ## Milestones
 | # | Scope |

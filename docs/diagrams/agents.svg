@@ -1,8 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1150" width="1400" height="1150" font-family="Segoe UI, Helvetica, Arial, sans-serif"><title>ShopSense agent view</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1220" width="1400" height="1220" font-family="Segoe UI, Helvetica, Arial, sans-serif"><title>ShopSense agent view</title>
 <defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#444441" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
-<rect width="1400" height="1150" fill="#FFFFFF"/>
+<rect width="1400" height="1220" fill="#FFFFFF"/>
 <text x="40" y="32" font-size="20" text-anchor="start" font-weight="600" fill="#1e1e1e">ShopSense — agent view: one code orchestrator, four LLM agents</text>
-<rect x="400" y="48" width="380" height="1072" rx="8" fill="none" stroke="#0F6E56" stroke-width="1.2" stroke-dasharray="6 4"/>
+<rect x="400" y="48" width="380" height="1142" rx="8" fill="none" stroke="#0F6E56" stroke-width="1.2" stroke-dasharray="6 4"/>
 <text x="412" y="66" font-size="13" font-weight="600" fill="#0F6E56">Orchestrator: LangGraph state graph (code)</text>
 <rect x="420" y="76" width="340" height="50" rx="6" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1.2" stroke-dasharray="5 3"/>
 <text x="590.0" y="97.0" text-anchor="middle" font-size="13" font-weight="600" fill="#444441">Message arrives</text>
@@ -23,32 +23,35 @@
 <text x="590.0" y="447.0" text-anchor="middle" font-size="13" font-weight="600" fill="#3C3489">Policy RAG agent (LLM)</text>
 <text x="590.0" y="465.0" text-anchor="middle" font-size="12" fill="#3C3489">rules engine decides · RAG cites</text>
 <rect x="420" y="496" width="340" height="50" rx="6" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.2"/>
-<text x="590.0" y="517.0" text-anchor="middle" font-size="13" font-weight="600" fill="#3C3489">Order-Actions agent (LLM)</text>
-<text x="590.0" y="535.0" text-anchor="middle" font-size="12" fill="#3C3489">read-only tools · proposes action</text>
-<rect x="420" y="566" width="340" height="50" rx="6" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.2"/>
-<text x="590.0" y="587.0" text-anchor="middle" font-size="13" font-weight="600" fill="#085041">Risk gate (code)</text>
-<text x="590.0" y="605.0" text-anchor="middle" font-size="12" fill="#085041">13 rules, first match wins</text>
-<rect x="420" y="636" width="340" height="50" rx="6" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.2"/>
-<text x="590.0" y="657.0" text-anchor="middle" font-size="13" font-weight="600" fill="#3C3489">Escalation Reviewer agent (LLM)</text>
-<text x="590.0" y="675.0" text-anchor="middle" font-size="12" fill="#3C3489">case summary + recommendation</text>
-<rect x="420" y="706" width="340" height="50" rx="6" fill="#FAEEDA" stroke="#854F0B" stroke-width="1.2"/>
-<text x="590.0" y="727.0" text-anchor="middle" font-size="13" font-weight="600" fill="#633806">Human approval (interrupt)</text>
-<text x="590.0" y="745.0" text-anchor="middle" font-size="12" fill="#633806">workflow paused + checkpointed</text>
-<rect x="420" y="776" width="340" height="50" rx="6" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.2"/>
-<text x="590.0" y="797.0" text-anchor="middle" font-size="13" font-weight="600" fill="#085041">Execute action (code)</text>
-<text x="590.0" y="815.0" text-anchor="middle" font-size="12" fill="#085041">MCP write tools + approval grant</text>
-<rect x="420" y="846" width="340" height="50" rx="6" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.2"/>
-<text x="590.0" y="867.0" text-anchor="middle" font-size="13" font-weight="600" fill="#3C3489">Response composer (LLM step)</text>
-<text x="590.0" y="885.0" text-anchor="middle" font-size="12" fill="#3C3489">reply built from facts only</text>
-<rect x="420" y="916" width="340" height="50" rx="6" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.2"/>
-<text x="590.0" y="937.0" text-anchor="middle" font-size="13" font-weight="600" fill="#085041">Output guard (code)</text>
-<text x="590.0" y="955.0" text-anchor="middle" font-size="12" fill="#085041">numbers · forbidden claims · groundedness</text>
+<text x="590.0" y="517.0" text-anchor="middle" font-size="13" font-weight="600" fill="#3C3489">Evidence check (LLM vision)</text>
+<text x="590.0" y="535.0" text-anchor="middle" font-size="12" fill="#3C3489">only if policy requires a photo</text>
+<rect x="420" y="566" width="340" height="50" rx="6" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.2"/>
+<text x="590.0" y="587.0" text-anchor="middle" font-size="13" font-weight="600" fill="#3C3489">Order-Actions agent (LLM)</text>
+<text x="590.0" y="605.0" text-anchor="middle" font-size="12" fill="#3C3489">read-only tools · proposes action</text>
+<rect x="420" y="636" width="340" height="50" rx="6" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.2"/>
+<text x="590.0" y="657.0" text-anchor="middle" font-size="13" font-weight="600" fill="#085041">Risk gate (code)</text>
+<text x="590.0" y="675.0" text-anchor="middle" font-size="12" fill="#085041">13 rules, first match wins</text>
+<rect x="420" y="706" width="340" height="50" rx="6" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.2"/>
+<text x="590.0" y="727.0" text-anchor="middle" font-size="13" font-weight="600" fill="#3C3489">Escalation Reviewer agent (LLM)</text>
+<text x="590.0" y="745.0" text-anchor="middle" font-size="12" fill="#3C3489">case summary + recommendation</text>
+<rect x="420" y="776" width="340" height="50" rx="6" fill="#FAEEDA" stroke="#854F0B" stroke-width="1.2"/>
+<text x="590.0" y="797.0" text-anchor="middle" font-size="13" font-weight="600" fill="#633806">Human approval (interrupt)</text>
+<text x="590.0" y="815.0" text-anchor="middle" font-size="12" fill="#633806">workflow paused + checkpointed</text>
+<rect x="420" y="846" width="340" height="50" rx="6" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.2"/>
+<text x="590.0" y="867.0" text-anchor="middle" font-size="13" font-weight="600" fill="#085041">Execute action (code)</text>
+<text x="590.0" y="885.0" text-anchor="middle" font-size="12" fill="#085041">MCP write tools + approval grant</text>
+<rect x="420" y="916" width="340" height="50" rx="6" fill="#EEEDFE" stroke="#534AB7" stroke-width="1.2"/>
+<text x="590.0" y="937.0" text-anchor="middle" font-size="13" font-weight="600" fill="#3C3489">Response composer (LLM step)</text>
+<text x="590.0" y="955.0" text-anchor="middle" font-size="12" fill="#3C3489">reply built from facts only</text>
 <rect x="420" y="986" width="340" height="50" rx="6" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.2"/>
-<text x="590.0" y="1007.0" text-anchor="middle" font-size="13" font-weight="600" fill="#085041">Write memory + audit (code)</text>
-<text x="590.0" y="1025.0" text-anchor="middle" font-size="12" fill="#085041">system-derived facts only</text>
-<rect x="420" y="1056" width="340" height="50" rx="6" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1.2" stroke-dasharray="5 3"/>
-<text x="590.0" y="1077.0" text-anchor="middle" font-size="13" font-weight="600" fill="#444441">Reply to customer</text>
-<text x="590.0" y="1095.0" text-anchor="middle" font-size="12" fill="#444441">chat, or email via Logic App</text>
+<text x="590.0" y="1007.0" text-anchor="middle" font-size="13" font-weight="600" fill="#085041">Output guard (code)</text>
+<text x="590.0" y="1025.0" text-anchor="middle" font-size="12" fill="#085041">numbers · forbidden claims · groundedness</text>
+<rect x="420" y="1056" width="340" height="50" rx="6" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.2"/>
+<text x="590.0" y="1077.0" text-anchor="middle" font-size="13" font-weight="600" fill="#085041">Write memory + audit (code)</text>
+<text x="590.0" y="1095.0" text-anchor="middle" font-size="12" fill="#085041">system-derived facts only</text>
+<rect x="420" y="1126" width="340" height="50" rx="6" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1.2" stroke-dasharray="5 3"/>
+<text x="590.0" y="1147.0" text-anchor="middle" font-size="13" font-weight="600" fill="#444441">Reply to customer</text>
+<text x="590.0" y="1165.0" text-anchor="middle" font-size="12" fill="#444441">chat, or email via Logic App</text>
 <path d="M590 126 L590 144" fill="none" stroke="#444441" stroke-width="1.5" marker-end="url(#a)"/>
 <path d="M590 196 L590 214" fill="none" stroke="#444441" stroke-width="1.5" marker-end="url(#a)"/>
 <path d="M590 266 L590 284" fill="none" stroke="#444441" stroke-width="1.5" marker-end="url(#a)"/>
@@ -63,6 +66,7 @@
 <path d="M590 896 L590 914" fill="none" stroke="#444441" stroke-width="1.5" marker-end="url(#a)"/>
 <path d="M590 966 L590 984" fill="none" stroke="#444441" stroke-width="1.5" marker-end="url(#a)"/>
 <path d="M590 1036 L590 1054" fill="none" stroke="#444441" stroke-width="1.5" marker-end="url(#a)"/>
+<path d="M590 1106 L590 1124" fill="none" stroke="#444441" stroke-width="1.5" marker-end="url(#a)"/>
 <rect x="40" y="286" width="320" height="40" rx="6" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1.2" stroke-dasharray="5 3"/>
 <text x="200.0" y="311.0" text-anchor="middle" font-size="12" font-weight="400" fill="#444441">Order ID missing → ask customer, end turn</text>
 <path d="M420 381 L362 306" fill="none" stroke="#444441" stroke-width="1.5" marker-end="url(#a)"/>
@@ -75,16 +79,16 @@
 <rect x="40" y="436" width="320" height="40" rx="6" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1.2" stroke-dasharray="5 3"/>
 <text x="200.0" y="461.0" text-anchor="middle" font-size="12" font-weight="400" fill="#444441">Safety · legal · injection → Escalation Reviewer</text>
 <path d="M420 381 L362 456" fill="none" stroke="#444441" stroke-width="1.5" marker-end="url(#a)"/>
-<path d="M200 476 L200 661 L418 661" fill="none" stroke="#444441" stroke-width="1.5" marker-end="url(#a)"/>
-<path d="M760 591 L788 591 L788 801 L762 801" fill="none" stroke="#444441" stroke-width="1.5" marker-end="url(#a)"/>
-<text x="796" y="690" font-size="12" text-anchor="start" font-weight="600" fill="#085041">low risk</text>
-<text x="796" y="706" font-size="12" text-anchor="start" font-weight="600" fill="#085041">→ auto-execute</text>
-<path d="M420 731 L392 731 L392 871 L418 871" fill="none" stroke="#444441" stroke-width="1.5" marker-end="url(#a)"/>
-<text x="384" y="805" font-size="12" text-anchor="end" font-weight="600" fill="#633806">rejected →</text>
-<text x="384" y="822" font-size="12" text-anchor="end" font-weight="400" fill="#633806">reply, no action</text>
-<rect x="40" y="921" width="320" height="40" rx="6" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1.2" stroke-dasharray="5 3"/>
-<text x="200.0" y="946.0" text-anchor="middle" font-size="12" font-weight="400" fill="#444441">Fails twice → holding reply + human</text>
-<path d="M420 941 L362 941" fill="none" stroke="#444441" stroke-width="1.5" marker-end="url(#a)"/>
+<path d="M200 476 L200 731 L418 731" fill="none" stroke="#444441" stroke-width="1.5" marker-end="url(#a)"/>
+<path d="M760 661 L788 661 L788 871 L762 871" fill="none" stroke="#444441" stroke-width="1.5" marker-end="url(#a)"/>
+<text x="796" y="760" font-size="12" text-anchor="start" font-weight="600" fill="#085041">low risk</text>
+<text x="796" y="776" font-size="12" text-anchor="start" font-weight="600" fill="#085041">→ auto-execute</text>
+<path d="M420 801 L392 801 L392 941 L418 941" fill="none" stroke="#444441" stroke-width="1.5" marker-end="url(#a)"/>
+<text x="384" y="875" font-size="12" text-anchor="end" font-weight="600" fill="#633806">rejected →</text>
+<text x="384" y="892" font-size="12" text-anchor="end" font-weight="400" fill="#633806">reply, no action</text>
+<rect x="40" y="991" width="320" height="40" rx="6" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1.2" stroke-dasharray="5 3"/>
+<text x="200.0" y="1016.0" text-anchor="middle" font-size="12" font-weight="400" fill="#444441">Fails twice → holding reply + human</text>
+<path d="M420 1011 L362 1011" fill="none" stroke="#444441" stroke-width="1.5" marker-end="url(#a)"/>
 <text x="900" y="80" font-size="13" text-anchor="start" font-weight="600" fill="#444441">Legend</text>
 <rect x="900" y="92" width="14" height="14" rx="6" fill="#E1F5EE" stroke="#0F6E56" stroke-width="1.2"/>
 <text x="907.0" y="104.0" text-anchor="middle" font-size="14" font-weight="400" fill="#085041"></text>
@@ -106,35 +110,41 @@
 <text x="914" y="404" font-size="13" font-weight="600" fill="#3C3489">Policy RAG agent</text>
 <text x="914" y="426" font-size="12" fill="#3C3489">tools: rules engine, Qdrant hybrid search + rerank</text>
 <text x="914" y="445" font-size="12" fill="#3C3489">writes: policy_findings · cannot: override the rules result</text>
-<rect x="900" y="466" width="470" height="76" rx="6" fill="#FFFFFF" stroke="#534AB7" stroke-width="1.2"/>
-<text x="914" y="488" font-size="13" font-weight="600" fill="#3C3489">Order-Actions agent</text>
-<text x="914" y="510" font-size="12" fill="#3C3489">tools: MCP read-only (get_order, track, calculate_refund)</text>
-<text x="914" y="529" font-size="12" fill="#3C3489">writes: proposed_action · cannot: execute any write</text>
-<rect x="900" y="612" width="470" height="76" rx="6" fill="#FFFFFF" stroke="#534AB7" stroke-width="1.2"/>
-<text x="914" y="634" font-size="13" font-weight="600" fill="#3C3489">Escalation Reviewer agent</text>
-<text x="914" y="656" font-size="12" fill="#3C3489">reads: whole TicketState + customer memory</text>
-<text x="914" y="675" font-size="12" fill="#3C3489">writes: review (summary, recommendation) · cannot: approve</text>
-<rect x="900" y="696" width="470" height="76" rx="6" fill="#FAEEDA" stroke="#854F0B" stroke-width="1.2"/>
-<text x="914" y="718" font-size="13" font-weight="600" fill="#633806">Reviewer console (human)</text>
-<text x="914" y="740" font-size="12" fill="#633806">sees: case summary, cited policy, risk reasons, timeline</text>
-<text x="914" y="759" font-size="12" fill="#633806">approve → signed grant (15 min) · reject → no action</text>
-<rect x="900" y="832" width="470" height="76" rx="6" fill="#FFFFFF" stroke="#534AB7" stroke-width="1.2"/>
-<text x="914" y="854" font-size="13" font-weight="600" fill="#3C3489">Response composer</text>
-<text x="914" y="876" font-size="12" fill="#3C3489">reads: decision, tool results, citations</text>
-<text x="914" y="895" font-size="12" fill="#3C3489">writes: reply · numbers only from tools / rules / cited policy</text>
-<rect x="900" y="930" width="470" height="190" rx="6" fill="#FFFFFF" stroke="#0F6E56" stroke-width="1.2"/>
-<text x="914" y="952" font-size="13" font-weight="600" fill="#085041">TicketState: shared, typed, checkpointed</text>
-<text x="914" y="974" font-size="12" fill="#085041"> </text>
-<text x="916" y="980" font-size="12" text-anchor="start" font-weight="400" fill="#085041">ticket  ← Triage</text>
-<text x="1146" y="980" font-size="12" text-anchor="start" font-weight="400" fill="#085041">proposed_action  ← Order-Actions</text>
-<text x="916" y="1002" font-size="12" text-anchor="start" font-weight="400" fill="#085041">customer_context  ← memory loader</text>
-<text x="1146" y="1002" font-size="12" text-anchor="start" font-weight="400" fill="#085041">risk  ← risk gate</text>
-<text x="916" y="1024" font-size="12" text-anchor="start" font-weight="400" fill="#085041">route  ← router</text>
-<text x="1146" y="1024" font-size="12" text-anchor="start" font-weight="400" fill="#085041">review  ← Escalation Reviewer</text>
-<text x="916" y="1046" font-size="12" text-anchor="start" font-weight="400" fill="#085041">policy_findings  ← Policy RAG</text>
-<text x="1146" y="1046" font-size="12" text-anchor="start" font-weight="400" fill="#085041">approval  ← human (+ grant)</text>
-<text x="916" y="1068" font-size="12" text-anchor="start" font-weight="400" fill="#085041">execution_result  ← execute</text>
-<text x="1146" y="1068" font-size="12" text-anchor="start" font-weight="400" fill="#085041">reply  ← composer</text>
-<text x="916" y="1090" font-size="12" text-anchor="start" font-weight="400" fill="#085041">guard_results  ← guards</text>
-<text x="1146" y="1090" font-size="12" text-anchor="start" font-weight="400" fill="#085041">messages  ← channels</text>
+<rect x="900" y="460" width="470" height="76" rx="6" fill="#FFFFFF" stroke="#534AB7" stroke-width="1.2"/>
+<text x="914" y="482" font-size="13" font-weight="600" fill="#3C3489">Evidence checker (vision)</text>
+<text x="914" y="504" font-size="12" fill="#3C3489">reads: photos (untrusted, re-encoded) + claim + order item</text>
+<text x="914" y="523" font-size="12" fill="#3C3489">writes: evidence (yes / no / uncertain, confidence) · cannot: approve</text>
+<rect x="900" y="546" width="470" height="76" rx="6" fill="#FFFFFF" stroke="#534AB7" stroke-width="1.2"/>
+<text x="914" y="568" font-size="13" font-weight="600" fill="#3C3489">Order-Actions agent</text>
+<text x="914" y="590" font-size="12" fill="#3C3489">tools: MCP read-only (get_order, track, calculate_refund)</text>
+<text x="914" y="609" font-size="12" fill="#3C3489">writes: proposed_action · cannot: execute any write</text>
+<rect x="900" y="682" width="470" height="76" rx="6" fill="#FFFFFF" stroke="#534AB7" stroke-width="1.2"/>
+<text x="914" y="704" font-size="13" font-weight="600" fill="#3C3489">Escalation Reviewer agent</text>
+<text x="914" y="726" font-size="12" fill="#3C3489">reads: whole TicketState + customer memory</text>
+<text x="914" y="745" font-size="12" fill="#3C3489">writes: review (summary, recommendation) · cannot: approve</text>
+<rect x="900" y="766" width="470" height="76" rx="6" fill="#FAEEDA" stroke="#854F0B" stroke-width="1.2"/>
+<text x="914" y="788" font-size="13" font-weight="600" fill="#633806">Reviewer console (human)</text>
+<text x="914" y="810" font-size="12" fill="#633806">sees: case summary, cited policy, risk reasons, timeline</text>
+<text x="914" y="829" font-size="12" fill="#633806">approve → signed grant (15 min) · reject → no action</text>
+<rect x="900" y="902" width="470" height="76" rx="6" fill="#FFFFFF" stroke="#534AB7" stroke-width="1.2"/>
+<text x="914" y="924" font-size="13" font-weight="600" fill="#3C3489">Response composer</text>
+<text x="914" y="946" font-size="12" fill="#3C3489">reads: decision, tool results, citations</text>
+<text x="914" y="965" font-size="12" fill="#3C3489">writes: reply · numbers only from tools / rules / cited policy</text>
+<rect x="900" y="1000" width="470" height="210" rx="6" fill="#FFFFFF" stroke="#0F6E56" stroke-width="1.2"/>
+<text x="914" y="1022" font-size="13" font-weight="600" fill="#085041">TicketState: shared, typed, checkpointed</text>
+<text x="914" y="1044" font-size="12" fill="#085041"> </text>
+<text x="916" y="1050" font-size="12" text-anchor="start" font-weight="400" fill="#085041">ticket  ← Triage</text>
+<text x="1146" y="1050" font-size="12" text-anchor="start" font-weight="400" fill="#085041">proposed_action  ← Order-Actions</text>
+<text x="916" y="1072" font-size="12" text-anchor="start" font-weight="400" fill="#085041">customer_context  ← memory loader</text>
+<text x="1146" y="1072" font-size="12" text-anchor="start" font-weight="400" fill="#085041">risk  ← risk gate</text>
+<text x="916" y="1094" font-size="12" text-anchor="start" font-weight="400" fill="#085041">route  ← router</text>
+<text x="1146" y="1094" font-size="12" text-anchor="start" font-weight="400" fill="#085041">review  ← Escalation Reviewer</text>
+<text x="916" y="1116" font-size="12" text-anchor="start" font-weight="400" fill="#085041">policy_findings  ← Policy RAG</text>
+<text x="1146" y="1116" font-size="12" text-anchor="start" font-weight="400" fill="#085041">approval  ← human (+ grant)</text>
+<text x="916" y="1138" font-size="12" text-anchor="start" font-weight="400" fill="#085041">execution_result  ← execute</text>
+<text x="1146" y="1138" font-size="12" text-anchor="start" font-weight="400" fill="#085041">reply  ← composer</text>
+<text x="916" y="1160" font-size="12" text-anchor="start" font-weight="400" fill="#085041">guard_results  ← guards</text>
+<text x="1146" y="1160" font-size="12" text-anchor="start" font-weight="400" fill="#085041">messages  ← channels</text>
+<text x="916" y="1182" font-size="12" text-anchor="start" font-weight="400" fill="#085041">evidence  ← evidence checker</text>
+<text x="1146" y="1182" font-size="12" text-anchor="start" font-weight="400" fill="#085041">input_guard  ← input guard</text>
 </svg>
