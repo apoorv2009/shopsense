@@ -21,4 +21,7 @@ curl -L -o data/raw/bitext/bitext-retail-ecommerce.csv "https://huggingface.co/d
 Columns: `instruction` (customer text), `intent`, `category`, `tags` (linguistic variation markers), `response`.
 
 ## Generated data
+- `evals/data/golden.jsonl`: 20 hand-written golden tickets.
+- `evals/data/triage_suite.jsonl`: noisy tickets generated from Bitext intents (`shopsense-eval generate-suite`). As a derivative of Bitext it is shared under CDLA-Sharing 1.0.
+
 Planned per [D14](../docs/adr/014-evaluation-and-data.md): Indian mock order data, 14 policy documents with rules blocks, noisy tickets generated from Bitext intents, and the golden and red-team sets.

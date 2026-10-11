@@ -1,0 +1,55 @@
+[project]
+name = "shopsense-workspace"
+version = "0.1.0"
+description = "ShopSense monorepo (uv workspace root)"
+requires-python = ">=3.13,<3.14"
+dependencies = []
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["services/shopsense_api", "libs/contracts", "evals"]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.13",
+    "pytest>=8.3",
+    "pytest-asyncio>=0.24",
+    "pytest-cov>=6.0",
+    "ruff>=0.8",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "A", "C4", "SIM", "RUF", "ASYNC", "S", "PT", "RET", "TID"]
+ignore = ["S101"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["shopsense_api", "shopsense_contracts", "shopsense_evals"]
+known-local-folder = ["support"]
+
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+"pydantic_settings".msg = "Settings belong in entrypoints only."
+
+[tool.ruff.lint.per-file-ignores]
+"**/entrypoints/**" = ["TID251"]
+"**/tests/**" = ["S", "PLR2004"]
+
+[tool.mypy]
+strict = true
+python_version = "3.13"
+plugins = ["pydantic.mypy"]
+mypy_path = ["services/shopsense_api/src", "services/shopsense_api/tests/unit", "libs/contracts/src", "evals/src"]
+explicit_package_bases = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["services/shopsense_api/tests", "evals/tests"]
+pythonpath = ["services/shopsense_api/tests/unit"]
+markers = ["integration: calls real cloud services (costs tokens); opt-in with -m integration"]
+addopts = "-m 'not integration' --import-mode=importlib"

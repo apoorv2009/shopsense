@@ -1,0 +1,20 @@
+[project]
+name = "shopsense-api"
+version = "0.1.0"
+description = "ShopSense API: orchestrator, agents and guardrails"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "anthropic>=1.11",
+    "openai>=1.60",
+    "azure-identity>=1.19",
+    "pydantic>=2.10",
+    "pydantic-settings>=2.6",
+    "structlog>=24.4",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/shopsense_api"]
