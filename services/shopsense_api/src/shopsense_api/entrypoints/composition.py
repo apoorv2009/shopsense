@@ -1,7 +1,12 @@
-"""Composition root: builds adapters and wires them into use cases (L2f)."""
+"""Composition root: builds adapters and wires them into use cases (L2f).
 
-from collections.abc import Awaitable, Callable
-from dataclasses import replace
+`container()` owns every network resource (Entra credential, SDK clients) and closes
+them on exit; callers never construct adapters themselves.
+"""
+
+from collections.abc import AsyncIterator, Awaitable, Callable
+from contextlib import AsyncExitStack, asynccontextmanager
+from dataclasses import dataclass, replace
 
 from anthropic import AsyncAnthropicFoundry
 from azure.identity.aio import DefaultAzureCredential, get_bearer_token_provider
@@ -20,23 +25,61 @@ SECOND_VENDOR = "foundry-llama"
 TokenProvider = Callable[[], Awaitable[str]]
 
 
-def build_providers(settings: Settings) -> dict[str, ModelProvider]:
+@dataclass(frozen=True, slots=True)
+class Container:
+    settings: Settings
+    providers: dict[str, ModelProvider]
+
+    def gateway(self, primary_provider: str | None = None) -> LLMGateway:
+        gateway = LLMGateway(build_profiles(self.settings), self.providers)
+        return gateway.with_primary(primary_provider) if primary_provider else gateway
+
+    def triage(self, primary_provider: str | None = None) -> TriageTicket:
+        return TriageTicket(llm=self.gateway(primary_provider), prompts=FilePromptRepository())
+
+
+@asynccontextmanager
+async def container(settings: Settings) -> AsyncIterator[Container]:
+    async with AsyncExitStack() as stack:
+        token: TokenProvider | None = None
+        if settings.auth_mode is AuthMode.ENTRA:
+            credential = await stack.enter_async_context(DefaultAzureCredential())
+            token = get_bearer_token_provider(credential, settings.token_scope)
+        openai_client, claude_client = build_clients(settings, token)
+        for client in (openai_client, claude_client):
+            if client is not None:
+                stack.push_async_callback(client.close)
+        yield Container(settings, build_providers(openai_client, claude_client))
+
+
+def build_clients(
+    settings: Settings, token: TokenProvider | None
+) -> tuple[AsyncOpenAI | None, AsyncAnthropicFoundry | None]:
     if not settings.foundry_resource:
-        return {}
-    token = _token_provider(settings)
+        return None, None
     key = settings.foundry_api_key.get_secret_value() if settings.foundry_api_key else None
-    client = AsyncOpenAI(base_url=settings.foundry_openai_base_url, api_key=token or key)
-    providers: dict[str, ModelProvider] = {
-        PRIMARY: FoundryOpenAIProvider(PRIMARY, client),
-        SECOND_VENDOR: FoundryOpenAIProvider(SECOND_VENDOR, client),
-    }
-    if settings.claude_enabled:
-        claude = AsyncAnthropicFoundry(
+    openai_client = AsyncOpenAI(base_url=settings.foundry_openai_base_url, api_key=token or key)
+    claude_client = (
+        AsyncAnthropicFoundry(
             resource=settings.foundry_resource,
             api_key=None if token else key,
             azure_ad_token_provider=token,
         )
-        providers[AnthropicFoundryProvider.name] = AnthropicFoundryProvider(claude)
+        if settings.claude_enabled
+        else None
+    )
+    return openai_client, claude_client
+
+
+def build_providers(
+    openai_client: AsyncOpenAI | None, claude_client: AsyncAnthropicFoundry | None
+) -> dict[str, ModelProvider]:
+    providers: dict[str, ModelProvider] = {}
+    if openai_client is not None:
+        providers[PRIMARY] = FoundryOpenAIProvider(PRIMARY, openai_client)
+        providers[SECOND_VENDOR] = FoundryOpenAIProvider(SECOND_VENDOR, openai_client)
+    if claude_client is not None:
+        providers[AnthropicFoundryProvider.name] = AnthropicFoundryProvider(claude_client)
     return providers
 
 
@@ -63,20 +106,3 @@ def build_profiles(settings: Settings) -> dict[str, AgentProfile]:
         )
         routes.insert(0, claude)
     return {"triage": AgentProfile(tuple(routes))}
-
-
-def build_gateway(settings: Settings) -> LLMGateway:
-    return LLMGateway(build_profiles(settings), build_providers(settings))
-
-
-def build_triage(settings: Settings, primary_provider: str | None = None) -> TriageTicket:
-    gateway = build_gateway(settings)
-    if primary_provider:
-        gateway = gateway.with_primary(primary_provider)
-    return TriageTicket(llm=gateway, prompts=FilePromptRepository())
-
-
-def _token_provider(settings: Settings) -> TokenProvider | None:
-    if settings.auth_mode is not AuthMode.ENTRA:
-        return None
-    return get_bearer_token_provider(DefaultAzureCredential(), settings.token_scope)

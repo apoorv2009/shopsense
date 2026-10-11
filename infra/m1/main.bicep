@@ -30,12 +30,14 @@ param claudeIndustry string = 'education'
 
 param openAiModel string = 'gpt-4.1-mini'
 param openAiModelVersion string = '2025-04-14'
-param openAiCapacity int = 10
+@description('Tokens per minute / 1000. Trial quota for gpt-4.1-mini is 200.')
+param openAiCapacity int = 100
 
 param secondModel string = 'Llama-3.3-70B-Instruct'
 param secondModelFormat string = 'Meta'
 param secondModelVersion string = '1'
-param secondCapacity int = 10
+@description('Tokens per minute / 1000. Trial quota for Llama-3.3-70B-Instruct is 20.')
+param secondCapacity int = 20
 
 var regionCode = location == 'eastus2' ? 'eus2' : location == 'swedencentral' ? 'sdc' : 'wus2'
 var suffix = take(uniqueString(subscription().id, environmentName), 6)

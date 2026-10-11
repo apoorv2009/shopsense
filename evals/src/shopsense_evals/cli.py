@@ -15,7 +15,8 @@ from rich.table import Table
 
 from shopsense_api.adapters.llm.gateway import AgentProfile, LLMGateway
 from shopsense_api.adapters.llm.provider import ModelRoute
-from shopsense_api.entrypoints.composition import PRIMARY, build_providers, build_triage
+from shopsense_api.application.use_cases.triage_ticket import TriageTicket
+from shopsense_api.entrypoints.composition import PRIMARY, container
 from shopsense_api.entrypoints.logging_config import configure_logging
 from shopsense_api.entrypoints.settings import REPO_ROOT, Settings
 from shopsense_evals.bitext import load_rows
@@ -40,8 +41,11 @@ def load_suite(name: str) -> list[EvalCase]:
 
 
 async def cmd_triage(args: argparse.Namespace) -> int:
-    settings = Settings()
-    triage = build_triage(settings, primary_provider=args.provider)
+    async with container(Settings()) as app:
+        return await _triage_runs(app.triage(args.provider), args)
+
+
+async def _triage_runs(triage: TriageTicket, args: argparse.Namespace) -> int:
     cases = load_suite(args.suite)
     reports = []
     for run in range(1, args.runs + 1):
@@ -56,9 +60,10 @@ async def cmd_triage(args: argparse.Namespace) -> int:
 async def cmd_generate(args: argparse.Namespace) -> int:
     settings = Settings()
     route = ModelRoute(PRIMARY, settings.primary_deployment, 8_000, 180.0)
-    llm = LLMGateway({"ticket_generator": AgentProfile((route,))}, build_providers(settings))
     specs = build_specs(load_rows(BITEXT), n=args.n, seed=args.seed)
-    cases = await generate(llm, specs)
+    async with container(settings) as app:
+        llm = LLMGateway({"ticket_generator": AgentProfile((route,))}, app.providers)
+        cases = await generate(llm, specs)
     write_suite(cases, DATA / "triage_suite.jsonl")
     console.print(f"Wrote {len(cases)}/{len(specs)} tickets to {DATA / 'triage_suite.jsonl'}")
     return 0

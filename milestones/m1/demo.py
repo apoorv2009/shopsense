@@ -14,7 +14,7 @@ from rich.panel import Panel
 from shopsense_api.application.use_cases.triage_ticket import TriageCommand, TriageTicket
 from shopsense_api.domain.exceptions import DomainException
 from shopsense_api.domain.values.untrusted_text import UntrustedText
-from shopsense_api.entrypoints.composition import PRIMARY, SECOND_VENDOR, build_triage
+from shopsense_api.entrypoints.composition import PRIMARY, SECOND_VENDOR, container
 from shopsense_api.entrypoints.logging_config import configure_logging
 from shopsense_api.entrypoints.settings import Settings
 from shopsense_evals.cli import load_suite, print_report
@@ -50,8 +50,13 @@ async def show(triage: TriageTicket, title: str, text: str) -> None:
 
 async def main(run_eval: bool) -> None:
     settings = Settings()
-    primary = build_triage(settings, primary_provider=PRIMARY)
-    second = build_triage(settings, primary_provider=SECOND_VENDOR)
+    async with container(settings) as app:
+        await demo(settings, app.triage(PRIMARY), app.triage(SECOND_VENDOR), run_eval)
+
+
+async def demo(
+    settings: Settings, primary: TriageTicket, second: TriageTicket, run_eval: bool
+) -> None:
     console.rule("[bold]M1 · Ticket → validated Pydantic SupportTicket[/bold]")
     for title, text in SHOWCASE.items():
         await show(primary, title, text)

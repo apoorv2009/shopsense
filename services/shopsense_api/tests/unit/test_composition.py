@@ -1,6 +1,7 @@
 from shopsense_api.entrypoints.composition import (
     PRIMARY,
     SECOND_VENDOR,
+    build_clients,
     build_profiles,
     build_providers,
 )
@@ -25,9 +26,10 @@ def test_claude_route_first_only_when_enabled() -> None:
 
 
 def test_providers_built_with_key_auth_and_no_claude_by_default() -> None:
-    providers = build_providers(settings(auth_mode=AuthMode.KEY, foundry_api_key="k"))
-    assert set(providers) == {PRIMARY, SECOND_VENDOR}
+    clients = build_clients(settings(auth_mode=AuthMode.KEY, foundry_api_key="k"), None)
+    assert clients[1] is None
+    assert set(build_providers(*clients)) == {PRIMARY, SECOND_VENDOR}
 
 
 def test_no_providers_without_foundry_resource() -> None:
-    assert build_providers(settings(foundry_resource="")) == {}
+    assert build_providers(*build_clients(settings(foundry_resource=""), None)) == {}
