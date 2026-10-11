@@ -1,6 +1,6 @@
 # High-Level Design
 
-> Status: in progress. Sections reflect decisions D1–D12 (accepted). Resilience, observability and evaluation (D13–D14) are still to be decided.
+> Status: in progress. Sections reflect decisions D1–D13 (accepted). Evaluation strategy (D14) is still to be decided.
 
 ## Table of contents
 - [1. Architecture principles](#1-architecture-principles)
@@ -11,8 +11,9 @@
 - [6. High-value refund flow](#6-high-value-refund-flow)
 - [7. Email channel flow](#7-email-channel-flow)
 - [8. Security model](#8-security-model)
-- [9. Component-to-milestone map](#9-component-to-milestone-map)
-- [10. Open items](#10-open-items)
+- [9. Resilience and observability](#9-resilience-and-observability)
+- [10. Component-to-milestone map](#10-component-to-milestone-map)
+- [11. Open items](#11-open-items)
 
 ## 1. Architecture principles
 1. **LLMs understand and explain; code decides and enforces.** Routing, eligibility, risk and execution are deterministic code.
@@ -163,7 +164,16 @@ sequenceDiagram
 
 The full layered map is in [D12](adr/012-guardrails.md).
 
-## 9. Component-to-milestone map
+## 9. Resilience and observability
+Details in [D13](adr/013-resilience-and-observability.md).
+- **Timeouts** on every call; ~30 s budget per chat turn.
+- **Retries** (max 3, backoff with jitter) for transient errors only; writes retried only with the same idempotency key.
+- **Circuit breaker** in the MCP server around Order Platform calls.
+- **Fallback:** failed reads park the ticket in the human queue with a holding reply; approved writes go through an **outbox** and a retry worker, so no approved action is lost.
+- **Fault injection:** internal latency and error-rate switch in the Order Platform for the M7 demo.
+- **Observability:** Langfuse for AI traces (steps, model calls, tokens, cost, tools, retrieval, decisions); Application Insights for system telemetry; one trace ID across services; personal data masked before export.
+
+## 10. Component-to-milestone map
 | Milestone | Components added | Infrastructure first used |
 |---|---|---|
 | M1 | LLM gateway module, triage, `SupportTicket` | APIM (both gateways), Foundry, Container Apps, Entra ID |
@@ -175,9 +185,8 @@ The full layered map is in [D12](adr/012-guardrails.md).
 | M7 | Langfuse tracing, retries, circuit breaker, human-queue fallback, fault injection | Langfuse, APIM AI-gateway policies |
 | M8 | Prompt Shields, output guard, approval grants hardening, golden eval, demo endpoint | Content Safety |
 
-## 10. Open items
+## 11. Open items
 | # | Topic |
 |---|---|
-| D13 | Resilience and observability |
 | D14 | Evaluation strategy and data sources (Bitext, synthetic tickets, golden set) |
 | LLD | Per-component design: interfaces, `TicketState` schema, data models, tool contracts, prompts, error handling |
