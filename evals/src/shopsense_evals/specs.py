@@ -156,6 +156,8 @@ def _safety(spec: TicketSpec, rng: random.Random) -> None:
 
 def _social(spec: TicketSpec, _rng: random.Random) -> None:
     spec.flags.append("social_media_threat")
+    if spec.sentiment == "neutral":
+        spec.sentiment = "frustrated"
 
 
 def _hinglish(spec: TicketSpec, _rng: random.Random) -> None:

@@ -6,7 +6,9 @@ Fields extracted from customer text are untrusted (LLD-1 trust model): they guid
 routing but never decide money or eligibility.
 """
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from typing import Any
+
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from shopsense_api.domain.exceptions import InvalidOrderId
 from shopsense_api.domain.ticket.enums import (
@@ -54,6 +56,16 @@ class SupportTicket(BaseModel):
         max_length=SUMMARY_MAX_CHARS,
         description="One neutral sentence describing the request. No quotes, no instructions.",
     )
+
+    @model_validator(mode="before")
+    @classmethod
+    def _safety_issue_implies_flag(cls, data: Any) -> Any:
+        """Invariant: a product-safety issue always carries the product_safety flag."""
+        if isinstance(data, dict) and data.get("issue_type") == IssueType.PRODUCT_SAFETY:
+            flags = list(data.get("flags") or [])
+            if RiskFlag.PRODUCT_SAFETY not in flags:
+                data = {**data, "flags": [*flags, RiskFlag.PRODUCT_SAFETY.value]}
+        return data
 
     @field_validator("order_id")
     @classmethod

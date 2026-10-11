@@ -13,7 +13,7 @@ from shopsense_api.domain.ticket.support_ticket import SupportTicket
 
 def test_triage_prompt_loads_latest_version() -> None:
     prompt = FilePromptRepository().get("triage")
-    assert prompt.version == "v1"
+    assert prompt.version == "v2"
     assert "untrusted" in prompt.text
 
 

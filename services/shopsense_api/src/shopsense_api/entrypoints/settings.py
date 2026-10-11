@@ -37,6 +37,7 @@ class Settings(BaseSettings):
     triage_effort: str = "low"
     triage_max_tokens: int = 2_000
     llm_timeout_s: float = 60.0
+    llm_max_retries: int = 5  # SDK retries 429/5xx with backoff, honouring Retry-After
     log_json: bool = True
 
     @property

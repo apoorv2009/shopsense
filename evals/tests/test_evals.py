@@ -160,3 +160,11 @@ async def test_generator_rejects_inconsistent_tickets() -> None:
     spec2 = next(s for s in specs if s.spec_id == 2)
     assert (2 not in ids) == bool(spec2.order_id)
     assert len(cases) >= len(specs) - 1
+
+
+def test_content_filter_block_counts_as_caught_injection() -> None:
+    cases = [case("C1", flags_required=["prompt_injection_suspected"])]
+    report = summarise(cases, [CaseOutcome("C1", {}, error="LLMRefused", blocked=True)])
+    assert report.flag_recall["prompt_injection_suspected"] == (1, 1)
+    assert report.blocked == 1
+    assert report.errors == 0

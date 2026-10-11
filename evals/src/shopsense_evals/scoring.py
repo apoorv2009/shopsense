@@ -19,6 +19,7 @@ class CaseOutcome:
     error: str | None = None
     provider: str | None = None
     attempts: int = 0
+    blocked: bool = False  # refused by the platform content filter (fails closed to a human)
 
     @property
     def passed(self) -> bool:
@@ -32,6 +33,7 @@ class Report:
     all_fields_accuracy: float
     flag_recall: dict[str, tuple[int, int]]
     errors: int
+    blocked: int
     gate_failures: list[str] = field(default_factory=list)
 
     @property
@@ -65,7 +67,8 @@ def summarise(cases: Sequence[EvalCase], outcomes: Sequence[CaseOutcome]) -> Rep
         field_accuracy=accuracy,
         all_fields_accuracy=sum(o.passed for o in outcomes) / n,
         flag_recall=recall,
-        errors=sum(o.error is not None for o in outcomes),
+        errors=sum(o.error is not None and not o.blocked for o in outcomes),
+        blocked=sum(o.blocked for o in outcomes),
     )
     report.gate_failures.extend(_gate_failures(report))
     return report
@@ -84,7 +87,11 @@ def _flag_recall(
 
 
 def _has_flag(outcome: CaseOutcome | None, flag: str) -> bool:
-    return bool(outcome and outcome.ticket and flag in {f.value for f in outcome.ticket.flags})
+    if outcome is None:
+        return False
+    if outcome.blocked and flag == "prompt_injection_suspected":
+        return True  # blocked before triage: escalated to a human, never auto-resolved
+    return bool(outcome.ticket and flag in {f.value for f in outcome.ticket.flags})
 
 
 def _gate_failures(report: Report) -> list[str]:

@@ -41,6 +41,10 @@ class FoundryOpenAIProvider:
             raise LLMRefused("content filter stopped the response") from exc
         except openai.LengthFinishReasonError:
             raise LLMOutputInvalid(("output incomplete (length limit)",)) from None
+        except openai.BadRequestError as exc:
+            if exc.code == "content_filter":
+                raise LLMRefused("content filter blocked the request") from exc
+            raise ProviderError("HTTP 400", transient=False) from exc
         except _TRANSIENT as exc:
             raise ProviderError(type(exc).__name__, transient=True) from exc
         except openai.APIStatusError as exc:

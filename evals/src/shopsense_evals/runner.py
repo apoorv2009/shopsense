@@ -4,7 +4,7 @@ import asyncio
 from collections.abc import Sequence
 
 from shopsense_api.application.use_cases.triage_ticket import TriageCommand, TriageTicket
-from shopsense_api.domain.exceptions import DomainException
+from shopsense_api.domain.exceptions import DomainException, LLMRefused
 from shopsense_api.domain.values.untrusted_text import UntrustedText
 from shopsense_evals.cases import EvalCase
 from shopsense_evals.scoring import CaseOutcome, score
@@ -25,6 +25,8 @@ async def run_cases(
 async def _run_case(triage: TriageTicket, case: EvalCase) -> CaseOutcome:
     try:
         result = await triage.execute(TriageCommand(message=UntrustedText(case.text)))
+    except LLMRefused as exc:
+        return CaseOutcome(case.case_id, {}, error=f"LLMRefused: {exc}", blocked=True)
     except DomainException as exc:
         return CaseOutcome(case.case_id, {}, error=f"{type(exc).__name__}: {exc}")
     return CaseOutcome(

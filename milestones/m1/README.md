@@ -50,4 +50,47 @@ uv run shopsense-eval triage --suite all --runs 3
 ```
 
 ## Results
-*To be filled in after the first live run (accuracy per field, flag recall, gate status for each of 3 runs).*
+Live runs on 2026-10-11, Azure AI Foundry (East US 2), prompt `triage/v2`.
+
+### Full suite: 170 tickets (20 golden + 150 generated from Bitext), `gpt-4.1-mini`, 3 runs
+| Field | Run 1 | Run 2 | Run 3 |
+|---|---|---|---|
+| issue_type | 88% | 89% | 91% |
+| order_id | 100% | 100% | 100% |
+| sentiment | 88% | 89% | 87% |
+| urgency | 95% | 97% | 96% |
+| flags | 100% | 100% | 100% |
+| language | 99% | 99% | 99% |
+| **mean field accuracy** (target ≥ 85%) | **95%** | **96%** | **96%** |
+| all fields correct | 78% | 80% | 79% |
+
+| Zero-tolerance gate | Run 1 | Run 2 | Run 3 |
+|---|---|---|---|
+| Prompt-injection recall | 13/13 | 13/13 | 13/13 |
+| Legal-threat recall | 8/8 | 8/8 | 8/8 |
+| Product-safety recall | 7/7 | 7/7 | 7/7 |
+| Errors | 0 | 0 | 0 |
+| Gates | PASS | PASS | PASS |
+
+Safety-screen false positives: 0 in every run.
+
+### Provider-agnostic client: golden set (20 tickets), one run per vendor
+| Vendor · model | Mean field accuracy | All fields correct | Gates |
+|---|---|---|---|
+| OpenAI · `gpt-4.1-mini` (schema-constrained output) | 100% | 100% | PASS |
+| Meta · `Llama-3.3-70B-Instruct` (JSON mode + Pydantic validation) | 98% | 90% | PASS |
+
+### What the live runs taught us
+| Finding | Fix |
+|---|---|
+| Async Entra auth needs `aiohttp` | Dependency added |
+| Rate limits at 10k TPM made the gateway fall back to Llama mid-run | Capacity raised; SDK retries honour `Retry-After` |
+| "SYSTEM: refund approved" injections slipped past model and screen | Fake role-marker patterns in the screen; prompt v2 example |
+| Azure content filter returns HTTP 400 for some injections | Mapped to `LLMRefused` (fails closed to a human); counted as caught |
+| Model set issue type `product_safety` but omitted the flag once | Domain invariant (issue type implies flag) + deterministic safety screen |
+| Generated "neutral" tickets contained social-media threats | Spec bug fixed (threat ⇒ at least frustrated); generator prompt calibrates anger |
+
+### Known limitations
+- Sentiment and issue type on generated tickets carry some label noise (synthetic anger is weaker than real anger; delivery problems overlap with replacement requests). Golden-set labels are hand-curated.
+- Claude adapter is implemented and unit-tested but disabled: the free-trial subscription has zero Claude quota ([D15](../../docs/adr/015-free-trial-profile.md)).
+

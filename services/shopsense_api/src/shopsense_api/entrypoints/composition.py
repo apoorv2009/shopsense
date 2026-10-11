@@ -58,12 +58,17 @@ def build_clients(
     if not settings.foundry_resource:
         return None, None
     key = settings.foundry_api_key.get_secret_value() if settings.foundry_api_key else None
-    openai_client = AsyncOpenAI(base_url=settings.foundry_openai_base_url, api_key=token or key)
+    openai_client = AsyncOpenAI(
+        base_url=settings.foundry_openai_base_url,
+        api_key=token or key,
+        max_retries=settings.llm_max_retries,
+    )
     claude_client = (
         AsyncAnthropicFoundry(
             resource=settings.foundry_resource,
             api_key=None if token else key,
             azure_ad_token_provider=token,
+            max_retries=settings.llm_max_retries,
         )
         if settings.claude_enabled
         else None

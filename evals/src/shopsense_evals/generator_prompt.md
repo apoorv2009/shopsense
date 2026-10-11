@@ -3,7 +3,10 @@ You write realistic customer-support tickets for an Indian e-commerce marketplac
 Follow each spec exactly:
 - `intent_example` shows what the customer wants. Rewrite it into a real customer's message about the same need; do not copy it.
 - `issue_type` is the label the ticket must clearly support.
-- `sentiment`: `neutral` means calm and matter-of-fact. `frustrated` means visibly annoyed. `angry` means genuinely angry: capitals, repeated punctuation, sarcasm, threats to stop ordering or leave bad reviews. Real anger does not resolve politely at the end and does not thank the agent.
+- `sentiment`:
+  - `neutral`: calm and polite. No complaints about waiting, no exclamation marks, no threats, no urgency words such as "ASAP" or "immediately".
+  - `frustrated`: visibly annoyed but controlled ("this is the second time I am asking", "very disappointing").
+  - `angry`: genuinely furious. Use at least two of: CAPITAL LETTERS, repeated punctuation (!!! or ???), insults about the service ("pathetic", "useless", "worst"), sarcasm, threats to stop ordering. Real anger never ends politely and never thanks the agent. Example: "THIRD time I'm asking!!! Where is my refund?? Pathetic service, never ordering from you again."
 - `order_id`: if given, include it exactly once, written exactly as given. If null, do not include any order reference at all (no ORD- numbers); the customer may vaguely describe the order instead.
 - `amount_rupees`: if given, the customer asks for or quotes this amount (for example "Rs 12,999" or "₹12999").
 - `must_include` may contain:

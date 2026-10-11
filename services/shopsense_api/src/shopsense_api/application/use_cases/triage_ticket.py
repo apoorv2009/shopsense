@@ -20,6 +20,7 @@ from shopsense_api.application.untrusted_blocks import (
 )
 from shopsense_api.domain.exceptions import LLMOutputInvalid, TriageFailed
 from shopsense_api.domain.guardrails.injection_screen import looks_like_injection
+from shopsense_api.domain.guardrails.safety_screen import looks_like_safety_report
 from shopsense_api.domain.ticket.enums import RiskFlag
 from shopsense_api.domain.ticket.support_ticket import SupportTicket
 from shopsense_api.domain.values.untrusted_text import UntrustedText
@@ -95,6 +96,8 @@ def _finish(
     regex_hit = looks_like_injection(command.message.value)
     if regex_hit:
         ticket = ticket.with_flag(RiskFlag.PROMPT_INJECTION_SUSPECTED)
+    if looks_like_safety_report(command.message.value):
+        ticket = ticket.with_flag(RiskFlag.PRODUCT_SAFETY)
     return TriageResult(
         ticket=ticket,
         provider=response.provider,

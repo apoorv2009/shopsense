@@ -25,7 +25,7 @@ The project is assessed milestone by milestone against the course brief. **Each 
 | Guardrails against unauthorized high-value refunds | M2 (tool guard), M5 (approval interrupt), M8 (cap + grants) | [D10](adr/010-mcp-server-and-tool-safety.md), [D12](adr/012-guardrails.md) |
 
 ## M1 Ticket parsing
-**Status:** code complete, offline tests passing; live run pending infrastructure deployment. Execution plan: [plans/m1.md](plans/m1.md) · Demo: [`milestones/m1`](../milestones/m1/README.md).
+**Status:** ✅ Done (2026-10-11): mean field accuracy 95–96% over 3 runs of 170 tickets; injection, legal and safety recall 100%; both vendors pass the golden set. Execution plan: [plans/m1.md](plans/m1.md) · Demo: [`milestones/m1`](../milestones/m1/README.md).
 
 **Brief:** *Parse support tickets into a validated Pydantic SupportTicket object (issue type, order ID, sentiment, urgency) via a provider-agnostic client.*
 

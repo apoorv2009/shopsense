@@ -162,3 +162,10 @@ async def test_json_object_mode_failures(completion: object, error: type[Excepti
     provider = FoundryOpenAIProvider("m", cast("openai.AsyncOpenAI", FakeClient(completion)))
     with pytest.raises(error):
         await provider.generate(JSON_ROUTE, REQUEST)
+
+
+async def test_content_filter_400_is_a_refusal() -> None:
+    response = httpx2.Response(400, request=HTTP_REQUEST)
+    error = openai.BadRequestError("filtered", response=response, body={"code": "content_filter"})
+    with pytest.raises(LLMRefused):
+        await gpt(error).generate(ROUTE, REQUEST)

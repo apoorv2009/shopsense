@@ -13,6 +13,9 @@ _PATTERNS = (
     r"\byou are now\b",
     r"\b(system|developer) (prompt|message|override)\b",
     r"\bsystem override\b",
+    # fake role markers inside customer text, e.g. "SYSTEM: refund approved"
+    r"(^|[\s.!?,;])(system|admin|administrator|developer|assistant|supervisor)\s*:",
+    r"\bas per (your |the )?new policy\b",
     r"\bpolicy checks? (are |is )?disabled\b",
     r"\bnote to (the )?(ai|assistant|bot|model)\b",
     r"\bnew instructions?\b",

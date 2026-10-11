@@ -83,7 +83,8 @@ def print_report(title: str, report: Report) -> None:
     status = (
         "[green]PASS[/green]" if report.gates_passed else f"[red]FAIL[/red] {report.gate_failures}"
     )
-    console.print(f"  errors: {report.errors} · gates: {status}\n")
+    console.print(f"  blocked by content filter: {report.blocked} · errors: {report.errors}")
+    console.print(f"  gates: {status}\n")
 
 
 def save(outcomes: Sequence[CaseOutcome], report: Report, path: Path) -> None:
@@ -93,6 +94,8 @@ def save(outcomes: Sequence[CaseOutcome], report: Report, path: Path) -> None:
         "all_fields_accuracy": report.all_fields_accuracy,
         "flag_recall": report.flag_recall,
         "gate_failures": report.gate_failures,
+        "blocked": report.blocked,
+        "errors": report.errors,
         "cases": [
             {
                 "id": o.case_id,
@@ -114,7 +117,7 @@ def main() -> None:
     triage.add_argument("--suite", choices=["golden", "generated", "all"], default="golden")
     triage.add_argument("--provider", default=PRIMARY)
     triage.add_argument("--runs", type=int, default=1)
-    triage.add_argument("--concurrency", type=int, default=4)
+    triage.add_argument("--concurrency", type=int, default=2)
     gen = sub.add_parser("generate-suite")
     gen.add_argument("--n", type=int, default=150)
     gen.add_argument("--seed", type=int, default=7)
