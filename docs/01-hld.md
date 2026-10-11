@@ -25,6 +25,10 @@
 
 ## 2. System context and components
 
+![ShopSense high-level architecture](diagrams/hld.svg)
+
+The same view as Mermaid, for quick edits:
+
 ```mermaid
 flowchart TB
     subgraph Clients

@@ -18,6 +18,8 @@ Support agents handle thousands of order, refund and shipping tickets. Most are 
 
 Guiding principle: **LLMs understand and explain; code decides and enforces.**
 
+![ShopSense high-level architecture](docs/diagrams/hld.svg)
+
 ## Design documents
 | Document | Contents |
 |---|---|
