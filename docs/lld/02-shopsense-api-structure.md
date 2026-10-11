@@ -85,7 +85,7 @@ Dependency rule: `entrypoints → adapters → application → domain`. LangGrap
 | `TicketRepository` | Postgres |
 | `AuditLog` | Postgres (append-only) |
 | `OutboxRepository` | Postgres |
-| `ApprovalGrantSigner` | Key Vault key |
+| `TokenSigner` | Key Vault key: approval grants and caller-context tokens ([LLD-4](04-mcp-tool-contracts.md#caller-context)) |
 | `SafetyChecker` | Content Safety Prompt Shields + regex screen |
 | `GroundednessEvaluator` | Foundry evaluator |
 | `IdentityDirectory` | Microsoft Graph (registered senders, customer IDs) |

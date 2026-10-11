@@ -33,7 +33,7 @@ LLD documents live in [`lld/`](lld/).
 | [LLD-1](lld/01-ticket-state.md) | TicketState | Accepted | 2026-10-11 |
 | [LLD-2](lld/02-shopsense-api-structure.md) | Repository layout and ShopSense API structure | Accepted | 2026-10-11 |
 | [LLD-3](lld/03-data-models.md) | Data models | Accepted | 2026-10-11 |
-| LLD-4 | MCP tool contracts | Not started | |
+| [LLD-4](lld/04-mcp-tool-contracts.md) | MCP tool contracts | Accepted | 2026-10-11 |
 | LLD-5 | Agent designs | Not started | |
 | LLD-6 | Rules engine and policy rules-block format | Not started | |
 | LLD-7 | Order Platform API | Not started | |
