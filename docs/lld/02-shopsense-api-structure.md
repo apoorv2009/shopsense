@@ -117,10 +117,13 @@ Dependency rule: `entrypoints → adapters → application → domain`. LangGrap
 | `POST /v1/chat/messages` | Customer | Send a message; SSE stream of progress events and the final reply |
 | `GET /v1/tickets`, `GET /v1/tickets/{id}` | Customer | My tickets, status, replies |
 | `POST /v1/tickets/{id}/attachments` | Customer | Photo evidence upload (JPEG/PNG, ≤ 5 MB) |
+| `GET /v1/me/orders` | Customer | Own orders via MCP read tools ([LLD-8](08-angular-app.md#api-additions)) |
 | `POST /v1/email/inbound` | Logic App | Inbound email |
 | `GET /v1/approvals` | Reviewer | Approval queue |
 | `GET /v1/approvals/{ticket_id}` | Reviewer | Case view: summary, policy, risk reasons, timeline |
 | `POST /v1/approvals/{ticket_id}/decision` | Reviewer | Approve or reject |
+| `GET /v1/approvals/{ticket_id}/evidence/{attachment_id}` | Reviewer | Short-lived signed link to a photo |
+| `GET /v1/admin/faults`, `PUT /v1/admin/faults` | Admin | Proxy to Order Platform fault injection |
 | `GET /health/live`, `GET /health/ready` | Container Apps | Probes |
 
 ## Processes

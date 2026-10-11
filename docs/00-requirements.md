@@ -20,6 +20,7 @@ The system is built for two audiences: course graders (milestone-wise functional
 |---|---|---|
 | Customer | Raises tickets about orders, refunds, shipping and policy | Entra ID user, role `customer`, with a `customer_id` attribute |
 | Human reviewer | Approves or rejects escalated cases; sees case summaries | Entra ID user, role `reviewer` |
+| Admin | Toggles Order Platform fault injection for resilience demos | Entra ID user, role `admin` |
 | Logic App (system) | Delivers inbound email to the API and sends email replies | Managed identity |
 | Eval runner (system) | Replays the golden ticket set against the deployed system | Service credential |
 

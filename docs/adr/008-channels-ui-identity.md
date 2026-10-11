@@ -29,7 +29,7 @@ Tickets arrive through chat, email, reviewer actions and batch evaluation. All c
 | **Entra ID test users** | Real token validation at APIM; simpler | Customers in a workforce directory is less realistic |
 | Mock token issuer | Easiest | Not production-grade |
 
-**Decision:** Entra ID test users with app roles `customer` and `reviewer`, and a `customer_id` attribute. External ID documented as the production choice.
+**Decision:** Entra ID test users with app roles `customer`, `reviewer` and `admin` (added by [LLD-8](../lld/08-angular-app.md)), and a `customer_id` attribute. External ID documented as the production choice.
 
 ## D8d: Email trust model
 | Option | Pros | Cons |
