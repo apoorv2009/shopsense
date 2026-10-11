@@ -34,7 +34,7 @@ LLD documents live in [`lld/`](lld/).
 | [LLD-2](lld/02-shopsense-api-structure.md) | Repository layout and ShopSense API structure | Accepted | 2026-10-11 |
 | [LLD-3](lld/03-data-models.md) | Data models | Accepted | 2026-10-11 |
 | [LLD-4](lld/04-mcp-tool-contracts.md) | MCP tool contracts | Accepted | 2026-10-11 |
-| LLD-5 | Agent designs | Not started | |
+| [LLD-5](lld/05-agent-designs.md) | Agent designs | Accepted | 2026-10-11 |
 | LLD-6 | Rules engine and policy rules-block format | Not started | |
 | LLD-7 | Order Platform API | Not started | |
 | LLD-8 | Angular app | Not started | |
