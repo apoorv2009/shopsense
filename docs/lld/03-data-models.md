@@ -57,6 +57,7 @@ Owned by the ShopSense API (and its outbox worker).
 |---|---|---|
 | `tickets` | id, ticket_no, customer_id, channel, status, order_no, created_at, closed_at, reopen_count | status: open, awaiting_customer, awaiting_approval, awaiting_system, resolved, closed |
 | `ticket_messages` | id, ticket_id, role, body, channel, email_message_id, created_at | Display copy of the conversation |
+| `attachments` | id, ticket_id, turn, blob_path, content_type, size_bytes, sha256, source (chat/email), uploaded_at | Photo evidence; blob in Azure Blob Storage |
 | `approvals` | id, ticket_id, turn, status, approver_tier, reasons, requested_at, decided_by, decided_at, comment, grant_id | status: pending, approved, rejected, expired |
 | `outbox` | id, ticket_id, action, idempotency_key UNIQUE, status, attempts, next_attempt_at, last_error | Approved and auto-approved writes |
 | `audit_log` | id, ticket_id, turn, event_type, actor, payload, langfuse_trace_id, operation_id, created_at | Append-only: application role has INSERT/SELECT only |

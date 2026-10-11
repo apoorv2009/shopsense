@@ -44,6 +44,7 @@
 | `customer_context` | Memory loader | History summaries, preferences, risk counters, abuse flag, tier | Refreshed each turn |
 | `route` | Router | Path and reason code | Per turn |
 | `policy_findings` | Policy RAG agent + rules engine | Rules decision (eligible, window days, days since delivery, outcome, rule IDs, rules version), cited clauses, consistency-check result | Per turn |
+| `evidence` | Evidence checker (vision) | Attachment refs, per-photo result (matches_claim, confidence, observations) ([LLD-6](06-rules-engine-and-retrieval.md#photo-evidence)) | Per turn |
 | `proposed_action` | Order-Actions agent | Action type, order, item, amount (`Money`, from `calculate_refund`), reason, facts from read tools | Per turn |
 | `risk` | Risk gate | Decision (auto / approval / escalate / ask), approver tier, all matched rules with reasons | Per turn |
 | `review` | Escalation Reviewer agent | Case summary, recommendation, key evidence | Per turn |

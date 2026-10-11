@@ -90,6 +90,7 @@ Dependency rule: `entrypoints → adapters → application → domain`. LangGrap
 | `GroundednessEvaluator` | Foundry evaluator |
 | `IdentityDirectory` | Microsoft Graph (registered senders, customer IDs) |
 | `ReplyQueue` | Azure Storage queue |
+| `EvidenceStore` | Azure Blob Storage (private, per-ticket path) |
 | `Clock`, `IdGenerator` | System clock / UUIDv7 (fakes in tests) |
 
 ## Use cases
@@ -100,6 +101,7 @@ Dependency rule: `entrypoints → adapters → application → domain`. LangGrap
 | Load customer context | `customer_context` | No |
 | Route ticket | `route` | No |
 | Evaluate policy | `policy_findings` | Policy RAG agent |
+| Check evidence | `evidence` | Evidence checker (LLM vision step) |
 | Propose action | `proposed_action` | Order-Actions agent |
 | Evaluate risk | `risk` | No |
 | Review case | `review` | Escalation Reviewer agent |
@@ -114,6 +116,7 @@ Dependency rule: `entrypoints → adapters → application → domain`. LangGrap
 |---|---|---|
 | `POST /v1/chat/messages` | Customer | Send a message; SSE stream of progress events and the final reply |
 | `GET /v1/tickets`, `GET /v1/tickets/{id}` | Customer | My tickets, status, replies |
+| `POST /v1/tickets/{id}/attachments` | Customer | Photo evidence upload (JPEG/PNG, ≤ 5 MB) |
 | `POST /v1/email/inbound` | Logic App | Inbound email |
 | `GET /v1/approvals` | Reviewer | Approval queue |
 | `GET /v1/approvals/{ticket_id}` | Reviewer | Case view: summary, policy, risk reasons, timeline |

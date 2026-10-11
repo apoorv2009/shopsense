@@ -98,6 +98,7 @@ Supporting: APIM (both gateways), Angular SPA, Logic Apps, Qdrant, PostgreSQL, K
 | Policy rules table (versioned) | PostgreSQL `shopsense` | ShopSense |
 | Policy chunks (dense + sparse vectors) | Qdrant on Azure Files | ShopSense |
 | Secrets, approval-grant signing key | Key Vault | Platform |
+| Photo evidence | Azure Blob Storage (private) | ShopSense |
 
 ## 5. Ticket workflow
 Deterministic backbone with agentic nodes ([D7](adr/007-agent-topology.md)). The **orchestrator is code**: a LangGraph state graph that sequences steps, routes, owns the shared `TicketState`, pauses for human approval and executes actions. The **4 agents are LLM workers** it calls; none of them decides routing or executes writes.
@@ -198,4 +199,5 @@ Details in [D13](adr/013-resilience-and-observability.md).
 ## 11. Open items
 | # | Topic |
 |---|---|
+| Diagrams | Add Blob Storage and the evidence-check step ([LLD-6](lld/06-rules-engine-and-retrieval.md#photo-evidence)) after LLD-9 |
 | LLD | Per-component design: interfaces, `TicketState` schema, data models, tool contracts, prompts, error handling |
