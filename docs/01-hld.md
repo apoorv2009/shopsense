@@ -1,6 +1,6 @@
 # High-Level Design
 
-> Status: in progress. Sections reflect decisions D1–D13 (accepted). Evaluation strategy (D14) is still to be decided.
+> Status: in progress. HLD complete: decisions D1–D14 accepted (D14f taxonomy proposed). Next: LLD.
 
 ## Table of contents
 - [1. Architecture principles](#1-architecture-principles)
@@ -188,5 +188,5 @@ Details in [D13](adr/013-resilience-and-observability.md).
 ## 11. Open items
 | # | Topic |
 |---|---|
-| D14 | Evaluation strategy and data sources (Bitext, synthetic tickets, golden set) |
+| D14f | Intent taxonomy mapping from Bitext (proposed) |
 | LLD | Per-component design: interfaces, `TicketState` schema, data models, tool contracts, prompts, error handling |

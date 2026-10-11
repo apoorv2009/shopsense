@@ -24,6 +24,7 @@ Guiding principle: **LLMs understand and explain; code decides and enforces.**
 | [Requirements](docs/00-requirements.md) | Actors, channels, scope, success criteria, constraints |
 | [High-level design](docs/01-hld.md) | System context, components, deployment, data, request flows |
 | [Decision log](docs/decision-log.md) | Index of every architecture decision and its status |
+| [Data](data/README.md) | Datasets, sources and licences |
 | [ADRs](docs/adr/) | One record per decision: context, options with pros and cons, decision, consequences |
 
 ## Decisions at a glance
@@ -42,6 +43,7 @@ Guiding principle: **LLMs understand and explain; code decides and enforces.**
 | [D11](docs/adr/011-policy-as-data.md) | Policy as data: rules engine decides, RAG explains and cites |
 | [D12](docs/adr/012-guardrails.md) | Layered guardrail map and risk gate; fail closed |
 | [D13](docs/adr/013-resilience-and-observability.md) | Timeouts, retries, circuit breaker, outbox; Langfuse + Application Insights |
+| [D14](docs/adr/014-evaluation-and-data.md) | Bitext + generated data; 10 eval suites; zero-tolerance safety gates |
 
 ## Milestones
 | # | Scope |
