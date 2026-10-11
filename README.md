@@ -20,6 +20,10 @@ Guiding principle: **LLMs understand and explain; code decides and enforces.**
 
 ![ShopSense high-level architecture](docs/diagrams/hld.svg)
 
+**Agent view:** one code orchestrator, four LLM agents.
+
+![ShopSense agent view](docs/diagrams/agents.svg)
+
 ## Design documents
 | Document | Contents |
 |---|---|

@@ -82,7 +82,7 @@ flowchart TB
 ## 3. Services
 | Service | Responsibility | Owns data | Exposed |
 |---|---|---|---|
-| **ShopSense API** | Channels (chat, email, approvals), LangGraph workflow, 4 agents, rules engine, risk gate, output guard, LLM gateway module, memory, audit | `shopsense` DB, Qdrant collections | Via APIM only |
+| **ShopSense API** | Channels (chat, email, approvals), orchestrator (LangGraph state graph, code), 4 agents, rules engine, risk gate, output guard, LLM gateway module, memory, audit | `shopsense` DB, Qdrant collections | Via APIM only |
 | **Order Platform API** | Mock of the company order system: customers, orders, shipments, refunds. Enforces financial invariants (cap, amount paid, no double refunds, approval grants). Supports fault injection. | `order_platform` DB | Internal only |
 | **MCP server** | Exposes order operations as MCP tools (read and write). Attaches caller identity; never trusts LLM-supplied identity. | None | Internal; optionally via APIM for external MCP clients |
 
@@ -100,7 +100,11 @@ Supporting: APIM (both gateways), Angular SPA, Logic Apps, Qdrant, PostgreSQL, K
 | Secrets, approval-grant signing key | Key Vault | Platform |
 
 ## 5. Ticket workflow
-Deterministic backbone with agentic nodes ([D7](adr/007-agent-topology.md)). Agents share one typed `TicketState`.
+Deterministic backbone with agentic nodes ([D7](adr/007-agent-topology.md)). The **orchestrator is code**: a LangGraph state graph that sequences steps, routes, owns the shared `TicketState`, pauses for human approval and executes actions. The **4 agents are LLM workers** it calls; none of them decides routing or executes writes.
+
+![ShopSense agent view](diagrams/agents.svg)
+
+Editable source: [`diagrams/agents.excalidraw`](diagrams/agents.excalidraw). The same flow as Mermaid:
 
 ```mermaid
 flowchart TD
