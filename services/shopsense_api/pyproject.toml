@@ -17,10 +17,14 @@ dependencies = [
     "alembic>=1.14",
     "qdrant-client>=1.12",
     "fastembed>=0.4",
+    "langgraph>=0.2",
+    "langgraph-checkpoint-postgres>=2.0",
+    "psycopg[binary]>=3.2",
 ]
 
 [project.scripts]
 shopsense-ingest = "shopsense_api.entrypoints.cli:main"
+shopsense-workflow = "shopsense_api.entrypoints.workflow_cli:main"
 
 [build-system]
 requires = ["hatchling"]

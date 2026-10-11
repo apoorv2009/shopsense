@@ -75,6 +75,8 @@ The project is assessed milestone by milestone against the course brief. **Each 
 | Acceptance | Retrieval precision on conflict traps; numeric fabrication = 0; groundedness score reported |
 
 ## M5 LangGraph workflow
+**Status:** ✅ Done (2026-10-11): LangGraph graph with a deterministic risk gate; approval `interrupt()` for amounts above ₹5,000 and angry customers; Postgres checkpoints survive a process restart; routing suite 11/11 with the write gate passing. Plan: [plans/m5.md](plans/m5.md) · Demo: [`milestones/m5`](../milestones/m5/README.md).
+
 **Brief:** *LangGraph workflow: triage → policy-check → action execution → conditional routing (auto-resolve low-risk, human-approval interrupt for high refunds or angry-customer sentiment), with checkpointing.*
 
 | | |

@@ -82,6 +82,20 @@ class RequestRefund:
             return body
 
 
+class DecideRefund:
+    """Reviewer decision on a pending refund (M5 approval resume). Settlement is simulated:
+    an approved refund is processed at once; the caller must be an internal reviewer."""
+
+    def __init__(self, uow: UnitOfWorkFactory) -> None:
+        self._uow = uow
+
+    async def execute(self, refund_no: str, approve: bool) -> dict[str, Any]:
+        async with self._uow() as uow:
+            refund = await uow.orders.decide_refund(refund_no, approve)
+            await uow.commit()
+            return to_json(refund)
+
+
 class RequestReplacement:
     def __init__(self, uow: UnitOfWorkFactory, clock: Clock, ids: IdGenerator) -> None:
         self._uow, self._clock, self._ids = uow, clock, ids

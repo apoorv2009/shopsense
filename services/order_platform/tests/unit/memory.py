@@ -6,6 +6,7 @@ from types import TracebackType
 from typing import Any, Self
 
 from order_platform.application.ports import StoredResponse
+from order_platform.domain.errors import NotAllowedError, NotFoundError
 from order_platform.domain.model import (
     Order,
     OrderItem,
@@ -73,6 +74,35 @@ class MemoryRepo:
 
     async def add_replacement(self, replacement: Replacement) -> None:
         self.replacements.append(replacement)
+
+    async def decide_refund(self, refund_no: str, approve: bool) -> Refund:
+        found = next(
+            (
+                (no, r)
+                for no, o in self.orders.items()
+                for r in o.refunds
+                if r.refund_no == refund_no
+            ),
+            None,
+        )
+        if found is None:
+            raise NotFoundError(f"refund {refund_no} not found")
+        order_no, match = found
+        current = self.orders[order_no]
+        if match.status is not RefundStatus.PENDING_APPROVAL:
+            raise NotAllowedError(f"refund {refund_no} is {match.status.value}")
+        settled = replace(
+            match, status=RefundStatus.PROCESSED if approve else RefundStatus.REJECTED
+        )
+        items = tuple(
+            replace(i, refunded_paise=i.refunded_paise + match.amount_paise)
+            if approve and i.product.sku == match.item_sku
+            else i
+            for i in current.items
+        )
+        refunds = tuple(settled if r.refund_no == refund_no else r for r in current.refunds)
+        self.orders[order_no] = replace(current, items=items, refunds=refunds)
+        return settled
 
 
 class MemoryIdempotency:

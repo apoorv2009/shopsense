@@ -129,3 +129,20 @@ async def test_migrations_match_models(engine: AsyncEngine) -> None:
 
     async with engine.connect() as conn:
         assert await conn.run_sync(diff) == []
+
+
+async def test_reviewer_approval_settles_pending_refund(services: Services) -> None:
+    cmd = refund(
+        "key-decide-pg",
+        customer_no="C0002",
+        order_no="ORD-100003",
+        item_sku="ELE-LAPTOP14",
+        amount_paise=2_500_000,
+        reason=RefundReason.DAMAGED,
+    )
+    body = await services.refunds.execute(cmd)
+    assert body["status"] == "pending_approval"
+    settled = await services.decisions.execute(body["refund_no"], approve=True)
+    assert settled["status"] == "processed"
+    again = await services.queries.get_order("C0002", "ORD-100003")
+    assert again.items[0].refunded_paise == 2_500_000

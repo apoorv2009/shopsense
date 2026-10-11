@@ -15,6 +15,7 @@ from order_platform.adapters.http.schemas import (
     OrderSummaryOut,
     QuoteIn,
     QuoteOut,
+    RefundDecisionIn,
     RefundIn,
     RefundOut,
     ReplacementIn,
@@ -25,6 +26,7 @@ from order_platform.adapters.http.schemas import (
     summary_out,
 )
 from order_platform.application.use_cases import (
+    DecideRefund,
     OrderQueries,
     RefundCommand,
     ReplacementCommand,
@@ -55,6 +57,7 @@ class Services:
     queries: OrderQueries
     refunds: RequestRefund
     replacements: RequestReplacement
+    decisions: DecideRefund
 
 
 def create_app(services: Services, lifespan: Lifespan | None = None) -> FastAPI:
@@ -100,6 +103,10 @@ def _routes(svc: Services) -> APIRouter:
             customer, body.order_no, body.item_sku, body.amount_paise, body.reason, key
         )
         return await svc.refunds.execute(cmd)
+
+    @r.post("/refunds/{refund_no}/decision", response_model=RefundOut)
+    async def decide(refund_no: str, body: RefundDecisionIn) -> Any:
+        return await svc.decisions.execute(refund_no, body.approve)
 
     @r.post("/replacements", status_code=status.HTTP_201_CREATED)
     async def replacement(body: ReplacementIn, customer: CustomerId, key: IdempotencyKey) -> Any:

@@ -7,10 +7,12 @@ Qdrant client) and closes them on exit; callers never construct adapters themsel
 from collections.abc import AsyncIterator, Awaitable, Callable
 from contextlib import AsyncExitStack, asynccontextmanager
 from dataclasses import dataclass, replace
+from typing import Any
 
 import httpx
 from anthropic import AsyncAnthropicFoundry
 from azure.identity.aio import DefaultAzureCredential, get_bearer_token_provider
+from langgraph.checkpoint.base import BaseCheckpointSaver
 from openai import AsyncOpenAI
 from qdrant_client import AsyncQdrantClient
 from sqlalchemy.ext.asyncio import (
@@ -30,8 +32,11 @@ from shopsense_api.adapters.policy.fastembed_reranker import FastEmbedReranker
 from shopsense_api.adapters.policy.foundry_embedder import FoundryEmbedder
 from shopsense_api.adapters.policy.qdrant_index import QdrantPolicyIndex
 from shopsense_api.adapters.prompts.file_repository import FilePromptRepository
+from shopsense_api.adapters.workflow.langgraph_ticket import build_graph
+from shopsense_api.adapters.workflow.runner import TicketRunner
 from shopsense_api.application.agents.order_actions import OrderActionsAgent
 from shopsense_api.application.ports.memory import MemoryStore
+from shopsense_api.application.ports.orders import OrderTools
 from shopsense_api.application.ports.policy import Embedder, PolicyIndex, PolicyStore, Reranker
 from shopsense_api.application.use_cases.answer_policy import AnswerPolicyQuestion
 from shopsense_api.application.use_cases.decide_return import DecideReturn
@@ -40,6 +45,7 @@ from shopsense_api.application.use_cases.ingest_policies import IngestPolicies
 from shopsense_api.application.use_cases.judge_groundedness import GroundednessJudge
 from shopsense_api.application.use_cases.memory import RecallCustomer, RememberTicket
 from shopsense_api.application.use_cases.triage_ticket import TriageTicket
+from shopsense_api.application.workflow.flow import TicketFlow
 from shopsense_api.domain.policy.model import PolicyDocument
 from shopsense_api.entrypoints.settings import AuthMode, Settings
 
@@ -107,6 +113,18 @@ class Container:
     def decide_return(self, corpus: list[PolicyDocument]) -> DecideReturn:
         hashes = {s.chunk_id: s.content_hash for d in corpus for s in d.sections}
         return DecideReturn(self.policy_store(), self.policy_index(), hashes)
+
+    def order_tools(self) -> OrderTools:
+        return HttpOrderTools(self.order_http)
+
+    def ticket_runner(
+        self,
+        corpus: list[PolicyDocument],
+        checkpointer: BaseCheckpointSaver[Any],
+        orders: OrderTools | None = None,
+    ) -> TicketRunner:
+        flow = TicketFlow(self.triage(), orders or self.order_tools(), self.decide_return(corpus))
+        return TicketRunner(build_graph(flow, checkpointer))
 
     def judge(self, primary_provider: str | None = None) -> GroundednessJudge:
         return GroundednessJudge(self.gateway(primary_provider), FilePromptRepository())

@@ -34,3 +34,7 @@ class OrderTools(Protocol):
     async def request_replacement(
         self, customer_id: str, order_no: str, item_sku: str, reason: str, idempotency_key: str
     ) -> dict[str, Any]: ...
+
+    async def decide_refund(self, refund_no: str, approve: bool) -> dict[str, Any]:
+        """Reviewer decision on a pending refund. Internal: no customer identity."""
+        ...

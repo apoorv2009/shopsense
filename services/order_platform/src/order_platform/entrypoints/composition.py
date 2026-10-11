@@ -17,7 +17,12 @@ from sqlalchemy.ext.asyncio import (
 
 from order_platform.adapters.db.repository import SqlUnitOfWork
 from order_platform.adapters.http.app import Services
-from order_platform.application.use_cases import OrderQueries, RequestRefund, RequestReplacement
+from order_platform.application.use_cases import (
+    DecideRefund,
+    OrderQueries,
+    RequestRefund,
+    RequestReplacement,
+)
 from order_platform.entrypoints.settings import DbAuth, Settings
 
 
@@ -62,6 +67,7 @@ def build_services(engine: AsyncEngine) -> Services:
         queries=OrderQueries(uow),
         refunds=RequestRefund(uow, clock, ids),
         replacements=RequestReplacement(uow, clock, ids),
+        decisions=DecideRefund(uow),
     )
 
 

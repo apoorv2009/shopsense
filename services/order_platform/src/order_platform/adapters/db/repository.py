@@ -19,7 +19,7 @@ from order_platform.adapters.db.tables import (
     ShipmentRow,
 )
 from order_platform.application.ports import StoredResponse
-from order_platform.domain.errors import NotFoundError
+from order_platform.domain.errors import NotAllowedError, NotFoundError, ValidationFailedError
 from order_platform.domain.model import (
     Order,
     OrderItem,
@@ -97,6 +97,44 @@ class SqlOrderRepository:
                 status=replacement.status.value,
                 created_at=replacement.created_at,
             )
+        )
+
+    async def decide_refund(self, refund_no: str, approve: bool) -> Refund:
+        row = (
+            await self._s.scalars(select(RefundRow).where(RefundRow.refund_no == refund_no))
+        ).one_or_none()
+        if row is None:
+            raise NotFoundError(f"refund {refund_no} not found")
+        item = (
+            await self._s.scalars(
+                select(OrderItemRow).where(OrderItemRow.id == row.order_item_id).with_for_update()
+            )
+        ).one()
+        if row.status != RefundStatus.PENDING_APPROVAL.value:
+            raise NotAllowedError(f"refund {refund_no} is {row.status}, not pending_approval")
+        if approve:
+            if item.refunded_paise + row.amount_paise > item.unit_price_paise * item.qty:
+                raise ValidationFailedError("approval would exceed the amount paid")
+            item.refunded_paise += row.amount_paise
+            row.status = RefundStatus.PROCESSED.value
+        else:
+            row.status = RefundStatus.REJECTED.value
+        order_no, sku = (
+            await self._s.execute(
+                select(OrderRow.order_no, ProductRow.sku)
+                .join(OrderItemRow, OrderItemRow.order_id == OrderRow.id)
+                .join(ProductRow, ProductRow.id == OrderItemRow.product_id)
+                .where(OrderItemRow.id == item.id)
+            )
+        ).one()
+        return Refund(
+            refund_no=row.refund_no,
+            order_no=order_no,
+            item_sku=sku,
+            amount_paise=row.amount_paise,
+            reason=RefundReason(row.reason),
+            status=RefundStatus(row.status),
+            created_at=row.created_at,
         )
 
     async def _row(self, customer_no: str, order_no: str) -> OrderRow | None:

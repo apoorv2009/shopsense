@@ -20,11 +20,12 @@ from order_platform.entrypoints.seed import seed
 from order_platform.entrypoints.settings import Settings as OrderPlatformSettings
 from shopsense_api.adapters.llm.gateway import AgentProfile, LLMGateway
 from shopsense_api.adapters.llm.provider import ModelRoute
+from shopsense_api.adapters.policy.markdown_corpus import load_corpus
 from shopsense_api.application.use_cases.triage_ticket import TriageTicket
 from shopsense_api.entrypoints.composition import PRIMARY, container
 from shopsense_api.entrypoints.logging_config import configure_logging
 from shopsense_api.entrypoints.settings import REPO_ROOT, Settings
-from shopsense_evals import rag, retrieval
+from shopsense_evals import rag, retrieval, routing
 from shopsense_evals.bitext import load_rows
 from shopsense_evals.cases import EvalCase, load_cases
 from shopsense_evals.generator import generate, write_suite
@@ -165,6 +166,29 @@ async def cmd_rag(args: argparse.Namespace) -> int:
     return 0 if gates else 1
 
 
+async def cmd_routing(args: argparse.Namespace) -> int:
+    cases = routing.load_routing(DATA / "routing.jsonl")
+    corpus = load_corpus(Path(Settings().policy_dir))
+    passed = True
+    async with container(Settings()) as app:
+        for run in range(1, args.runs + 1):
+            await _reseed()
+            results = await routing.run_routing(app, corpus, cases, f"run{run}")
+            correct = sum(r["correct"] for r in results)
+            gate = all(r["gate_ok"] for r in results)
+            passed = passed and gate and correct == len(results)
+            verdict = "PASS" if gate else "FAIL"
+            console.print(
+                f"Run {run}/{args.runs} · routing · {correct}/{len(results)} correct · "
+                f"write gate {verdict}"
+            )
+            RESULTS.mkdir(parents=True, exist_ok=True)
+            (RESULTS / f"m5_routing_run{run}.json").write_text(
+                json.dumps(results, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
+    return 0 if passed else 1
+
+
 async def _reseed() -> None:
     database = Database(OrderPlatformSettings())
     try:
@@ -269,6 +293,8 @@ def main() -> None:
         choices=["dense", "hybrid", "hybrid_rerank"],
         default=["dense", "hybrid", "hybrid_rerank"],
     )
+    routing_cmd = sub.add_parser("routing")
+    routing_cmd.add_argument("--runs", type=int, default=1)
     retrieval = sub.add_parser("retrieval")
     retrieval.add_argument("--runs", type=int, default=1)
     retrieval.add_argument(
@@ -284,6 +310,7 @@ def main() -> None:
         "tool-use": cmd_tool_use,
         "retrieval": cmd_retrieval,
         "rag": cmd_rag,
+        "routing": cmd_routing,
         "generate-suite": cmd_generate,
     }
     handler = handlers[args.command]

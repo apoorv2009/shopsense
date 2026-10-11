@@ -5,12 +5,13 @@ from fastapi.testclient import TestClient
 
 from order_platform.adapters.http.app import Services, create_app
 from order_platform.application.use_cases import (
+    DecideRefund,
     OrderQueries,
     RefundCommand,
     RequestRefund,
     RequestReplacement,
 )
-from order_platform.domain.errors import DuplicateRequestError, NotFoundError
+from order_platform.domain.errors import DuplicateRequestError, NotAllowedError, NotFoundError
 from order_platform.domain.model import RefundReason
 
 from memory import KURTA, CountingIds, FixedClock, MemoryIdempotency, MemoryRepo, MemoryUoW, order
@@ -24,6 +25,7 @@ def setup() -> tuple[Services, MemoryRepo]:
         queries=OrderQueries(lambda: uow),
         refunds=RequestRefund(lambda: uow, clock, ids),
         replacements=RequestReplacement(lambda: uow, clock, ids),
+        decisions=DecideRefund(lambda: uow),
     )
     return services, repo
 
@@ -127,3 +129,45 @@ def test_api_refund_needs_idempotency_key_and_blocks_over_refund() -> None:
     over = c.post("/v1/refunds", json=body, headers=headers | {"Idempotency-Key": "abcdefgh1"})
     assert over.status_code == 409
     assert over.json()["code"] == "NOT_ALLOWED"
+
+
+def laptop_refund() -> RefundCommand:
+    return RefundCommand(
+        customer_no="C0002",
+        order_no="ORD-100003",
+        item_sku="ELE-LAPTOP14",
+        amount_paise=2_500_000,
+        reason=RefundReason.DAMAGED,
+        idempotency_key="key-laptop-01",
+    )
+
+
+async def test_pending_refund_is_processed_on_approval() -> None:
+    services, repo = setup()
+    body = await services.refunds.execute(laptop_refund())
+    assert body["status"] == "pending_approval"
+    settled = await services.decisions.execute(body["refund_no"], approve=True)
+    assert settled["status"] == "processed"
+    assert repo.orders["ORD-100003"].items[0].refunded_paise == 2_500_000
+
+
+async def test_pending_refund_is_rejected_without_money_moving() -> None:
+    services, repo = setup()
+    body = await services.refunds.execute(laptop_refund())
+    rejected = await services.decisions.execute(body["refund_no"], approve=False)
+    assert rejected["status"] == "rejected"
+    assert repo.orders["ORD-100003"].items[0].refunded_paise == 0
+
+
+async def test_decision_is_final() -> None:
+    services, _ = setup()
+    body = await services.refunds.execute(laptop_refund())
+    await services.decisions.execute(body["refund_no"], approve=True)
+    with pytest.raises(NotAllowedError):
+        await services.decisions.execute(body["refund_no"], approve=False)
+
+
+async def test_unknown_refund_decision_is_not_found() -> None:
+    services, _ = setup()
+    with pytest.raises(NotFoundError):
+        await services.decisions.execute("RF-missing", approve=True)

@@ -66,6 +66,10 @@ class RefundOut(BaseModel):
     created_at: datetime
 
 
+class RefundDecisionIn(BaseModel):
+    approve: bool
+
+
 class QuoteIn(BaseModel):
     item_sku: str = Field(pattern=SKU_PATTERN)
     reason: RefundReason

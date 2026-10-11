@@ -69,6 +69,13 @@ class HttpOrderTools:
         )
         return dict(result)
 
+    async def decide_refund(self, refund_no: str, approve: bool) -> dict[str, Any]:
+        # Not retried: a second call after success would report the refund as already settled
+        result = await self._once(
+            "POST", f"/v1/refunds/{refund_no}/decision", {}, json={"approve": approve}
+        )
+        return dict(result)
+
     async def _call(
         self,
         method: str,

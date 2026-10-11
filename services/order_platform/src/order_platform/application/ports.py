@@ -29,6 +29,10 @@ class OrderRepository(Protocol):
 
     async def add_replacement(self, replacement: Replacement) -> None: ...
 
+    async def decide_refund(self, refund_no: str, approve: bool) -> Refund:
+        """Settle a pending refund: approve (processed, counted against the item) or reject."""
+        ...
+
 
 class IdempotencyStore(Protocol):
     async def get(self, key: str) -> StoredResponse | None: ...

@@ -42,6 +42,9 @@ class FakeOrderTools:
     async def list_my_orders(self, customer_id: str, limit: int) -> list[dict[str, Any]]:
         return [await self._record("list_my_orders", customer_id, limit)]
 
+    async def decide_refund(self, refund_no: str, approve: bool) -> dict[str, Any]:
+        return await self._record("decide_refund", refund_no, approve)
+
     async def get_order(self, customer_id: str, order_no: str) -> dict[str, Any]:
         return await self._record("get_order", customer_id, order_no)
 
