@@ -179,7 +179,8 @@ class TicketFlow:
                 return _done("answered", answer.reply)
             return _done(
                 "needs_customer_info",
-                "Could you share your order number (ORD-xxxxxx)? I need it to check your delivery status.",
+                "Could you share your order number (ORD-xxxxxx)? "
+                "I need it to check your delivery status.",
             )
         try:
             order = await self._orders.get_order(state["customer_no"], ticket.order_id)
