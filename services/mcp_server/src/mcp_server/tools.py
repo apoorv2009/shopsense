@@ -3,9 +3,11 @@
 No tool takes a customer ID: the customer comes from the verified caller context, so a model
 cannot name another customer's order by changing an argument."""
 
+import os
 from typing import Any, cast
 
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 
 from mcp_server.auth import current_caller
 from mcp_server.order_client import OrderClient
@@ -13,8 +15,26 @@ from mcp_server.order_client import OrderClient
 MAX_LIST = 10
 
 
+def _transport_security() -> TransportSecuritySettings:
+    """Host check for the streamable HTTP endpoints.
+
+    FastMCP only allows localhost by default, so calls to the App Service hostname get HTTP 421.
+    MCP_ALLOWED_HOSTS lists the deployed hostnames (comma separated, no port).
+    """
+    deployed = [h.strip() for h in os.environ.get("MCP_ALLOWED_HOSTS", "").split(",") if h.strip()]
+    return TransportSecuritySettings(
+        enable_dns_rebinding_protection=True,
+        allowed_hosts=["127.0.0.1:*", "localhost:*", "[::1]:*", *deployed],
+    )
+
+
 def build_read_server(orders: OrderClient) -> FastMCP:
-    mcp = FastMCP("shopsense-read", stateless_http=True, streamable_http_path="/")
+    mcp = FastMCP(
+        "shopsense-read",
+        stateless_http=True,
+        streamable_http_path="/",
+        transport_security=_transport_security(),
+    )
 
     @mcp.tool()
     async def list_my_orders(limit: int = 5) -> dict[str, Any]:
@@ -59,7 +79,12 @@ def build_read_server(orders: OrderClient) -> FastMCP:
 
 
 def build_system_server(orders: OrderClient) -> FastMCP:
-    mcp = FastMCP("shopsense-system", stateless_http=True, streamable_http_path="/")
+    mcp = FastMCP(
+        "shopsense-system",
+        stateless_http=True,
+        streamable_http_path="/",
+        transport_security=_transport_security(),
+    )
 
     @mcp.tool()
     async def request_refund(
