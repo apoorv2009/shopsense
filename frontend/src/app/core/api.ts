@@ -92,12 +92,13 @@ export class ShopSenseApi {
   async streamChat(
     customerNo: string,
     message: string,
+    history: readonly string[],
     onEvent: (event: StreamEvent) => void,
   ): Promise<void> {
     const response = await fetch(`${this.config.current.apiBaseUrl}/v1/chat/stream`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ customer_no: customerNo, message }),
+      body: JSON.stringify({ customer_no: customerNo, message, history }),
     });
     if (!response.ok || response.body === null) {
       throw new Error(`chat stream failed (HTTP ${String(response.status)})`);

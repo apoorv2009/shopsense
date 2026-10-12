@@ -50,6 +50,11 @@ export class ChatPage {
   readonly lastView = signal<TicketView | null>(null);
   readonly error = signal<string | null>(null);
 
+  // The customer's earlier messages in this conversation, sent with each new message so the
+  // assistant keeps context. Cleared when the customer number changes.
+  private historyFor = '';
+  private history: string[] = [];
+
   readonly stepLabel = (step: string): string => STEP_LABELS[step] ?? step;
 
   async send(): Promise<void> {
@@ -62,10 +67,17 @@ export class ChatPage {
     this.busy.set(true);
     this.error.set(null);
     this.steps.set([]);
+    const customer = this.customerNo();
+    if (customer !== this.historyFor) {
+      this.history = [];
+      this.historyFor = customer;
+    }
+    const earlier = this.history.slice(-4);
     try {
-      await this.api.streamChat(this.customerNo(), text, (event) => {
+      await this.api.streamChat(customer, text, earlier, (event) => {
         this.onEvent(event);
       });
+      this.history = [...this.history, text].slice(-5);
     } catch {
       this.error.set('We could not reach the support system. Please try again in a moment.');
     } finally {
