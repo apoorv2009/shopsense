@@ -7,14 +7,19 @@ import asyncio
 from dataclasses import dataclass
 from typing import Literal
 
+import structlog
+
 from shopsense_api.application.ports.policy import Embedder, Hit, PolicyIndex, Reranker
 from shopsense_api.domain.policy.chunks import PolicyChunk
 from shopsense_api.domain.policy.grounding import encode_sparse
 
 Mode = Literal["dense", "hybrid", "hybrid_rerank"]
 RRF_K = 60
+log = structlog.get_logger(__name__)
+
 CANDIDATES = 20
 RERANK_POOL = 20
+RERANK_TIMEOUT_S = 8.0  # fall back to hybrid order if reranking is slower than this
 
 
 def reciprocal_rank_fusion(rankings: list[list[Hit]], k: int = RRF_K) -> list[Hit]:
@@ -50,4 +55,11 @@ class HybridSearch:
             return fused[:limit]
         if self.reranker is None:
             raise RuntimeError("hybrid_rerank needs a reranker")
-        return await self.reranker.rerank(query, [h.chunk for h in fused[:RERANK_POOL]], limit)
+        try:
+            return await asyncio.wait_for(
+                self.reranker.rerank(query, [h.chunk for h in fused[:RERANK_POOL]], limit),
+                timeout=RERANK_TIMEOUT_S,
+            )
+        except Exception:
+            log.warning("reranker unavailable; using hybrid order", exc_info=True)
+            return fused[:limit]

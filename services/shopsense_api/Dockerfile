@@ -7,6 +7,9 @@ RUN pip install --no-cache-dir "uv>=0.5"
 WORKDIR /app
 COPY . .
 RUN uv sync --package shopsense-api --frozen --no-dev
+# Bake the reranker model into the image so the container never downloads it at start-up
+ENV FASTEMBED_CACHE_PATH=/app/.fastembed_cache
+RUN /app/.venv/bin/python -c "from fastembed.rerank.cross_encoder import TextCrossEncoder; TextCrossEncoder('Xenova/ms-marco-MiniLM-L-6-v2')"
 ENV PATH="/app/.venv/bin:$PATH"
 EXPOSE 8000
 CMD ["uvicorn", "shopsense_api.entrypoints.api:app", "--host", "0.0.0.0", "--port", "8000"]
