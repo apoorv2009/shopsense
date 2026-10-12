@@ -1850,6 +1850,7 @@ dependencies = [
     { name = "anthropic" },
     { name = "asyncpg" },
     { name = "azure-identity" },
+    { name = "fastapi" },
     { name = "fastembed" },
     { name = "httpx" },
     { name = "langgraph" },
@@ -1863,6 +1864,7 @@ dependencies = [
     { name = "shopsense-contracts" },
     { name = "sqlalchemy" },
     { name = "structlog" },
+    { name = "uvicorn", extra = ["standard"] },
 ]
 
 [package.metadata]
@@ -1872,6 +1874,7 @@ requires-dist = [
     { name = "anthropic", specifier = ">=1.11" },
     { name = "asyncpg", specifier = ">=0.30" },
     { name = "azure-identity", specifier = ">=1.19" },
+    { name = "fastapi", specifier = ">=0.115" },
     { name = "fastembed", specifier = ">=0.4" },
     { name = "httpx", specifier = ">=0.27" },
     { name = "langgraph", specifier = ">=0.2" },
@@ -1885,6 +1888,7 @@ requires-dist = [
     { name = "shopsense-contracts", editable = "libs/contracts" },
     { name = "sqlalchemy", specifier = ">=2.0" },
     { name = "structlog", specifier = ">=24.4" },
+    { name = "uvicorn", extras = ["standard"], specifier = ">=0.32" },
 ]
 
 [[package]]
