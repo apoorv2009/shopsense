@@ -1,14 +1,33 @@
-<mat-toolbar class="shell__bar" color="primary">
-  <a class="shell__brand" routerLink="/chat">ShopSense</a>
-  <nav class="shell__nav" aria-label="Main">
-    <a routerLink="/chat" routerLinkActive="shell__link--active">Customer chat</a>
-    <a routerLink="/reviewer" routerLinkActive="shell__link--active">Reviewer console</a>
-  </nav>
-  @if (auth.isDev()) {
-    <span class="shell__mode">Development mode: sign-in not yet enabled</span>
-  }
-</mat-toolbar>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="shell__header">
+  <div class="shell__inner shell__bar">
+    <a class="shell__brand" routerLink="/chat" aria-label="ShopSense home">
+      <span class="shell__mark" aria-hidden="true">SS</span>
+      <span class="shell__name">ShopSense</span>
+    </a>
+
+    <nav class="shell__nav" aria-label="Main">
+      <a routerLink="/chat" routerLinkActive="shell__link--active">Customer chat</a>
+      <a routerLink="/reviewer" routerLinkActive="shell__link--active">Reviewer console</a>
+    </nav>
+
+    @if (auth.isDev()) {
+      <span class="shell__badge">Demo mode · sign-in not enabled</span>
+    }
+  </div>
+</header>
 
 <main class="shell__main" id="main">
-  <router-outlet />
+  <div class="shell__inner">
+    <router-outlet />
+  </div>
 </main>
+
+<footer class="shell__footer">
+  <div class="shell__inner shell__foot">
+    <span class="shell__brand-foot">ShopSense customer support assistant</span>
+    <span>Demo build on Microsoft Azure · Not for production use</span>
+    <span>© 2026</span>
+  </div>
+</footer>

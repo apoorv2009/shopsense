@@ -7,12 +7,19 @@ html {
 
 body {
   margin: 0;
-  background: #fafafa;
+  background: #f4f6f9;
   color: #1b1b1b;
   font-family: Roboto, system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #042c53;
 }
 
 :focus-visible {
-  outline: 3px solid #1a5fb4;
+  outline: 3px solid #185fa5;
   outline-offset: 2px;
 }

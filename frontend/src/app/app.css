@@ -1,33 +1,132 @@
+.skip-link {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  background: #ffffff;
+  padding: 0.5rem 0.75rem;
+  z-index: 10;
+}
+
+.skip-link:focus {
+  left: 0.5rem;
+  top: 0.5rem;
+}
+
+.shell__inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.shell__header {
+  background: #042c53;
+  color: #e6f1fb;
+}
+
 .shell__bar {
   display: flex;
-  gap: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1.25rem;
   align-items: center;
+  min-height: 4rem;
 }
 
 .shell__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
   color: inherit;
-  font-weight: 600;
   text-decoration: none;
+}
+
+.shell__mark {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: #185fa5;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+.shell__name {
+  font-size: 1.1rem;
+  font-weight: 500;
 }
 
 .shell__nav {
   display: flex;
-  gap: 1rem;
+  gap: 0.25rem;
+  margin-left: 1rem;
 }
 
 .shell__nav a {
-  color: inherit;
+  color: #b5d4f4;
+  text-decoration: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.shell__nav a:hover {
+  background: #0c447c;
+  color: #ffffff;
 }
 
 .shell__link--active {
-  text-decoration: underline;
+  background: #185fa5 !important;
+  color: #ffffff !important;
 }
 
-.shell__mode {
+.shell__badge {
   margin-left: auto;
   font-size: 0.8rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: #0c447c;
+  color: #b5d4f4;
 }
 
 .shell__main {
   min-height: 70vh;
+  padding: 1.5rem 0 2.5rem;
+  background: #f4f6f9;
+}
+
+.shell__footer {
+  background: #ffffff;
+  border-top: 0.5px solid #d3d1c7;
+  color: #5f5e5a;
+  font-size: 0.85rem;
+}
+
+.shell__foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  justify-content: space-between;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.shell__brand-foot {
+  font-weight: 500;
+  color: #042c53;
+}
+
+@media (max-width: 640px) {
+  .shell__nav {
+    margin-left: 0;
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .shell__badge {
+    margin-left: 0;
+  }
 }
