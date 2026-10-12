@@ -23,6 +23,8 @@ from shopsense_api.entrypoints.channels import normalise_address
 class ChatTicketIn(BaseModel):
     customer_no: str = Field(pattern=r"^C\d{4}$")
     message: str = Field(min_length=1, max_length=4000)
+    # The customer's earlier messages in this conversation, oldest first (context for triage)
+    history: list[str] = Field(default_factory=list, max_length=5)
 
 
 class EmailInboundIn(BaseModel):
@@ -50,7 +52,9 @@ def create_app(lifespan: Any = None, cors_origins: list[str] | None = None) -> F
     async def chat(body: ChatTicketIn, request: Request) -> dict[str, Any]:
         runner = _runner(request)
         ticket_id = f"TKT-CH-{uuid.uuid4().hex[:10]}"
-        view = await runner.start(ticket_id, body.customer_no, body.message, channel="chat")
+        view = await runner.start(
+            ticket_id, body.customer_no, body.message, channel="chat", history=tuple(body.history)
+        )
         return _view(view)
 
     @app.post("/v1/channels/email/inbound", response_model=None)
@@ -76,7 +80,9 @@ def create_app(lifespan: Any = None, cors_origins: list[str] | None = None) -> F
         ticket_id = f"TKT-CH-{uuid.uuid4().hex[:10]}"
 
         async def events() -> AsyncIterator[str]:
-            async for event in runner.stream(ticket_id, body.customer_no, body.message, "chat"):
+            async for event in runner.stream(
+                ticket_id, body.customer_no, body.message, "chat", history=tuple(body.history)
+            ):
                 payload = json.dumps(event, default=str, ensure_ascii=False)
                 yield f"data: {payload}\n\n"
 

@@ -12,6 +12,7 @@ class TicketState(TypedDict, total=False):
     guard_blocked: list[str]
     customer_no: str
     message: str
+    history: list[str]
     ticket: dict[str, Any]
     order_no: str
     sku: str

@@ -131,7 +131,10 @@ class TicketFlow:
 
     async def triage_step(self, state: TicketState) -> dict[str, Any]:
         try:
-            result = await self._triage.execute(TriageCommand(UntrustedText(state["message"])))
+            earlier = tuple(UntrustedText(turn) for turn in state.get("history", []))
+            result = await self._triage.execute(
+                TriageCommand(UntrustedText(state["message"]), recent_turns=earlier)
+            )
         except (LLMRefused, TriageFailed):
             # Fail closed (M8): a refused or unreadable ticket goes to a person, no order action
             return _done("handed_off", _HANDOFF)

@@ -30,7 +30,12 @@ class TicketRunner:
         self._outbox = outbox
 
     async def start(
-        self, ticket_id: str, customer_no: str, message: str, channel: str = "chat"
+        self,
+        ticket_id: str,
+        customer_no: str,
+        message: str,
+        channel: str = "chat",
+        history: tuple[str, ...] = (),
     ) -> TicketView:
         config = _config(ticket_id)
         initial: TicketState = {
@@ -38,6 +43,7 @@ class TicketRunner:
             "customer_no": customer_no,
             "message": message,
             "channel": channel,
+            "history": list(history),
         }
         await self._graph.ainvoke(initial, config)
         return await self.view(ticket_id)
@@ -75,7 +81,12 @@ class TicketRunner:
         )
 
     async def stream(
-        self, ticket_id: str, customer_no: str, message: str, channel: str = "chat"
+        self,
+        ticket_id: str,
+        customer_no: str,
+        message: str,
+        channel: str = "chat",
+        history: tuple[str, ...] = (),
     ) -> AsyncIterator[dict[str, Any]]:
         """Run a ticket and yield one event per finished step, then the final view (SSE demo)."""
         initial: TicketState = {
@@ -83,6 +94,7 @@ class TicketRunner:
             "customer_no": customer_no,
             "message": message,
             "channel": channel,
+            "history": list(history),
         }
         async for chunk in self._graph.astream(initial, _config(ticket_id), stream_mode="updates"):
             for step, update in chunk.items():
