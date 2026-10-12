@@ -188,11 +188,24 @@ class TicketFlow:
             if exc.retryable:  # outage: we cannot check the order, so a person follows up (M7-5)
                 return _done("parked_human_queue", _PARKED)
             return _done("needs_customer_info", "I could not find that order on your account.")
-        if order.get("delivered_at") is None:
+        lost = order.get("shipment_status") == "lost"
+        if order.get("delivered_at") is None and not lost:
             return _done("cannot_help", f"Order {ticket.order_id} has not been delivered yet.")
         item = _pick_item(order["items"], state["message"])
         if item is None:
             return _done("needs_customer_info", "Which item in the order is this about?")
+        if lost and order.get("delivered_at") is None:
+            # A shipment lost in transit has no delivery date, so the return window does not
+            # apply; the reviewer decides the refund (assess_step)
+            return {
+                "order_no": ticket.order_id,
+                "sku": item["sku"],
+                "amount_paise": int(item["paid_paise"]),
+                "lost_in_transit": True,
+                "allowed_numbers": sorted(
+                    rupee_forms(numbers_in(json.dumps(order)) | numbers_in(ticket.order_id or ""))
+                ),
+            }
         case = _case(item, order, ticket, self._clock())
         allowed = rupee_forms(numbers_in(json.dumps(order)) | numbers_in(ticket.order_id or ""))
         return {
@@ -204,6 +217,17 @@ class TicketFlow:
 
     async def assess_step(self, state: TicketState) -> dict[str, Any]:
         ticket = SupportTicket.model_validate(state["ticket"])
+        if state.get("lost_in_transit"):
+            # Lost in transit: always a reviewer decision, for the price paid for the item
+            amount = int(state["amount_paise"])
+            lost = assess(ticket, Eligibility.ESCALATE, amount, state.get("channel", "chat"))
+            return {
+                "eligibility": Eligibility.ESCALATE.value,
+                "rule_id": "LOST-IN-TRANSIT",
+                "amount_paise": amount,
+                "route": lost.route.value,
+                "reasons": list(lost.reasons),
+            }
         if ticket.issue_type not in REFUND_ISSUES:
             verdict = assess(ticket, Eligibility.ELIGIBLE, 0)
             return {

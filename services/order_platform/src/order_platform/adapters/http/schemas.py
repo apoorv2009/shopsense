@@ -37,6 +37,7 @@ class OrderOut(BaseModel):
     payment_method_type: str
     placed_at: datetime
     delivered_at: datetime | None
+    shipment_status: str | None = None
     shipping_fee_paise: int
     items: list[ItemOut]
 
@@ -115,6 +116,7 @@ def order_out(order: Order) -> OrderOut:
         payment_method_type=payment_type(order.payment_method),
         placed_at=order.placed_at,
         delivered_at=order.shipment.delivered_at if order.shipment else None,
+        shipment_status=order.shipment.status.value if order.shipment else None,
         shipping_fee_paise=order.shipping_fee_paise,
         items=[
             ItemOut(

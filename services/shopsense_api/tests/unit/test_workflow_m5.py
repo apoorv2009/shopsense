@@ -410,3 +410,21 @@ async def test_outcome_is_remembered_and_recall_reaches_the_flow() -> None:
     assert remember.calls[0]["outcome"] == TicketOutcome.NEEDS_INFO
     assert remember.calls[0]["customer_no"] == "C0001"
     assert remember.calls[0]["ticket_no"] == "TKT-M1"
+
+
+async def test_lost_in_transit_refund_waits_for_the_reviewer() -> None:
+    lost = order_json(delivered_days_ago=None)
+    lost["shipment_status"] = "lost"
+    runner, _ = await make_runner(ticket(), FakeOrders({"ORD-100002": lost}))
+    view = await runner.start("TKT-L1", "C0001", "The order never arrived, I want a refund")
+    assert view.paused is True
+    assert view.outcome == "pending_human_approval"
+    assert write_count(FakeOrders({})) == 0
+
+
+async def test_undelivered_order_still_cannot_be_refunded_while_in_transit() -> None:
+    in_transit = order_json(delivered_days_ago=None)
+    in_transit["shipment_status"] = "in_transit"
+    runner, _ = await make_runner(ticket(), FakeOrders({"ORD-100002": in_transit}))
+    view = await runner.start("TKT-L2", "C0001", "I want a refund for ORD-100002")
+    assert view.outcome == "cannot_help"

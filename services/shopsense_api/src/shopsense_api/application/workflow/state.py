@@ -13,6 +13,7 @@ class TicketState(TypedDict, total=False):
     customer_no: str
     message: str
     history: list[str]
+    lost_in_transit: bool
     ticket: dict[str, Any]
     order_no: str
     sku: str
