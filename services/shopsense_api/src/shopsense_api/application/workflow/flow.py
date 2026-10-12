@@ -31,6 +31,7 @@ from shopsense_api.domain.policy.grounding import numbers_in
 from shopsense_api.domain.policy.rules_engine import Eligibility, ReturnCase
 from shopsense_api.domain.ticket.enums import IssueType, Sentiment
 from shopsense_api.domain.ticket.greeting import GREETING_REPLY, is_greeting
+from shopsense_api.domain.ticket.off_domain import OFF_DOMAIN_REPLY
 from shopsense_api.domain.ticket.support_ticket import SupportTicket
 from shopsense_api.domain.values.untrusted_text import UntrustedText
 from shopsense_api.domain.workflow.risk import REFUND_ISSUES, Route, assess
@@ -165,6 +166,8 @@ class TicketFlow:
         except (LLMRefused, TriageFailed):
             # Fail closed (M8): a refused or unreadable ticket goes to a person, no order action
             return _done("handed_off", _HANDOFF)
+        if result.ticket.issue_type is IssueType.OUT_OF_SCOPE:
+            return _done("out_of_scope", OFF_DOMAIN_REPLY)
         return {"ticket": result.ticket.model_dump(mode="json"), "memory": memory}
 
     async def lookup_step(self, state: TicketState) -> dict[str, Any]:
