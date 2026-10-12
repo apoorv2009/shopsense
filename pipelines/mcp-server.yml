@@ -1,0 +1,24 @@
+# MCP server pipeline. Runs only when this component's files change.
+trigger:
+  branches:
+    include: [main]
+  paths:
+    include:
+      - services/mcp_server/**
+      - libs/contracts/**
+pr: none
+
+variables:
+  azureServiceConnection: shopsense-azure
+  acrName: acrshopsensedevyuegx3
+  resourceGroup: rg-shopsense-dev-eus2
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - template: templates/service.yml
+    parameters:
+      serviceName: mcp-server
+      appFolder: services/mcp_server
+      appService: app-shopsense-mcp-yuegx3

@@ -1,0 +1,24 @@
+# ShopSense API pipeline. Runs only when this component's files change.
+trigger:
+  branches:
+    include: [main]
+  paths:
+    include:
+      - services/shopsense_api/**
+      - libs/contracts/**
+pr: none
+
+variables:
+  azureServiceConnection: shopsense-azure
+  acrName: acrshopsensedevyuegx3
+  resourceGroup: rg-shopsense-dev-eus2
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - template: templates/service.yml
+    parameters:
+      serviceName: shopsense-api
+      appFolder: services/shopsense_api
+      appService: app-shopsense-api-yuegx3

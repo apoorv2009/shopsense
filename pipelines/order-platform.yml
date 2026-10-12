@@ -1,0 +1,24 @@
+# Order Platform pipeline. Runs only when this component's files change.
+trigger:
+  branches:
+    include: [main]
+  paths:
+    include:
+      - services/order_platform/**
+      - libs/contracts/**
+pr: none
+
+variables:
+  azureServiceConnection: shopsense-azure
+  acrName: acrshopsensedevyuegx3
+  resourceGroup: rg-shopsense-dev-eus2
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - template: templates/service.yml
+    parameters:
+      serviceName: order-platform
+      appFolder: services/order_platform
+      appService: app-shopsense-order-yuegx3

@@ -1,0 +1,49 @@
+# Shared steps for one backend service: build its image, push it to ACR, then point its
+# App Service app at the new tag and restart it. Each service has its own pipeline file.
+parameters:
+  - name: serviceName
+    type: string
+  - name: appFolder
+    type: string
+  - name: appService
+    type: string
+
+stages:
+  - stage: Build
+    displayName: Build ${{ parameters.serviceName }}
+    jobs:
+      - job: Image
+        steps:
+          - checkout: self
+          - task: AzureCLI@2
+            displayName: Build and push image
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                set -euo pipefail
+                az acr login --name "$(acrName)"
+                image="$(acrName).azurecr.io/${{ parameters.serviceName }}:$(Build.BuildId)"
+                docker build -f "${{ parameters.appFolder }}/Dockerfile" -t "$image" .
+                docker push "$image"
+                echo "pushed $image"
+
+  - stage: Deploy
+    displayName: Deploy ${{ parameters.serviceName }}
+    dependsOn: Build
+    jobs:
+      - job: AppService
+        steps:
+          - task: AzureCLI@2
+            displayName: Point App Service at the new image
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                set -euo pipefail
+                image="$(acrName).azurecr.io/${{ parameters.serviceName }}:$(Build.BuildId)"
+                az webapp config container set -g $(resourceGroup) -n ${{ parameters.appService }} --container-image-name "$image"
+                az webapp restart -g $(resourceGroup) -n ${{ parameters.appService }}
+                echo "deployed $image to ${{ parameters.appService }}"
