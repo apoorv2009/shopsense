@@ -8,7 +8,7 @@ import hashlib
 import json
 import uuid
 from collections.abc import AsyncIterator
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from typing import Any
 
 from fastapi import FastAPI, Request
@@ -17,6 +17,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
 from shopsense_api.adapters.workflow.runner import TicketRunner, TicketView
+from shopsense_api.domain.ticket.reference import find_ticket_reference, status_sentence
 from shopsense_api.entrypoints.channels import normalise_address
 
 
@@ -51,6 +52,9 @@ def create_app(lifespan: Any = None, cors_origins: list[str] | None = None) -> F
     @app.post("/v1/chat/tickets", status_code=201)
     async def chat(body: ChatTicketIn, request: Request) -> dict[str, Any]:
         runner = _runner(request)
+        known = await _ticket_status(runner, body.customer_no, body.message)
+        if known is not None:
+            return _view(known)
         ticket_id = f"TKT-CH-{uuid.uuid4().hex[:10]}"
         view = await runner.start(
             ticket_id, body.customer_no, body.message, channel="chat", history=tuple(body.history)
@@ -77,6 +81,14 @@ def create_app(lifespan: Any = None, cors_origins: list[str] | None = None) -> F
     async def chat_stream(body: ChatTicketIn, request: Request) -> StreamingResponse:
         """Demo chat endpoint (M8): server-sent events, one per workflow step, then the result."""
         runner = _runner(request)
+        known = await _ticket_status(runner, body.customer_no, body.message)
+        if known is not None:
+
+            async def status_events() -> AsyncIterator[str]:
+                payload = json.dumps({"final": _view(known)}, default=str, ensure_ascii=False)
+                yield f"data: {payload}\n\n"
+
+            return StreamingResponse(status_events(), media_type="text/event-stream")
         ticket_id = f"TKT-CH-{uuid.uuid4().hex[:10]}"
 
         async def events() -> AsyncIterator[str]:
@@ -107,3 +119,19 @@ def _runner(request: Request) -> TicketRunner:
 
 def _view(view: TicketView) -> dict[str, Any]:
     return asdict(view)
+
+
+async def _ticket_status(runner: TicketRunner, customer_no: str, message: str) -> TicketView | None:
+    """A ticket number in the message, if it belongs to this customer: answered from its status,
+    with no new ticket and no model call."""
+    ticket_id = find_ticket_reference(message)
+    if ticket_id is None:
+        return None
+    owned = await runner.status_for(customer_no, ticket_id)
+    if owned is None:
+        return None
+    return replace(
+        owned,
+        outcome="ticket_status",
+        reply=status_sentence(ticket_id, owned.outcome),
+    )

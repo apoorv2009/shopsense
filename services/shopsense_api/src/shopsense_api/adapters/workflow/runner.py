@@ -53,6 +53,13 @@ class TicketRunner:
         await self._graph.ainvoke(Command(resume=decision), _config(ticket_id))
         return await self.view(ticket_id)
 
+    async def status_for(self, customer_no: str, ticket_id: str) -> TicketView | None:
+        """A ticket's status, only if the customer asking owns that ticket."""
+        snapshot = await self._graph.aget_state(_config(ticket_id))
+        if snapshot.values.get("customer_no") != customer_no:
+            return None
+        return await self.view(ticket_id)
+
     async def view(self, ticket_id: str) -> TicketView:
         snapshot = await self._graph.aget_state(_config(ticket_id))
         values = snapshot.values
