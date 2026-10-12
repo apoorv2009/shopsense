@@ -199,8 +199,18 @@ def test_no_refund_requested_is_a_reply() -> None:
     assert verdict.route is Route.REPLY
 
 
-def test_missing_evidence_goes_to_a_human() -> None:
+def test_missing_evidence_goes_to_the_reviewer_for_approval() -> None:
     verdict = assess(ticket(), Eligibility.NEEDS_EVIDENCE, CALM_SMALL)
+    assert verdict.route is Route.APPROVAL
+
+
+def test_escalated_refund_goes_to_the_reviewer_for_approval() -> None:
+    verdict = assess(ticket(), Eligibility.ESCALATE, CALM_SMALL)
+    assert verdict.route is Route.APPROVAL
+
+
+def test_product_safety_still_goes_to_a_human_not_approval() -> None:
+    verdict = assess(ticket(flags=[RiskFlag.PRODUCT_SAFETY]), Eligibility.ELIGIBLE, CALM_SMALL)
     assert verdict.route is Route.HUMAN
 
 

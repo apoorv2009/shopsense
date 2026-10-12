@@ -52,7 +52,8 @@ def assess(
     if ticket.issue_type not in REFUND_ISSUES:
         return RiskVerdict(Route.REPLY, ("no refund requested",))
     if eligibility in (Eligibility.NEEDS_EVIDENCE, Eligibility.ESCALATE):
-        return RiskVerdict(Route.HUMAN, (f"policy result: {eligibility.value}",))
+        # The reviewer decides these: checks evidence or escalates, then approves or rejects
+        return RiskVerdict(Route.APPROVAL, (f"policy result: {eligibility.value}",))
     if eligibility is Eligibility.NOT_ELIGIBLE or amount_paise <= 0:
         return RiskVerdict(Route.REPLY, ("not refundable under policy",))
     reasons = list(_approval_reasons(ticket, amount_paise))
