@@ -23,5 +23,6 @@ def test_no_reference_in_ordinary_text() -> None:
 
 def test_status_sentence_names_the_ticket() -> None:
     assert status_sentence("TKT-CH-d18a6b19b3", "pending_human_approval") == (
-        "Ticket TKT-CH-d18a6b19b3 is waiting for a specialist to approve it."
+        "Ticket TKT-CH-d18a6b19b3 is waiting for a specialist to approve the refund. "
+        "If you meant your order, please share the order number (ORD-xxxxxx)."
     )

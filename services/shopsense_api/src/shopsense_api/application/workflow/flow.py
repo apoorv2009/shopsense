@@ -177,7 +177,10 @@ class TicketFlow:
             if ticket.issue_type is IssueType.POLICY_QUESTION and self._answerer is not None:
                 answer = await self._answerer.run(UntrustedText(state["message"]))
                 return _done("answered", answer.reply)
-            return _done("needs_customer_info", "Could you share your order number (ORD-xxxxxx)?")
+            return _done(
+                "needs_customer_info",
+                "Could you share your order number (ORD-xxxxxx)? I need it to check your delivery status.",
+            )
         try:
             order = await self._orders.get_order(state["customer_no"], ticket.order_id)
         except OrderToolError as exc:
