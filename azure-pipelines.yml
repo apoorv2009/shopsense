@@ -1,0 +1,50 @@
+# Azure DevOps pipeline: builds the three service images on a Microsoft-hosted agent and pushes
+# them to Azure Container Registry. Deploy stages (Container Apps, Static Web App) are added once
+# the Bicep for those resources exists.
+#
+# Prerequisites (set up once in Azure DevOps):
+#   - Azure Resource Manager service connection named "shopsense-azure" (workload identity
+#     federation) scoped to rg-shopsense-dev-eus2, with AcrPush on acrshopsensedevyuegx3.
+#   - GitHub service connection to apoorv2009/shopsense (repo connection for this pipeline).
+
+trigger:
+  branches:
+    include: [main]
+
+pr: none
+
+variables:
+  azureServiceConnection: shopsense-azure
+  acrName: acrshopsensedevyuegx3
+  imageTag: $(Build.BuildId)
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Build
+    displayName: Build and push images
+    jobs:
+      - job: Images
+        steps:
+          - checkout: self
+
+          - task: AzureCLI@2
+            displayName: Build and push service images
+            inputs:
+              azureSubscription: $(azureServiceConnection)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                set -euo pipefail
+                az acr login --name "$(acrName)"
+                loginServer="$(acrName).azurecr.io"
+                for svc in shopsense_api order_platform mcp_server; do
+                  image="${svc//_/-}"
+                  docker build -f "services/${svc}/Dockerfile" \
+                    -t "${loginServer}/${image}:$(imageTag)" \
+                    -t "${loginServer}/${image}:latest" .
+                  docker push "${loginServer}/${image}:$(imageTag)"
+                  docker push "${loginServer}/${image}:latest"
+                done
+                echo "Pushed tag $(imageTag) for shopsense-api, order-platform and mcp-server"
