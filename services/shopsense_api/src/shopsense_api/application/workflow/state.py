@@ -8,6 +8,8 @@ class TicketState(TypedDict, total=False):
     channel: str
     agent_note: dict[str, Any] | None
     brief: dict[str, Any] | None
+    allowed_numbers: list[str]
+    guard_blocked: list[str]
     customer_no: str
     message: str
     ticket: dict[str, Any]

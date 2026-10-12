@@ -57,7 +57,9 @@ class Database:
             await self._credential.close()
 
 
-def build_services(engine: AsyncEngine, admin_token: str | None = None) -> Services:
+def build_services(
+    engine: AsyncEngine, admin_token: str | None = None, grant_key: bytes = b""
+) -> Services:
     sessions = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
     def uow() -> SqlUnitOfWork:
@@ -68,7 +70,7 @@ def build_services(engine: AsyncEngine, admin_token: str | None = None) -> Servi
         queries=OrderQueries(uow),
         refunds=RequestRefund(uow, clock, ids),
         replacements=RequestReplacement(uow, clock, ids),
-        decisions=DecideRefund(uow),
+        decisions=DecideRefund(uow, grant_key),
         faults=FaultState() if admin_token else None,
         admin_token=admin_token,
     )

@@ -29,6 +29,10 @@ class OrderRepository(Protocol):
 
     async def add_replacement(self, replacement: Replacement) -> None: ...
 
+    async def refund_scope(self, refund_no: str) -> tuple[str, str, int]:
+        """Order number, item SKU and amount of a refund (for grant checks)."""
+        ...
+
     async def decide_refund(self, refund_no: str, approve: bool) -> Refund:
         """Settle a pending refund: approve (processed, counted against the item) or reject."""
         ...

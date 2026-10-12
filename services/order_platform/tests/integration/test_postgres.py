@@ -23,6 +23,7 @@ from order_platform.domain.errors import NotAllowedError, NotFoundError
 from order_platform.domain.model import RefundReason
 from order_platform.entrypoints.composition import build_services
 from order_platform.entrypoints.seed import seed
+from shopsense_contracts.approval_grant import GrantScope, issue
 
 URL = os.environ.get("ORDER_PLATFORM_TEST_DATABASE_URL")
 pytestmark = [
@@ -142,7 +143,9 @@ async def test_reviewer_approval_settles_pending_refund(services: Services) -> N
     )
     body = await services.refunds.execute(cmd)
     assert body["status"] == "pending_approval"
-    settled = await services.decisions.execute(body["refund_no"], approve=True)
+    scope = GrantScope("ORD-100003", "ELE-LAPTOP14", 2_500_000, "reviewer-1", "TKT-PG")
+    token = issue(scope, b"test-grant-key")
+    settled = await services.decisions.execute(body["refund_no"], True, token)
     assert settled["status"] == "processed"
     again = await services.queries.get_order("C0002", "ORD-100003")
     assert again.items[0].refunded_paise == 2_500_000

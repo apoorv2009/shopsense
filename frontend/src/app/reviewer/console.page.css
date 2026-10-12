@@ -1,0 +1,82 @@
+.console {
+  display: grid;
+  gap: 1rem;
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.console__search {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 1rem;
+}
+
+.console__case {
+  display: grid;
+  gap: 1rem;
+}
+
+.console__trusted,
+.console__advisory,
+.console__customer {
+  padding: 1rem;
+}
+
+.console__trusted {
+  border-left: 4px solid #1a5fb4;
+}
+
+.console__advisory {
+  border-left: 4px dashed #8a5a00;
+  background: #fffaf0;
+}
+
+.console__customer {
+  border-left: 4px solid #8c8c8c;
+}
+
+.console__note {
+  font-size: 0.85rem;
+  color: #4a4a4a;
+  margin: 0 0 0.5rem;
+}
+
+.console dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 1rem;
+  margin: 0;
+}
+
+.console dt {
+  font-weight: 600;
+}
+
+.console dd {
+  margin: 0;
+}
+
+.console__reason {
+  display: inline-block;
+  margin-right: 0.5rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 0.5rem;
+  background: #ececec;
+}
+
+.console__actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.console__error {
+  color: #8c1d18;
+  margin: 0;
+}
+
+.console__done {
+  color: #1d6b2f;
+  margin: 0;
+}

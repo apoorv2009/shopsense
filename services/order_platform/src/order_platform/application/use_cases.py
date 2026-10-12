@@ -6,9 +6,10 @@ from dataclasses import asdict, dataclass
 from typing import Any
 
 from order_platform.application.ports import Clock, IdGenerator, UnitOfWork, UnitOfWorkFactory
-from order_platform.domain.errors import DuplicateRequestError, NotFoundError
+from order_platform.domain.errors import DuplicateRequestError, GrantRefusedError, NotFoundError
 from order_platform.domain.model import Order, Refund, RefundReason, Replacement, Shipment
 from order_platform.domain.rules import RefundQuote, decide_refund, decide_replacement, quote_refund
+from shopsense_contracts.approval_grant import GrantScope, InvalidGrantError, verify
 
 
 @dataclass(frozen=True, slots=True)
@@ -83,17 +84,35 @@ class RequestRefund:
 
 
 class DecideRefund:
-    """Reviewer decision on a pending refund (M5 approval resume). Settlement is simulated:
-    an approved refund is processed at once; the caller must be an internal reviewer."""
+    """Reviewer decision on a pending refund. An approval must carry a signed grant bound to this
+    refund's order, item and amount (M8-4); a rejection moves no money and needs none. Settlement
+    is simulated: an approved refund is processed at once."""
 
-    def __init__(self, uow: UnitOfWorkFactory) -> None:
+    def __init__(self, uow: UnitOfWorkFactory, grant_key: bytes) -> None:
         self._uow = uow
+        self._grant_key = grant_key
 
-    async def execute(self, refund_no: str, approve: bool) -> dict[str, Any]:
+    async def execute(
+        self, refund_no: str, approve: bool, grant: str | None = None
+    ) -> dict[str, Any]:
         async with self._uow() as uow:
+            if approve:
+                await self._check_grant(uow, refund_no, grant)
             refund = await uow.orders.decide_refund(refund_no, approve)
             await uow.commit()
             return to_json(refund)
+
+    async def _check_grant(self, uow: Any, refund_no: str, grant: str | None) -> None:
+        if not grant:
+            raise GrantRefusedError("an approval needs a reviewer grant")
+        order_no, sku, amount = await uow.orders.refund_scope(refund_no)
+        expect = GrantScope(
+            order_no=order_no, item_sku=sku, amount_paise=amount, reviewer="", ticket_id=""
+        )
+        try:
+            verify(grant, self._grant_key, expect=expect)
+        except InvalidGrantError as exc:
+            raise GrantRefusedError(str(exc)) from exc
 
 
 class RequestReplacement:

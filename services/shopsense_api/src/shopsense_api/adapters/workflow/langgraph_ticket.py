@@ -34,7 +34,7 @@ def build_graph(
     graph.add_node("execute_approved", node("execute_approved", flow.execute_approved))
     graph.add_node("respond", node("respond", flow.respond_step))
     graph.add_edge(START, "triage")
-    graph.add_edge("triage", "lookup")
+    graph.add_conditional_edges("triage", _after_triage, {"lookup": "lookup", "respond": "respond"})
     graph.add_conditional_edges("lookup", _after_lookup, {"advise": "advise", "respond": "respond"})
     graph.add_edge("advise", "assess")
     graph.add_conditional_edges(
@@ -50,6 +50,10 @@ def build_graph(
     graph.add_edge("execute_approved", "respond")
     graph.add_edge("respond", END)
     return graph.compile(checkpointer=checkpointer)
+
+
+def _after_triage(state: TicketState) -> str:
+    return "respond" if state.get("outcome") else "lookup"
 
 
 def _after_lookup(state: TicketState) -> str:

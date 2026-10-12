@@ -1,0 +1,86 @@
+.chat {
+  display: grid;
+  gap: 1rem;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.chat__card {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.chat__customer {
+  display: grid;
+  gap: 0.25rem;
+  max-width: 12rem;
+}
+
+.chat__log {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-height: 8rem;
+}
+
+.chat__line {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.75rem;
+  background: #eef3ff;
+  max-width: 85%;
+}
+
+.chat__line--assistant {
+  justify-self: end;
+  background: #f1f1f1;
+}
+
+.chat__line p {
+  margin: 0.25rem 0 0;
+  white-space: pre-wrap;
+}
+
+.chat__who {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.chat__steps {
+  margin: 0;
+  padding-left: 1.25rem;
+  color: #3d3d3d;
+}
+
+.chat__error {
+  color: #8c1d18;
+  margin: 0;
+}
+
+.chat__form {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.chat__field {
+  flex: 1;
+}
+
+.chat__facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.25rem 1rem;
+  margin: 0;
+}
+
+.chat__facts dt {
+  font-weight: 600;
+}
+
+.chat__facts dd {
+  margin: 0;
+}

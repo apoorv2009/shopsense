@@ -1,6 +1,7 @@
 """Start, inspect and resume ticket workflows by ticket ID (the LangGraph thread ID, D9a)."""
 
-from dataclasses import dataclass, field
+from collections.abc import AsyncIterator
+from dataclasses import asdict, dataclass, field
 from typing import Any
 
 from langgraph.types import Command
@@ -20,6 +21,7 @@ class TicketView:
     eligibility: str | None = field(default=None)
     rule_id: str | None = field(default=None)
     amount_paise: int | None = field(default=None)
+    issue_type: str | None = field(default=None)
 
 
 class TicketRunner:
@@ -69,7 +71,27 @@ class TicketRunner:
             eligibility=values.get("eligibility"),
             rule_id=values.get("rule_id"),
             amount_paise=values.get("amount_paise"),
+            issue_type=(values.get("ticket") or {}).get("issue_type"),
         )
+
+    async def stream(
+        self, ticket_id: str, customer_no: str, message: str, channel: str = "chat"
+    ) -> AsyncIterator[dict[str, Any]]:
+        """Run a ticket and yield one event per finished step, then the final view (SSE demo)."""
+        initial: TicketState = {
+            "ticket_id": ticket_id,
+            "customer_no": customer_no,
+            "message": message,
+            "channel": channel,
+        }
+        async for chunk in self._graph.astream(initial, _config(ticket_id), stream_mode="updates"):
+            for step, update in chunk.items():
+                if step == "__interrupt__":
+                    yield {"step": "approval", "paused": True}
+                    continue
+                yield {"step": step, "outcome": (update or {}).get("outcome")}
+        view = await self.view(ticket_id)
+        yield {"final": _view_dict(view)}
 
     async def exists(self, ticket_id: str) -> bool:
         snapshot = await self._graph.aget_state(_config(ticket_id))
@@ -100,3 +122,7 @@ async def _settled_from_outbox(
             None,
         )
     return outcome, reply, refund_no
+
+
+def _view_dict(view: TicketView) -> dict[str, Any]:
+    return asdict(view)

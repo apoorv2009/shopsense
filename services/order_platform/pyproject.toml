@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "ShopSense Order Platform (mock order system): orders, shipments, refunds, replacements"
 requires-python = ">=3.13,<3.14"
 dependencies = [
+    "shopsense-contracts",
     "fastapi>=0.115",
     "uvicorn[standard]>=0.32",
     "sqlalchemy[asyncio]>=2.0.36",
@@ -19,6 +20,9 @@ dependencies = [
 
 [project.scripts]
 order-platform-seed = "order_platform.entrypoints.seed:main"
+
+[tool.uv.sources]
+shopsense-contracts = { workspace = true }
 
 [build-system]
 requires = ["hatchling"]

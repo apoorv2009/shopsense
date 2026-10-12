@@ -213,7 +213,9 @@ async def test_non_retryable_refusal_goes_dead_and_is_not_retried() -> None:
 
 async def test_decision_that_already_settled_is_done_not_dead() -> None:
     class LostResponse(FlakyOrders):
-        async def decide_refund(self, refund_no: str, approve: bool) -> dict[str, Any]:
+        async def decide_refund(
+            self, refund_no: str, approve: bool, grant: str | None = None
+        ) -> dict[str, Any]:
             raise OrderToolError("NOT_ALLOWED", "already processed")
 
         async def get_refund_status(self, customer_id: str, order_no: str) -> list[dict[str, Any]]:

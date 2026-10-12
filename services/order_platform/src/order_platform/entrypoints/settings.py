@@ -27,4 +27,6 @@ class Settings(BaseSettings):
     anchor_date: date | None = None  # seed dates relative to this; None = today
     # Enables /admin/faults for resilience tests; unset = the admin routes do not exist
     admin_token: SecretStr | None = None
+    # Verifies reviewer approval grants issued by ShopSense (shared key; Key Vault in Azure)
+    grant_key: SecretStr = SecretStr("local-development-only-key-change-me")
     log_json: bool = True

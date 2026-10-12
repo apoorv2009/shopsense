@@ -58,6 +58,10 @@ class Settings(BaseSettings):
     # Local cross-encoder for reranking (fastembed ONNX; downloaded once)
     rerank_model: str = "Xenova/ms-marco-MiniLM-L-6-v2"
     policy_dir: str = "data/policies"
+    # Origins allowed to call the API from a browser (the Angular app; comma-separated in the env)
+    cors_origins: list[str] = ["http://localhost:4200"]
+    # Signs reviewer approval grants (M8-4); the Order Platform verifies with the same key
+    grant_key: SecretStr = SecretStr("local-development-only-key-change-me")
     # M7: local JSONL trace (always) and optional Langfuse ingestion (when keys are set)
     trace_path: str = "traces/shopsense.jsonl"
     langfuse_host: str = ""

@@ -33,4 +33,4 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         yield
 
 
-app = create_app(lifespan)
+app = create_app(lifespan, cors_origins=Settings().cors_origins)

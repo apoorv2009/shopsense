@@ -1,0 +1,33 @@
+.shell__bar {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.shell__brand {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.shell__nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.shell__nav a {
+  color: inherit;
+}
+
+.shell__link--active {
+  text-decoration: underline;
+}
+
+.shell__mode {
+  margin-left: auto;
+  font-size: 0.8rem;
+}
+
+.shell__main {
+  min-height: 70vh;
+}

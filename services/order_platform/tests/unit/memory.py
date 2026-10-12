@@ -75,6 +75,13 @@ class MemoryRepo:
     async def add_replacement(self, replacement: Replacement) -> None:
         self.replacements.append(replacement)
 
+    async def refund_scope(self, refund_no: str) -> tuple[str, str, int]:
+        for order in self.orders.values():
+            for r in order.refunds:
+                if r.refund_no == refund_no:
+                    return order.order_no, r.item_sku, r.amount_paise
+        raise NotFoundError(f"refund {refund_no} not found")
+
     async def decide_refund(self, refund_no: str, approve: bool) -> Refund:
         found = next(
             (

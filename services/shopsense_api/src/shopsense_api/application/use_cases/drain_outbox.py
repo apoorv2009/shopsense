@@ -12,6 +12,7 @@ from typing import Any
 from shopsense_api.application.ports.orders import OrderTools
 from shopsense_api.application.ports.outbox import DEAD, DONE, PENDING, OutboxItem, OutboxStore
 from shopsense_api.domain.exceptions import OrderToolError
+from shopsense_contracts.approval_grant import GrantScope, issue
 
 SETTLED = frozenset({"approved", "processed"})
 
@@ -20,6 +21,7 @@ SETTLED = frozenset({"approved", "processed"})
 class DrainOutbox:
     store: OutboxStore
     orders: OrderTools
+    grant_key: bytes = b""
 
     async def drain_item(self, item: OutboxItem) -> OutboxItem:
         if item.status != PENDING:
@@ -50,7 +52,9 @@ class DrainOutbox:
         )
         if result["status"] == "pending_approval" and p.get("approved"):
             try:
-                result = await self.orders.decide_refund(result["refund_no"], approve=True)
+                result = await self.orders.decide_refund(
+                    result["refund_no"], approve=True, grant=self._grant(item)
+                )
             except OrderToolError as exc:
                 if exc.code != "NOT_ALLOWED" or not await self._settled(item, result["refund_no"]):
                     raise
@@ -58,6 +62,18 @@ class DrainOutbox:
         if result["status"] in SETTLED:
             return result
         raise OrderToolError("UNEXPECTED_STATUS", f"refund held as {result['status']}")
+
+    def _grant(self, item: OutboxItem) -> str:
+        """A fresh grant for the recorded approval, so a long outage cannot expire it (M8-4)."""
+        p = item.payload
+        scope = GrantScope(
+            order_no=p["order_no"],
+            item_sku=p["sku"],
+            amount_paise=int(p["amount_paise"]),
+            reviewer=str(p.get("reviewer", "automatic")),
+            ticket_id=item.ticket_id,
+        )
+        return issue(scope, self.grant_key)
 
     async def _settled(self, item: OutboxItem, refund_no: str) -> bool:
         p = item.payload

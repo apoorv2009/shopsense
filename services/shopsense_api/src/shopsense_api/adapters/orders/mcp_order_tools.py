@@ -76,10 +76,11 @@ class McpOrderTools:
         }
         return await self._write(customer_id, "request_replacement", args)
 
-    async def decide_refund(self, refund_no: str, approve: bool) -> dict[str, Any]:
-        return await self._write(
-            SYSTEM_SUBJECT, "decide_refund", {"refund_no": refund_no, "approve": approve}
-        )
+    async def decide_refund(
+        self, refund_no: str, approve: bool, grant: str | None = None
+    ) -> dict[str, Any]:
+        args = {"refund_no": refund_no, "approve": approve, "grant": grant or ""}
+        return await self._write(SYSTEM_SUBJECT, "decide_refund", args)
 
     async def _read(self, customer_id: str, tool: str, args: dict[str, Any]) -> dict[str, Any]:
         return await self._call("read", Scope.READ, customer_id, tool, args)

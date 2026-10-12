@@ -5,12 +5,15 @@ Email is accepted only from a registered customer address (D8d). Duplicate messa
 the same ticket, so a re-delivered email is not processed twice."""
 
 import hashlib
+import json
 import uuid
+from collections.abc import AsyncIterator
 from dataclasses import asdict
 from typing import Any
 
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel, Field
 
 from shopsense_api.adapters.workflow.runner import TicketRunner, TicketView
@@ -34,8 +37,14 @@ class DecisionIn(BaseModel):
     reviewer: str = Field(min_length=1, max_length=80)
 
 
-def create_app(lifespan: Any = None) -> FastAPI:
+def create_app(lifespan: Any = None, cors_origins: list[str] | None = None) -> FastAPI:
     app = FastAPI(title="ShopSense API", version="0.1.0", lifespan=lifespan)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=cors_origins or ["http://localhost:4200"],
+        allow_methods=["GET", "POST"],
+        allow_headers=["Content-Type"],
+    )
 
     @app.post("/v1/chat/tickets", status_code=201)
     async def chat(body: ChatTicketIn, request: Request) -> dict[str, Any]:
@@ -59,6 +68,19 @@ def create_app(lifespan: Any = None) -> FastAPI:
         text = f"{body.subject}\n\n{body.body}".strip()
         view = await runner.start(ticket_id, customer, text, channel="email")
         return _view(view)
+
+    @app.post("/v1/chat/stream")
+    async def chat_stream(body: ChatTicketIn, request: Request) -> StreamingResponse:
+        """Demo chat endpoint (M8): server-sent events, one per workflow step, then the result."""
+        runner = _runner(request)
+        ticket_id = f"TKT-CH-{uuid.uuid4().hex[:10]}"
+
+        async def events() -> AsyncIterator[str]:
+            async for event in runner.stream(ticket_id, body.customer_no, body.message, "chat"):
+                payload = json.dumps(event, default=str, ensure_ascii=False)
+                yield f"data: {payload}\n\n"
+
+        return StreamingResponse(events(), media_type="text/event-stream")
 
     @app.get("/v1/tickets/{ticket_id}")
     async def ticket(ticket_id: str, request: Request) -> dict[str, Any]:

@@ -54,6 +54,7 @@ from shopsense_api.application.use_cases.judge_groundedness import GroundednessJ
 from shopsense_api.application.use_cases.memory import RecallCustomer, RememberTicket
 from shopsense_api.application.use_cases.triage_ticket import TriageTicket
 from shopsense_api.application.workflow.flow import TicketFlow
+from shopsense_api.domain.policy.grounding import numbers_in
 from shopsense_api.domain.policy.model import PolicyDocument
 from shopsense_api.entrypoints.settings import AuthMode, Settings
 
@@ -140,6 +141,7 @@ class Container:
     ) -> TicketRunner:
         tools = orders or self.order_tools()
         outbox = self.outbox_store()
+        grant_key = self.settings.grant_key.get_secret_value().encode("utf-8")
         flow = TicketFlow(
             self.triage(),
             tools,
@@ -150,7 +152,9 @@ class Container:
             answerer=self.answer_policy(),
             reviewer=EscalationReviewer(self.gateway(), FilePromptRepository()),
             outbox=outbox,
-            drainer=DrainOutbox(outbox, tools),
+            drainer=DrainOutbox(outbox, tools, grant_key),
+            grant_key=grant_key,
+            policy_numbers=policy_numbers(corpus),
         )
         return TicketRunner(build_graph(flow, checkpointer, tracer or self.tracer()), outbox)
 
@@ -309,3 +313,12 @@ def build_profiles(settings: Settings) -> dict[str, AgentProfile]:
         "policy": AgentProfile(tuple(routes)),
         "review": AgentProfile(tuple(routes)),
     }
+
+
+def policy_numbers(corpus: list[PolicyDocument]) -> frozenset[str]:
+    """Every number that appears in the policy corpus: the only policy numbers a reply may use."""
+    found: set[str] = set()
+    for doc in corpus:
+        for section in doc.sections:
+            found |= numbers_in(section.text)
+    return frozenset(found)

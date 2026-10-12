@@ -1,0 +1,14 @@
+.venv
+**/.venv
+**/__pycache__
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+.git
+.env
+data/raw
+data/qdrant-local
+data/qdrant-eval*
+traces
+evals/results
+milestones/*/results

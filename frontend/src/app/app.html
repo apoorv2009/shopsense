@@ -1,0 +1,14 @@
+<mat-toolbar class="shell__bar" color="primary">
+  <a class="shell__brand" routerLink="/chat">ShopSense</a>
+  <nav class="shell__nav" aria-label="Main">
+    <a routerLink="/chat" routerLinkActive="shell__link--active">Customer chat</a>
+    <a routerLink="/reviewer" routerLinkActive="shell__link--active">Reviewer console</a>
+  </nav>
+  @if (auth.isDev()) {
+    <span class="shell__mode">Development mode: sign-in not yet enabled</span>
+  }
+</mat-toolbar>
+
+<main class="shell__main" id="main">
+  <router-outlet />
+</main>

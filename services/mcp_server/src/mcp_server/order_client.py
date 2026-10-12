@@ -44,9 +44,12 @@ class OrderClient:
         path: str,
         body: dict[str, Any],
         idempotency_key: str | None = None,
+        headers: dict[str, str] | None = None,
     ) -> Any:
-        headers = {"Idempotency-Key": idempotency_key} if idempotency_key else {}
-        return await self._call("POST", path, customer_no, json=body, headers=headers)
+        extra = dict(headers or {})
+        if idempotency_key:
+            extra["Idempotency-Key"] = idempotency_key
+        return await self._call("POST", path, customer_no, json=body, headers=extra)
 
     async def _call(self, method: str, path: str, customer_no: str | None, **kwargs: Any) -> Any:
         if not self.breaker.allow():

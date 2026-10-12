@@ -99,6 +99,21 @@ class SqlOrderRepository:
             )
         )
 
+    async def refund_scope(self, refund_no: str) -> tuple[str, str, int]:
+        row = (
+            await self._s.execute(
+                select(RefundRow, OrderRow.order_no, ProductRow.sku)
+                .join(OrderItemRow, OrderItemRow.id == RefundRow.order_item_id)
+                .join(OrderRow, OrderRow.id == OrderItemRow.order_id)
+                .join(ProductRow, ProductRow.id == OrderItemRow.product_id)
+                .where(RefundRow.refund_no == refund_no)
+            )
+        ).one_or_none()
+        if row is None:
+            raise NotFoundError(f"refund {refund_no} not found")
+        refund, order_no, sku = row
+        return str(order_no), str(sku), int(refund.amount_paise)
+
     async def decide_refund(self, refund_no: str, approve: bool) -> Refund:
         row = (
             await self._s.scalars(select(RefundRow).where(RefundRow.refund_no == refund_no))

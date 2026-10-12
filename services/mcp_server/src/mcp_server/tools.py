@@ -89,9 +89,11 @@ def build_system_server(orders: OrderClient) -> FastMCP:
         )
 
     @mcp.tool()
-    async def decide_refund(refund_no: str, approve: bool) -> dict[str, Any]:
-        """Reviewer decision on a pending refund."""
+    async def decide_refund(refund_no: str, approve: bool, grant: str = "") -> dict[str, Any]:
+        """Reviewer decision on a pending refund. An approval needs its signed grant."""
         path = f"/v1/refunds/{refund_no}/decision"
-        return cast(dict[str, Any], await orders.post(None, path, {"approve": approve}))
+        headers = {"X-Approval-Grant": grant} if grant else None
+        body = {"approve": approve}
+        return cast(dict[str, Any], await orders.post(None, path, body, headers=headers))
 
     return mcp

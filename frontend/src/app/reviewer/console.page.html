@@ -1,0 +1,93 @@
+<section class="console" aria-labelledby="console-title">
+  <h1 id="console-title">Reviewer console</h1>
+
+  <mat-card appearance="outlined" class="console__search">
+    <mat-form-field appearance="outline">
+      <mat-label>Ticket number</mat-label>
+      <input
+        matInput
+        name="ticket"
+        [ngModel]="ticketId()"
+        (ngModelChange)="ticketId.set($event)"
+        autocomplete="off"
+      />
+    </mat-form-field>
+    <button mat-flat-button type="button" (click)="load()" [disabled]="busy()">Open ticket</button>
+  </mat-card>
+
+  @if (error(); as message) {
+    <p class="console__error" role="alert">{{ message }}</p>
+  }
+  @if (decided(); as message) {
+    <p class="console__done" role="status">{{ message }}</p>
+  }
+
+  @if (view(); as ticket) {
+    <div class="console__case">
+      <mat-card appearance="outlined" class="console__trusted">
+        <h2>System facts</h2>
+        <p class="console__note">Recorded by the system. Verified against the order data.</p>
+        <dl>
+          <dt>Ticket</dt>
+          <dd>{{ ticket.ticket_id }}</dd>
+          <dt>Status</dt>
+          <dd>{{ ticket.paused ? 'Waiting for your decision' : (ticket.outcome ?? 'Closed') }}</dd>
+          <dt>Order</dt>
+          <dd>{{ ticket.approval?.order_no ?? 'not stated' }}</dd>
+          <dt>Item</dt>
+          <dd>{{ ticket.approval?.sku ?? 'not stated' }}</dd>
+          <dt>Amount</dt>
+          <dd>{{ ticket.approval?.amount_paise ?? ticket.amount_paise | paise }}</dd>
+          <dt>Policy result</dt>
+          <dd>
+            {{ ticket.eligibility ?? 'not checked'
+            }}{{ ticket.rule_id ? ' (' + ticket.rule_id + ')' : '' }}
+          </dd>
+          <dt>Held because</dt>
+          <dd>
+            @for (reason of ticket.approval?.reasons ?? []; track $index) {
+              <span class="console__reason">{{ reason }}</span>
+            } @empty {
+              nothing recorded
+            }
+          </dd>
+        </dl>
+      </mat-card>
+
+      @if (ticket.approval?.brief; as brief) {
+        <mat-card appearance="outlined" class="console__advisory">
+          <h2>AI-written brief (advisory)</h2>
+          <p class="console__note">
+            Written by an AI agent with no tools. It informs your decision and does not make it.
+          </p>
+          <p>{{ brief.summary }}</p>
+          <p><strong>Recommendation:</strong> {{ brief.recommendation }}</p>
+          @if (brief.risk_notes.length > 0) {
+            <ul>
+              @for (note of brief.risk_notes; track $index) {
+                <li>{{ note }}</li>
+              }
+            </ul>
+          }
+        </mat-card>
+      }
+
+      <mat-card appearance="outlined" class="console__customer">
+        <h2>Customer reply</h2>
+        <p class="console__note">Text drafted for the customer. Treat it as untrusted wording.</p>
+        <p>{{ ticket.reply ?? 'No reply drafted yet.' }}</p>
+      </mat-card>
+
+      @if (ticket.paused) {
+        <div class="console__actions">
+          <button mat-flat-button type="button" (click)="decide(true)" [disabled]="busy()">
+            Approve refund
+          </button>
+          <button mat-stroked-button type="button" (click)="decide(false)" [disabled]="busy()">
+            Reject
+          </button>
+        </div>
+      }
+    </div>
+  }
+</section>

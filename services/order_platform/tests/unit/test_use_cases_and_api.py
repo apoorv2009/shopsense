@@ -11,10 +11,23 @@ from order_platform.application.use_cases import (
     RequestRefund,
     RequestReplacement,
 )
-from order_platform.domain.errors import DuplicateRequestError, NotAllowedError, NotFoundError
+from order_platform.domain.errors import (
+    DuplicateRequestError,
+    GrantRefusedError,
+    NotAllowedError,
+    NotFoundError,
+)
 from order_platform.domain.model import RefundReason
+from shopsense_contracts.approval_grant import GrantScope, issue
 
 from memory import KURTA, CountingIds, FixedClock, MemoryIdempotency, MemoryRepo, MemoryUoW, order
+
+KEY = b"test-grant-key"
+
+
+def grant_for(order_no: str, sku: str, amount: int) -> str:
+    scope = GrantScope(order_no, sku, amount, "reviewer-1", "TKT-1")
+    return issue(scope, KEY)
 
 
 def setup() -> tuple[Services, MemoryRepo]:
@@ -25,7 +38,7 @@ def setup() -> tuple[Services, MemoryRepo]:
         queries=OrderQueries(lambda: uow),
         refunds=RequestRefund(lambda: uow, clock, ids),
         replacements=RequestReplacement(lambda: uow, clock, ids),
-        decisions=DecideRefund(lambda: uow),
+        decisions=DecideRefund(lambda: uow, KEY),
     )
     return services, repo
 
@@ -146,7 +159,8 @@ async def test_pending_refund_is_processed_on_approval() -> None:
     services, repo = setup()
     body = await services.refunds.execute(laptop_refund())
     assert body["status"] == "pending_approval"
-    settled = await services.decisions.execute(body["refund_no"], approve=True)
+    token = grant_for("ORD-100003", "ELE-LAPTOP14", 2_500_000)
+    settled = await services.decisions.execute(body["refund_no"], True, token)
     assert settled["status"] == "processed"
     assert repo.orders["ORD-100003"].items[0].refunded_paise == 2_500_000
 
@@ -154,7 +168,7 @@ async def test_pending_refund_is_processed_on_approval() -> None:
 async def test_pending_refund_is_rejected_without_money_moving() -> None:
     services, repo = setup()
     body = await services.refunds.execute(laptop_refund())
-    rejected = await services.decisions.execute(body["refund_no"], approve=False)
+    rejected = await services.decisions.execute(body["refund_no"], False)
     assert rejected["status"] == "rejected"
     assert repo.orders["ORD-100003"].items[0].refunded_paise == 0
 
@@ -162,12 +176,36 @@ async def test_pending_refund_is_rejected_without_money_moving() -> None:
 async def test_decision_is_final() -> None:
     services, _ = setup()
     body = await services.refunds.execute(laptop_refund())
-    await services.decisions.execute(body["refund_no"], approve=True)
+    token = grant_for("ORD-100003", "ELE-LAPTOP14", 2_500_000)
+    await services.decisions.execute(body["refund_no"], True, token)
     with pytest.raises(NotAllowedError):
-        await services.decisions.execute(body["refund_no"], approve=False)
+        await services.decisions.execute(body["refund_no"], False)
 
 
 async def test_unknown_refund_decision_is_not_found() -> None:
     services, _ = setup()
     with pytest.raises(NotFoundError):
-        await services.decisions.execute("RF-missing", approve=True)
+        await services.decisions.execute(
+            "RF-missing", True, grant_for("ORD-100003", "ELE-LAPTOP14", 1)
+        )
+
+
+async def test_approval_without_a_grant_is_refused() -> None:
+    services, _ = setup()
+    body = await services.refunds.execute(laptop_refund())
+    with pytest.raises(GrantRefusedError, match="needs a reviewer grant"):
+        await services.decisions.execute(body["refund_no"], True)
+
+
+async def test_grant_for_another_amount_is_refused() -> None:
+    services, _ = setup()
+    body = await services.refunds.execute(laptop_refund())
+    wrong = grant_for("ORD-100003", "ELE-LAPTOP14", 2_600_000)
+    with pytest.raises(GrantRefusedError, match="another amount"):
+        await services.decisions.execute(body["refund_no"], True, wrong)
+
+
+async def test_rejection_needs_no_grant() -> None:
+    services, _ = setup()
+    body = await services.refunds.execute(laptop_refund())
+    assert (await services.decisions.execute(body["refund_no"], False))["status"] == "rejected"

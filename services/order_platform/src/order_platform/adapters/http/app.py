@@ -37,6 +37,7 @@ from order_platform.application.use_cases import (
 )
 from order_platform.domain.errors import (
     DuplicateRequestError,
+    GrantRefusedError,
     NotAllowedError,
     NotFoundError,
     OrderPlatformError,
@@ -47,6 +48,7 @@ _STATUS = {
     NotFoundError: status.HTTP_404_NOT_FOUND,
     ValidationFailedError: status.HTTP_422_UNPROCESSABLE_CONTENT,
     NotAllowedError: status.HTTP_409_CONFLICT,
+    GrantRefusedError: status.HTTP_403_FORBIDDEN,
     DuplicateRequestError: status.HTTP_409_CONFLICT,
 }
 CustomerId = Annotated[str, Header(alias="X-Customer-Id", pattern=r"^C\d{4}$")]
@@ -111,8 +113,12 @@ def _routes(svc: Services) -> APIRouter:
         return await svc.refunds.execute(cmd)
 
     @r.post("/refunds/{refund_no}/decision", response_model=RefundOut)
-    async def decide(refund_no: str, body: RefundDecisionIn) -> Any:
-        return await svc.decisions.execute(refund_no, body.approve)
+    async def decide(
+        refund_no: str,
+        body: RefundDecisionIn,
+        grant: Annotated[str | None, Header(alias="X-Approval-Grant")] = None,
+    ) -> Any:
+        return await svc.decisions.execute(refund_no, body.approve, grant)
 
     @r.post("/replacements", status_code=status.HTTP_201_CREATED)
     async def replacement(body: ReplacementIn, customer: CustomerId, key: IdempotencyKey) -> Any:

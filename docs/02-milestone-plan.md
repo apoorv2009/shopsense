@@ -112,6 +112,8 @@ The project is assessed milestone by milestone against the course brief. **Each 
 ## M8 Evaluation, guardrails, packaging
 **Brief:** *Golden eval set of 20 tickets including angry, ambiguous, and prompt-injection cases; guardrails cap auto-approved refund amounts and block policy fabrication; FastAPI packaging with a demo chat endpoint.*
 
+**Status:** ✅ Closed 2026-10-12 **with caveats**: triage 88.2% and zero-tolerance gates 0 in all three final runs, on golden labels changed before those runs (G19, G02, G15, G20). Remaining misses G06 and G15. Deployment to Azure is in progress. Detail: [`milestones/m8`](../milestones/m8/RESULTS.md) · Plan: [plans/m8.md](plans/m8.md).
+
 | | |
 |---|---|
 | Deliverables | Golden set (20) and red-team set run ×3; refund-cap guardrail (risk gate + Order Platform money gate + signed approval grants); fabrication guard (composer placeholders + output guard); FastAPI packaging with demo chat endpoint (SSE) |

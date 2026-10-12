@@ -16,6 +16,12 @@ class ValidationFailedError(OrderPlatformError):
     code = "VALIDATION_ERROR"
 
 
+class GrantRefusedError(OrderPlatformError):
+    """The approval grant is missing, forged, expired or for another refund (M8-4)."""
+
+    code = "GRANT_REFUSED"
+
+
 class NotAllowedError(OrderPlatformError):
     """A business rule forbids the action (not delivered, fully refunded, pending approval...)."""
 

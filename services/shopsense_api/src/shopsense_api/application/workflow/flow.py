@@ -5,6 +5,7 @@ approval interrupt. Writes happen only in `execute_auto` and `execute_approved`,
 is reached only through the risk gate (see `domain/workflow/risk.py`)."""
 
 import hashlib
+import json
 from collections.abc import Callable
 from datetime import UTC, date, datetime
 from typing import Any, Protocol
@@ -20,12 +21,16 @@ from shopsense_api.application.use_cases.triage_ticket import (
     TriageResult,
 )
 from shopsense_api.application.workflow.state import TicketState
-from shopsense_api.domain.exceptions import OrderToolError
+from shopsense_api.domain.exceptions import LLMRefused, OrderToolError, TriageFailed
+from shopsense_api.domain.guardrails.fabrication import rupee_forms, unsupported
+from shopsense_api.domain.policy.grounding import numbers_in
 from shopsense_api.domain.policy.rules_engine import Eligibility, ReturnCase
 from shopsense_api.domain.ticket.enums import IssueType
 from shopsense_api.domain.ticket.support_ticket import SupportTicket
 from shopsense_api.domain.values.untrusted_text import UntrustedText
 from shopsense_api.domain.workflow.risk import REFUND_ISSUES, Route, assess
+from shopsense_contracts.approval_grant import GrantScope
+from shopsense_contracts.approval_grant import issue as issue_grant
 
 Clock = Callable[[], datetime]
 
@@ -77,7 +82,11 @@ class TicketFlow:
         reviewer: Reviewer | None = None,
         outbox: OutboxStore | None = None,
         drainer: DrainOutbox | None = None,
+        grant_key: bytes = b"",
+        policy_numbers: frozenset[str] = frozenset(),
     ) -> None:
+        self._grant_key = grant_key
+        self._policy_numbers = policy_numbers
         self._triage = triage
         self._orders = orders
         self._decide = decide
@@ -121,12 +130,20 @@ class TicketFlow:
         return {"brief": brief}
 
     async def triage_step(self, state: TicketState) -> dict[str, Any]:
-        result = await self._triage.execute(TriageCommand(UntrustedText(state["message"])))
+        try:
+            result = await self._triage.execute(TriageCommand(UntrustedText(state["message"])))
+        except (LLMRefused, TriageFailed):
+            # Fail closed (M8): a refused or unreadable ticket goes to a person, no order action
+            return _done("handed_off", _HANDOFF)
         return {"ticket": result.ticket.model_dump(mode="json")}
 
     async def lookup_step(self, state: TicketState) -> dict[str, Any]:
         ticket = SupportTicket.model_validate(state["ticket"])
         if ticket.order_id is None:
+            # A general policy question needs no order; answer it from the cited policy
+            if ticket.issue_type is IssueType.POLICY_QUESTION and self._answerer is not None:
+                answer = await self._answerer.run(UntrustedText(state["message"]))
+                return _done("answered", answer.reply)
             return _done("needs_customer_info", "Could you share your order number (ORD-xxxxxx)?")
         try:
             order = await self._orders.get_order(state["customer_no"], ticket.order_id)
@@ -140,7 +157,13 @@ class TicketFlow:
         if item is None:
             return _done("needs_customer_info", "Which item in the order is this about?")
         case = _case(item, order, ticket, self._clock())
-        return {"order_no": ticket.order_id, "sku": item["sku"], "case": _case_state(case)}
+        allowed = rupee_forms(numbers_in(json.dumps(order)) | numbers_in(ticket.order_id or ""))
+        return {
+            "order_no": ticket.order_id,
+            "sku": item["sku"],
+            "case": _case_state(case),
+            "allowed_numbers": sorted(allowed),
+        }
 
     async def assess_step(self, state: TicketState) -> dict[str, Any]:
         ticket = SupportTicket.model_validate(state["ticket"])
@@ -177,6 +200,19 @@ class TicketFlow:
             update |= {"outcome": "handed_off", "reply": _HANDOFF}
         return update
 
+    def _guard(self, state: TicketState, reply: str) -> dict[str, Any]:
+        """Fabrication guard (M8-5): a reply may only use numbers we hold; otherwise a hand-off."""
+        held = numbers_in(str(state.get("message", "")))
+        if state.get("amount_paise") is not None:  # the amount the flow computed, not invented
+            held.add(str(state["amount_paise"]))
+        allowed = (
+            set(self._policy_numbers) | rupee_forms(held) | set(state.get("allowed_numbers", []))
+        )
+        blocked = unsupported(reply, allowed)
+        if not blocked:
+            return {}
+        return {"reply": _HANDOFF, "outcome": "handed_off", "guard_blocked": sorted(blocked)}
+
     async def _info_reply(self, ticket: SupportTicket, state: TicketState) -> str:
         if ticket.issue_type is IssueType.POLICY_QUESTION and self._answerer is not None:
             answer = await self._answerer.run(UntrustedText(state["message"]))
@@ -197,8 +233,9 @@ class TicketFlow:
         return await self._refund(state, stage="approved", approve_pending=True)
 
     async def respond_step(self, state: TicketState) -> dict[str, Any]:
-        if state.get("reply"):
-            return {}
+        reply = state.get("reply")
+        if reply:
+            return self._guard(state, reply)
         return _done(state.get("outcome", "handed_off"), _HANDOFF)
 
     async def _refund(
@@ -214,13 +251,26 @@ class TicketFlow:
                 state["customer_no"], state["order_no"], sku, amount, _reason(ticket), key
             )
             if result["status"] == "pending_approval" and approve_pending:
-                result = await self._orders.decide_refund(result["refund_no"], approve=True)
+                grant = self._grant(state, sku, amount)
+                result = await self._orders.decide_refund(
+                    result["refund_no"], approve=True, grant=grant
+                )
         except OrderToolError:
             return _done("handed_off", _HANDOFF) | {"refund_no": None}
         status = result["status"]
         if status in ("approved", "processed"):
             return _done("resolved", _approved_reply(amount)) | {"refund_no": result["refund_no"]}
         return _done("handed_off", _HANDOFF) | {"refund_no": result.get("refund_no")}
+
+    def _grant(self, state: TicketState, sku: str, amount: int) -> str:
+        scope = GrantScope(
+            order_no=state["order_no"],
+            item_sku=sku,
+            amount_paise=amount,
+            reviewer=_reviewer(state),
+            ticket_id=state["ticket_id"],
+        )
+        return issue_grant(scope, self._grant_key)
 
     async def _refund_via_outbox(
         self, state: TicketState, key: str, approve_pending: bool, ticket: SupportTicket
@@ -236,6 +286,7 @@ class TicketFlow:
             "amount_paise": amount,
             "reason": _reason(ticket),
             "approved": approve_pending,
+            "reviewer": _reviewer(state),
         }
         item = OutboxItem(key=key, ticket_id=state["ticket_id"], action="refund", payload=payload)
         await self._outbox.enqueue(item)
@@ -259,6 +310,10 @@ _PARKED = (
 _QUEUED = "Your refund is approved and is being processed. We will confirm once it has settled."
 _HANDOFF = "A support specialist will review your request and get back to you shortly."
 _REJECTED = "We could not approve this refund. A support specialist will contact you with details."
+
+
+def _reviewer(state: TicketState) -> str:
+    return str((state.get("decision") or {}).get("reviewer", "automatic"))
 
 
 def _done(outcome: str, reply: str) -> dict[str, Any]:

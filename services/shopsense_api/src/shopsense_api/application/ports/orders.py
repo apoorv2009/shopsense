@@ -35,6 +35,9 @@ class OrderTools(Protocol):
         self, customer_id: str, order_no: str, item_sku: str, reason: str, idempotency_key: str
     ) -> dict[str, Any]: ...
 
-    async def decide_refund(self, refund_no: str, approve: bool) -> dict[str, Any]:
-        """Reviewer decision on a pending refund. Internal: no customer identity."""
+    async def decide_refund(
+        self, refund_no: str, approve: bool, grant: str | None = None
+    ) -> dict[str, Any]:
+        """Reviewer decision on a pending refund. Internal: no customer identity. An approval
+        carries the signed grant that binds it to this refund (M8-4)."""
         ...

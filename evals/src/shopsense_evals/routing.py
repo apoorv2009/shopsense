@@ -66,9 +66,11 @@ class CountingOrders:
             customer_id, order_no, item_sku, amount_paise, reason, idempotency_key
         )
 
-    async def decide_refund(self, refund_no: str, approve: bool) -> dict[str, Any]:
+    async def decide_refund(
+        self, refund_no: str, approve: bool, grant: str | None = None
+    ) -> dict[str, Any]:
         self.writes += 1
-        return await self._inner.decide_refund(refund_no, approve)
+        return await self._inner.decide_refund(refund_no, approve, grant)
 
     async def request_replacement(
         self, customer_id: str, order_no: str, item_sku: str, reason: str, idempotency_key: str

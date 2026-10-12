@@ -1,0 +1,68 @@
+<section class="chat" aria-labelledby="chat-title">
+  <h1 id="chat-title">Customer support</h1>
+
+  <mat-card appearance="outlined" class="chat__card">
+    <div class="chat__customer">
+      <label for="customer-no">Customer number</label>
+      <input
+        id="customer-no"
+        type="text"
+        [value]="customerNo()"
+        (input)="customerNo.set($any($event.target).value)"
+        maxlength="5"
+      />
+    </div>
+
+    <ol class="chat__log" aria-live="polite" aria-label="Conversation">
+      @for (line of lines(); track $index) {
+        <li class="chat__line" [class.chat__line--assistant]="line.from === 'assistant'">
+          <span class="chat__who">{{ line.from === 'customer' ? 'You' : 'ShopSense' }}</span>
+          <p>{{ line.text }}</p>
+        </li>
+      }
+    </ol>
+
+    @if (busy()) {
+      <ul class="chat__steps" aria-label="Progress">
+        @for (step of steps(); track $index) {
+          <li>{{ stepLabel(step) }}</li>
+        }
+        <li>Working on it…</li>
+      </ul>
+    }
+
+    @if (error(); as message) {
+      <p class="chat__error" role="alert">{{ message }}</p>
+    }
+
+    <form class="chat__form" (ngSubmit)="send()">
+      <mat-form-field appearance="outline" class="chat__field">
+        <mat-label>Describe your problem</mat-label>
+        <input
+          matInput
+          name="message"
+          [ngModel]="draft()"
+          (ngModelChange)="draft.set($event)"
+          [disabled]="busy()"
+          autocomplete="off"
+        />
+      </mat-form-field>
+      <button mat-flat-button type="submit" [disabled]="busy() || draft().trim() === ''">
+        Send
+      </button>
+    </form>
+
+    @if (lastView(); as view) {
+      <dl class="chat__facts" aria-label="Ticket details">
+        <dt>Ticket</dt>
+        <dd>{{ view.ticket_id }}</dd>
+        <dt>Outcome</dt>
+        <dd>{{ view.outcome ?? 'in progress' }}</dd>
+        @if (view.amount_paise !== null) {
+          <dt>Amount</dt>
+          <dd>{{ view.amount_paise | paise }}</dd>
+        }
+      </dl>
+    }
+  </mat-card>
+</section>

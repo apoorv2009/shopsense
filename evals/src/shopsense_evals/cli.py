@@ -26,7 +26,7 @@ from shopsense_api.application.use_cases.triage_ticket import TriageTicket
 from shopsense_api.entrypoints.composition import PRIMARY, container
 from shopsense_api.entrypoints.logging_config import configure_logging
 from shopsense_api.entrypoints.settings import REPO_ROOT, Settings
-from shopsense_evals import parity, rag, resilience, retrieval, routing
+from shopsense_evals import parity, rag, resilience, retrieval, routing, suite
 from shopsense_evals.bitext import load_rows
 from shopsense_evals.cases import EvalCase, load_cases
 from shopsense_evals.generator import generate, write_suite
@@ -235,6 +235,40 @@ async def cmd_resilience(args: argparse.Namespace) -> int:
     return 0 if result["passed"] else 1
 
 
+async def cmd_suite(args: argparse.Namespace) -> int:
+    from shopsense_api.entrypoints.channels import load_senders
+
+    golden = suite.load_cases(DATA / "m8_golden.jsonl", "golden")
+    redteam = suite.load_cases(DATA / "m8_redteam.jsonl", "redteam")
+    cases = golden + redteam
+    corpus = load_corpus(Path(Settings().policy_dir))
+    policy = suite.corpus_numbers(corpus)
+    senders = load_senders()
+    passed = True
+    async with (
+        httpx.AsyncClient(base_url=args.api, timeout=300) as api,
+        httpx.AsyncClient(base_url=args.op, timeout=60) as op,
+    ):
+        for run in range(1, args.runs + 1):
+            await _reseed()
+            results = []
+            for case in cases:
+                results.append(await suite.run_case(api, op, case, senders, policy, f"run{run}"))
+                last = results[-1]
+                console.print(
+                    f"  {case.case_id} {last['got']['outcome']} writes={last['got']['writes']}"
+                )
+            summary = suite.summarise(results)
+            passed = passed and summary["passed"]
+            console.print(f"Run {run}/{args.runs} · suite · {summary}")
+            RESULTS.mkdir(parents=True, exist_ok=True)
+            out = {"summary": summary, "cases": results}
+            (RESULTS / f"m8_suite_run{run}.json").write_text(
+                json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
+    return 0 if passed else 1
+
+
 async def _reseed() -> None:
     database = Database(OrderPlatformSettings())
     try:
@@ -339,6 +373,10 @@ def main() -> None:
         choices=["dense", "hybrid", "hybrid_rerank"],
         default=["dense", "hybrid", "hybrid_rerank"],
     )
+    suite_cmd = sub.add_parser("suite")
+    suite_cmd.add_argument("--runs", type=int, default=3)
+    suite_cmd.add_argument("--api", default="http://localhost:8000")
+    suite_cmd.add_argument("--op", default="http://localhost:8001")
     parity_cmd = sub.add_parser("parity")
     parity_cmd.add_argument("--runs", type=int, default=1)
     parity_cmd.add_argument("--api", default="http://localhost:8000")
@@ -364,6 +402,7 @@ def main() -> None:
         "rag": cmd_rag,
         "routing": cmd_routing,
         "parity": cmd_parity,
+        "suite": cmd_suite,
         "resilience": cmd_resilience,
         "generate-suite": cmd_generate,
     }

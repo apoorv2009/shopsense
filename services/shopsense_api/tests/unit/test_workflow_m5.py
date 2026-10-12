@@ -134,7 +134,9 @@ class FakeOrders:
         status = "pending_approval" if amount_paise > AUTO_CAP_PAISE else "approved"
         return {"refund_no": f"RF-{self._counter}", "status": status}
 
-    async def decide_refund(self, refund_no: str, approve: bool) -> dict[str, Any]:
+    async def decide_refund(
+        self, refund_no: str, approve: bool, grant: str | None = None
+    ) -> dict[str, Any]:
         self.writes.append(("decide_refund", approve))
         return {"refund_no": refund_no, "status": "processed" if approve else "rejected"}
 
@@ -323,3 +325,34 @@ async def test_auto_write_is_refused_outside_the_auto_route() -> None:
 def _decide() -> DecideReturn:
     store = MemoryPolicyStore()
     return DecideReturn(store, None, {})  # type: ignore[arg-type]
+
+
+class FakeAnswerer:
+    async def run(self, question: Any, category: Any = None, mode: Any = None) -> Any:
+        from types import SimpleNamespace
+
+        return SimpleNamespace(
+            reply="Opened items can be returned only when they are unused and sealed."
+        )
+
+
+async def test_policy_question_without_an_order_is_answered() -> None:
+    orders = FakeOrders({})
+    store = MemoryPolicyStore()
+    docs = corpus()
+    store.docs = {d.doc_id: d for d in docs}
+    index = await index_with(docs)
+    hashes = {s.chunk_id: s.content_hash for d in docs for s in d.sections}
+    decide = DecideReturn(store, index, hashes)
+    flow = TicketFlow(
+        FakeTriage(ticket(IssueType.POLICY_QUESTION, order_id=None)),
+        orders,
+        decide,
+        clock=lambda: NOW,
+        answerer=FakeAnswerer(),
+    )
+    runner = TicketRunner(build_graph(flow, MemorySaver()))
+    view = await runner.start("TKT-P1", "C0001", "Can I return an opened serum?")
+    assert view.outcome == "answered"
+    assert view.reply == "Opened items can be returned only when they are unused and sealed."
+    assert orders.writes == []

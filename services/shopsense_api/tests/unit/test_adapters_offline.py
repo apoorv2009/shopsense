@@ -1,5 +1,6 @@
 """Offline adapter checks: prompt loading and provider schema compatibility (no network)."""
 
+from pathlib import Path
 from typing import Any, cast
 
 from anthropic.lib._parse._transform import transform_schema
@@ -13,7 +14,14 @@ from shopsense_api.domain.ticket.support_ticket import SupportTicket
 
 def test_triage_prompt_loads_latest_version() -> None:
     prompt = FilePromptRepository().get("triage")
-    assert prompt.version == "v2"
+    newest = max(
+        int(f.stem[1:])
+        for f in Path(__file__)
+        .parents[2]
+        .joinpath("src/shopsense_api/application/prompts/triage")
+        .glob("v*.md")
+    )
+    assert prompt.version == f"v{newest}"
     assert FilePromptRepository().get("order_actions").version == "v2"
     assert "untrusted" in prompt.text
 
