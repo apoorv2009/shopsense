@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -12,6 +12,27 @@ interface ChatLine {
   readonly from: 'customer' | 'assistant';
   readonly text: string;
 }
+
+interface CaseStatus {
+  readonly label: string;
+  readonly next: string;
+}
+
+const CASE_STATUS: Record<string, CaseStatus> = {
+  greeting: { label: 'Welcome', next: 'Describe your problem to get started.' },
+  answered: { label: 'Answered', next: 'No action needed.' },
+  resolved: { label: 'Refund processed', next: 'No action needed.' },
+  pending_human_approval: {
+    label: 'Waiting for approval',
+    next: 'A specialist reviews this refund and replies here.',
+  },
+  needs_customer_info: { label: 'Waiting for your details', next: 'Share the order number to continue.' },
+  handed_off: { label: 'With a specialist', next: 'A specialist will get back to you shortly.' },
+  parked_human_queue: { label: 'With a specialist', next: 'A specialist will follow up on this order.' },
+  cannot_help: { label: 'Not possible', next: 'See the reply above for details.' },
+  rejected: { label: 'Not approved', next: 'See the reply above for details.' },
+  out_of_scope: { label: 'Out of scope', next: 'Ask about an order, delivery, return or refund.' },
+};
 
 const STEP_LABELS: Record<string, string> = {
   triage: 'Reading your message',
@@ -56,6 +77,14 @@ export class ChatPage {
   private history: string[] = [];
 
   readonly stepLabel = (step: string): string => STEP_LABELS[step] ?? step;
+
+  readonly caseStatus = computed<CaseStatus>(() => {
+    const outcome = this.lastView()?.outcome;
+    if (!outcome) {
+      return { label: 'New', next: 'Describe your problem to get started.' };
+    }
+    return CASE_STATUS[outcome] ?? { label: outcome, next: '' };
+  });
 
   async send(): Promise<void> {
     const text = this.draft().trim();
