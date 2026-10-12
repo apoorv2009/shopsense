@@ -251,6 +251,21 @@ async def build_database(settings: Settings, stack: AsyncExitStack) -> AsyncEngi
 def build_clients(
     settings: Settings, token: TokenProvider | None
 ) -> tuple[AsyncOpenAI | None, AsyncAnthropicFoundry | None]:
+    if settings.model_gateway_url:
+        # Through the model APIM: the gateway holds the Foundry identity and routes by tier
+        gateway_key = (
+            settings.model_gateway_key.get_secret_value() if settings.model_gateway_key else ""
+        )
+        gateway_client = AsyncOpenAI(
+            base_url=settings.model_gateway_url,
+            api_key="managed-by-gateway",  # APIM replaces Authorization with its own identity token
+            default_headers={
+                "Ocp-Apim-Subscription-Key": gateway_key,
+                "x-difficulty": settings.model_tier,
+            },
+            max_retries=settings.llm_max_retries,
+        )
+        return gateway_client, None
     if not settings.foundry_resource:
         return None, None
     key = settings.foundry_api_key.get_secret_value() if settings.foundry_api_key else None

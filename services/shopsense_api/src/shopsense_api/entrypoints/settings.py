@@ -25,6 +25,11 @@ class Settings(BaseSettings):
     foundry_resource: str = ""
     foundry_api_key: SecretStr | None = None
 
+    # Model gateway (APIM, routes by difficulty tier). Empty = call Foundry directly.
+    model_gateway_url: str = ""
+    model_gateway_key: SecretStr | None = None
+    model_tier: str = "standard"
+
     # Primary model and a second vendor on the same Foundry resource (D15)
     primary_deployment: str = "gpt-4.1-mini"
     second_vendor_deployment: str = "Llama-3.3-70B-Instruct"
