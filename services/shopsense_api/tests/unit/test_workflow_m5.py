@@ -16,6 +16,7 @@ from shopsense_api.application.use_cases.decide_return import DecideReturn
 from shopsense_api.application.use_cases.triage_ticket import TriageCommand, TriageResult
 from shopsense_api.application.workflow.flow import TicketFlow
 from shopsense_api.domain.exceptions import OrderToolError
+from shopsense_api.domain.memory.model import TicketOutcome
 from shopsense_api.domain.policy.rules_engine import Eligibility
 from shopsense_api.domain.ticket.enums import IssueType, Language, RiskFlag, Sentiment, Urgency
 from shopsense_api.domain.ticket.support_ticket import SupportTicket
@@ -356,3 +357,46 @@ async def test_policy_question_without_an_order_is_answered() -> None:
     assert view.outcome == "answered"
     assert view.reply == "Opened items can be returned only when they are unused and sealed."
     assert orders.writes == []
+
+
+class FakeRecall:
+    async def run(self, customer_no: str) -> Any:
+        from types import SimpleNamespace
+
+        return SimpleNamespace(
+            as_prompt_text=lambda: "- 2026-10-01 TKT-OLD: refund request for ORD-100001: resolved"
+        )
+
+
+class FakeRemember:
+    def __init__(self) -> None:
+        self.calls: list[dict[str, Any]] = []
+
+    async def run(self, **kwargs: Any) -> None:
+        self.calls.append(kwargs)
+
+
+async def test_outcome_is_remembered_and_recall_reaches_the_flow() -> None:
+    orders = FakeOrders({})
+    store = MemoryPolicyStore()
+    docs = corpus()
+    store.docs = {d.doc_id: d for d in docs}
+    index = await index_with(docs)
+    hashes = {s.chunk_id: s.content_hash for d in docs for s in d.sections}
+    decide = DecideReturn(store, index, hashes)
+    remember = FakeRemember()
+    flow = TicketFlow(
+        FakeTriage(ticket(IssueType.REFUND_REQUEST, order_id=None)),
+        orders,
+        decide,
+        clock=lambda: NOW,
+        recall=FakeRecall(),
+        remember=remember,
+    )
+    runner = TicketRunner(build_graph(flow, MemorySaver()))
+    view = await runner.start("TKT-M1", "C0001", "I want a refund")
+    assert view.outcome == "needs_customer_info"
+    assert len(remember.calls) == 1
+    assert remember.calls[0]["outcome"] == TicketOutcome.NEEDS_INFO
+    assert remember.calls[0]["customer_no"] == "C0001"
+    assert remember.calls[0]["ticket_no"] == "TKT-M1"

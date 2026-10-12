@@ -155,6 +155,8 @@ class Container:
             drainer=DrainOutbox(outbox, tools, grant_key),
             grant_key=grant_key,
             policy_numbers=policy_numbers(corpus),
+            recall=self.recall(),
+            remember=self.remember(),
         )
         return TicketRunner(build_graph(flow, checkpointer, tracer or self.tracer()), outbox)
 

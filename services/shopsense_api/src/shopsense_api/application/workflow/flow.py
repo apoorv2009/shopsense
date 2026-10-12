@@ -10,12 +10,15 @@ from collections.abc import Callable
 from datetime import UTC, date, datetime
 from typing import Any, Protocol
 
+import structlog
+
 from shopsense_api.application.agents.order_actions import OrderActionsCommand, OrderActionsRun
 from shopsense_api.application.ports.orders import OrderTools
 from shopsense_api.application.ports.outbox import DONE, PENDING, OutboxItem, OutboxStore
 from shopsense_api.application.use_cases.answer_policy import PolicyAnswer
 from shopsense_api.application.use_cases.decide_return import DecideReturn
 from shopsense_api.application.use_cases.drain_outbox import DrainOutbox
+from shopsense_api.application.use_cases.memory import RecallCustomer, RememberTicket
 from shopsense_api.application.use_cases.triage_ticket import (
     TriageCommand,
     TriageResult,
@@ -23,9 +26,10 @@ from shopsense_api.application.use_cases.triage_ticket import (
 from shopsense_api.application.workflow.state import TicketState
 from shopsense_api.domain.exceptions import LLMRefused, OrderToolError, TriageFailed
 from shopsense_api.domain.guardrails.fabrication import rupee_forms, unsupported
+from shopsense_api.domain.memory.model import TicketOutcome
 from shopsense_api.domain.policy.grounding import numbers_in
 from shopsense_api.domain.policy.rules_engine import Eligibility, ReturnCase
-from shopsense_api.domain.ticket.enums import IssueType
+from shopsense_api.domain.ticket.enums import IssueType, Sentiment
 from shopsense_api.domain.ticket.support_ticket import SupportTicket
 from shopsense_api.domain.values.untrusted_text import UntrustedText
 from shopsense_api.domain.workflow.risk import REFUND_ISSUES, Route, assess
@@ -38,6 +42,19 @@ Clock = Callable[[], datetime]
 class Triager(Protocol):
     async def execute(self, command: TriageCommand) -> TriageResult: ...
 
+
+log = structlog.get_logger(__name__)
+
+_TICKET_OUTCOME: dict[str, TicketOutcome] = {
+    "resolved": TicketOutcome.RESOLVED,
+    "answered": TicketOutcome.RESOLVED,
+    "rejected": TicketOutcome.RESOLVED,
+    "pending_human_approval": TicketOutcome.PENDING_APPROVAL,
+    "needs_customer_info": TicketOutcome.NEEDS_INFO,
+    "handed_off": TicketOutcome.HANDED_OFF,
+    "parked_human_queue": TicketOutcome.HANDED_OFF,
+    "cannot_help": TicketOutcome.HANDED_OFF,
+}
 
 WRONG_OR_MISSING = frozenset({IssueType.WRONG_ITEM, IssueType.MISSING_ITEM})
 REFUND_REASON = {
@@ -84,7 +101,11 @@ class TicketFlow:
         drainer: DrainOutbox | None = None,
         grant_key: bytes = b"",
         policy_numbers: frozenset[str] = frozenset(),
+        recall: RecallCustomer | None = None,
+        remember: RememberTicket | None = None,
     ) -> None:
+        self._recall = recall
+        self._remember = remember
         self._grant_key = grant_key
         self._policy_numbers = policy_numbers
         self._triage = triage
@@ -118,6 +139,7 @@ class TicketFlow:
         if self._reviewer is None:
             return {"brief": None}
         facts = {
+            "customer_history": state.get("memory", ""),
             "order": state.get("order_no"),
             "item_sku": state.get("sku"),
             "amount_paise": state.get("amount_paise"),
@@ -130,6 +152,7 @@ class TicketFlow:
         return {"brief": brief}
 
     async def triage_step(self, state: TicketState) -> dict[str, Any]:
+        memory = await self._recall_context(state["customer_no"])
         try:
             earlier = tuple(UntrustedText(turn) for turn in state.get("history", []))
             result = await self._triage.execute(
@@ -138,7 +161,7 @@ class TicketFlow:
         except (LLMRefused, TriageFailed):
             # Fail closed (M8): a refused or unreadable ticket goes to a person, no order action
             return _done("handed_off", _HANDOFF)
-        return {"ticket": result.ticket.model_dump(mode="json")}
+        return {"ticket": result.ticket.model_dump(mode="json"), "memory": memory}
 
     async def lookup_step(self, state: TicketState) -> dict[str, Any]:
         ticket = SupportTicket.model_validate(state["ticket"])
@@ -236,10 +259,43 @@ class TicketFlow:
         return await self._refund(state, stage="approved", approve_pending=True)
 
     async def respond_step(self, state: TicketState) -> dict[str, Any]:
+        await self._remember_outcome(state)
         reply = state.get("reply")
         if reply:
             return self._guard(state, reply)
         return _done(state.get("outcome", "handed_off"), _HANDOFF)
+
+    async def _remember_outcome(self, state: TicketState) -> None:
+        """Episodic memory: one system-derived record per finished ticket. A failed write is logged,
+        never shown to the customer."""
+        if self._remember is None:
+            return
+        ticket = state.get("ticket") or {}
+        try:
+            issue = IssueType(ticket.get("issue_type") or IssueType.OUT_OF_SCOPE.value)
+            sentiment = Sentiment(ticket["sentiment"]) if ticket.get("sentiment") else None
+            await self._remember.run(
+                customer_no=state["customer_no"],
+                ticket_no=state["ticket_id"],
+                issue_type=issue,
+                order_no=state.get("order_no") or ticket.get("order_id"),
+                outcome=_TICKET_OUTCOME.get(state.get("outcome", ""), TicketOutcome.HANDED_OFF),
+                sentiment=sentiment,
+                amount_paise=state.get("amount_paise"),
+                resolved_on=self._clock().date(),
+            )
+        except Exception:
+            log.warning("memory write failed", ticket_id=state.get("ticket_id"), exc_info=True)
+
+    async def _recall_context(self, customer_no: str) -> str:
+        """Long-term memory: recent tickets as reviewer context. A failure gives no context."""
+        if self._recall is None:
+            return ""
+        try:
+            return (await self._recall.run(customer_no)).as_prompt_text()
+        except Exception:
+            log.warning("memory recall failed", customer_no=customer_no, exc_info=True)
+            return ""
 
     async def _refund(
         self, state: TicketState, *, stage: str, approve_pending: bool
