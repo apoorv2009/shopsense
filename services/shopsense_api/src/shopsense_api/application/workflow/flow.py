@@ -30,6 +30,7 @@ from shopsense_api.domain.memory.model import TicketOutcome
 from shopsense_api.domain.policy.grounding import numbers_in
 from shopsense_api.domain.policy.rules_engine import Eligibility, ReturnCase
 from shopsense_api.domain.ticket.enums import IssueType, Sentiment
+from shopsense_api.domain.ticket.greeting import GREETING_REPLY, is_greeting
 from shopsense_api.domain.ticket.support_ticket import SupportTicket
 from shopsense_api.domain.values.untrusted_text import UntrustedText
 from shopsense_api.domain.workflow.risk import REFUND_ISSUES, Route, assess
@@ -152,6 +153,9 @@ class TicketFlow:
         return {"brief": brief}
 
     async def triage_step(self, state: TicketState) -> dict[str, Any]:
+        if is_greeting(state["message"]):
+            # A greeting gets a fixed reply: no model call, no handoff, no memory record
+            return _done("greeting", GREETING_REPLY)
         memory = await self._recall_context(state["customer_no"])
         try:
             earlier = tuple(UntrustedText(turn) for turn in state.get("history", []))
@@ -268,7 +272,7 @@ class TicketFlow:
     async def _remember_outcome(self, state: TicketState) -> None:
         """Episodic memory: one system-derived record per finished ticket. A failed write is logged,
         never shown to the customer."""
-        if self._remember is None:
+        if self._remember is None or state.get("outcome") == "greeting":
             return
         ticket = state.get("ticket") or {}
         try:
