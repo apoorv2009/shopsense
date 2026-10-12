@@ -1,5 +1,8 @@
 <section class="chat" aria-labelledby="chat-title">
-  <h1 id="chat-title" class="chat__title">Customer support</h1>
+  <header class="chat__head">
+    <h1 id="chat-title" class="chat__title">Customer support</h1>
+    <p class="chat__intro">Ask about an order, a delivery, a return or a refund. A specialist picks up anything that needs a person.</p>
+  </header>
 
   <div class="chat__layout">
     <mat-card appearance="outlined" class="chat__card">
@@ -15,6 +18,11 @@
       </div>
 
       <ol class="chat__log" aria-live="polite" aria-label="Conversation">
+        @if (lines().length === 0) {
+          <li class="chat__empty">
+            Try: "Where is my order ORD-100002?" or "I want a refund for ORD-100011".
+          </li>
+        }
         @for (line of lines(); track $index) {
           <li class="chat__line" [class.chat__line--assistant]="line.from === 'assistant'">
             <span class="chat__who">{{ line.from === 'customer' ? 'You' : 'ShopSense' }}</span>
@@ -37,20 +45,23 @@
       }
 
       <form class="chat__form" (ngSubmit)="send()">
-        <mat-form-field appearance="outline" class="chat__field">
-          <mat-label>Describe your problem</mat-label>
+        <label class="chat__label" for="message">Your message</label>
+        <div class="chat__row">
           <input
-            matInput
+            id="message"
+            class="chat__input"
             name="message"
+            type="text"
+            placeholder="Describe your problem"
             [ngModel]="draft()"
             (ngModelChange)="draft.set($event)"
             [disabled]="busy()"
             autocomplete="off"
           />
-        </mat-form-field>
-        <button mat-flat-button type="submit" [disabled]="busy() || draft().trim() === ''">
-          Send
-        </button>
+          <button class="chat__send" type="submit" [disabled]="busy() || draft().trim() === ''">
+            Send
+          </button>
+        </div>
       </form>
     </mat-card>
 

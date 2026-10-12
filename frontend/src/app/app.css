@@ -1,3 +1,9 @@
+
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 .skip-link {
   position: absolute;
   left: -999px;
@@ -93,7 +99,7 @@
 }
 
 .shell__main {
-  min-height: 70vh;
+  flex: 1;
   padding: 1.5rem 0 2.5rem;
   background: #f4f6f9;
 }

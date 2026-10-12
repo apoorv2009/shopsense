@@ -1,9 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 
 import { ShopSenseApi, StreamEvent, TicketView } from '../core/api';
 import { PaisePipe } from '../shared/paise.pipe';
@@ -50,10 +47,7 @@ const STEP_LABELS: Record<string, string> = {
   selector: 'ss-chat-page',
   imports: [
     FormsModule,
-    MatButtonModule,
     MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
     PaisePipe,
   ],
   templateUrl: './chat.page.html',
