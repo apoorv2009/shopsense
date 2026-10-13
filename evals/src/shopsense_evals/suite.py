@@ -70,7 +70,7 @@ def corpus_numbers(corpus: list[PolicyDocument]) -> set[str]:
 
 
 async def _get_json(op: httpx.AsyncClient, url: str, **kwargs: Any) -> Any:
-    """GET from the order platform, retried: a cold or restarting service must not look like data."""
+    """GET from the order platform, retried: a restarting service must not look like data."""
     last = ""
     for attempt in range(4):
         response = await op.get(url, **kwargs)
