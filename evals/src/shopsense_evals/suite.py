@@ -111,6 +111,17 @@ async def order_facts(op: httpx.AsyncClient, customer_no: str) -> set[str]:
     return facts
 
 
+async def _post_case(api: httpx.AsyncClient, url: str, **kwargs: Any) -> httpx.Response:
+    """POST a ticket. A timed-out request is retried; if it keeps timing out it is recorded as a
+    504 for that case, so one slow request does not stop the whole run."""
+    for _ in range(3):
+        try:
+            return await api.post(url, **kwargs)
+        except httpx.TimeoutException:
+            await asyncio.sleep(5)
+    return httpx.Response(504, text="client timeout")
+
+
 async def run_case(
     api: httpx.AsyncClient,
     op: httpx.AsyncClient,
@@ -125,7 +136,8 @@ async def run_case(
         address = next(
             (a for a, no in senders.items() if no == case.customer_no), "stranger@example.com"
         )
-        response = await api.post(
+        response = await _post_case(
+            api,
             "/v1/channels/email/inbound",
             json={
                 "from_address": address,
@@ -135,8 +147,8 @@ async def run_case(
             },
         )
     else:
-        response = await api.post(
-            "/v1/chat/tickets", json={"customer_no": customer, "message": case.message}
+        response = await _post_case(
+            api, "/v1/chat/tickets", json={"customer_no": customer, "message": case.message}
         )
     try:
         view = response.json()
