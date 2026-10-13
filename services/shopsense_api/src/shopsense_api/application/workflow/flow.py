@@ -29,6 +29,7 @@ from shopsense_api.domain.guardrails.fabrication import rupee_forms, unsupported
 from shopsense_api.domain.memory.model import TicketOutcome
 from shopsense_api.domain.policy.grounding import numbers_in
 from shopsense_api.domain.policy.rules_engine import Eligibility, ReturnCase
+from shopsense_api.domain.ticket.anger import is_angry_text
 from shopsense_api.domain.ticket.enums import IssueType, Sentiment
 from shopsense_api.domain.ticket.greeting import GREETING_REPLY, is_greeting
 from shopsense_api.domain.ticket.off_domain import OFF_DOMAIN_REPLY
@@ -168,7 +169,12 @@ class TicketFlow:
             return _done("handed_off", _HANDOFF)
         if result.ticket.issue_type is IssueType.OUT_OF_SCOPE:
             return _done("out_of_scope", OFF_DOMAIN_REPLY)
-        return {"ticket": result.ticket.model_dump(mode="json"), "memory": memory}
+        ticket = result.ticket.model_dump(mode="json")
+        if is_angry_text(state["message"]):
+            ticket["sentiment"] = (
+                Sentiment.ANGRY.value
+            )  # guardrail floor: angry means a reviewer decides
+        return {"ticket": ticket, "memory": memory}
 
     async def lookup_step(self, state: TicketState) -> dict[str, Any]:
         ticket = SupportTicket.model_validate(state["ticket"])
