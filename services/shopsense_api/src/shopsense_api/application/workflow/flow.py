@@ -33,6 +33,7 @@ from shopsense_api.domain.ticket.anger import is_angry_text
 from shopsense_api.domain.ticket.enums import IssueType, Sentiment
 from shopsense_api.domain.ticket.greeting import GREETING_REPLY, is_greeting
 from shopsense_api.domain.ticket.off_domain import OFF_DOMAIN_REPLY
+from shopsense_api.domain.ticket.policy_hint import is_policy_shaped
 from shopsense_api.domain.ticket.support_ticket import SupportTicket
 from shopsense_api.domain.values.untrusted_text import UntrustedText
 from shopsense_api.domain.workflow.risk import REFUND_ISSUES, Route, assess
@@ -167,9 +168,13 @@ class TicketFlow:
         except (LLMRefused, TriageFailed):
             # Fail closed (M8): a refused or unreadable ticket goes to a person, no order action
             return _done("handed_off", _HANDOFF)
-        if result.ticket.issue_type is IssueType.OUT_OF_SCOPE:
-            return _done("out_of_scope", OFF_DOMAIN_REPLY)
-        ticket = result.ticket.model_dump(mode="json")
+        triaged = result.ticket
+        if triaged.issue_type is IssueType.OUT_OF_SCOPE:
+            if not is_policy_shaped(state["message"]):
+                return _done("out_of_scope", OFF_DOMAIN_REPLY)
+            # Triage called a delivery or policy question off-topic: the policy answerer decides
+            triaged = triaged.model_copy(update={"issue_type": IssueType.POLICY_QUESTION})
+        ticket = triaged.model_dump(mode="json")
         if is_angry_text(state["message"]):
             ticket["sentiment"] = (
                 Sentiment.ANGRY.value
