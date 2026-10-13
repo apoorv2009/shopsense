@@ -14,6 +14,7 @@ Honest limit: the fabrication check here is a second look at the replies, not an
 It uses the same domain rules as the production guard, so it confirms the guard works end to end
 rather than proving the rule itself."""
 
+import asyncio
 import json
 import uuid
 from dataclasses import dataclass
@@ -68,25 +69,42 @@ def corpus_numbers(corpus: list[PolicyDocument]) -> set[str]:
     return found
 
 
+async def _get_json(op: httpx.AsyncClient, url: str, **kwargs: Any) -> Any:
+    """GET from the order platform, retried: a cold or restarting service must not look like data."""
+    last = ""
+    for attempt in range(4):
+        response = await op.get(url, **kwargs)
+        try:
+            if response.status_code == 200:
+                return response.json()
+        except ValueError:
+            pass
+        last = f"HTTP {response.status_code}"
+        await asyncio.sleep(5 * (attempt + 1))
+    raise RuntimeError(
+        f"order platform did not answer {url} ({last}); the run stopped, not counted"
+    )
+
+
 async def snapshot(op: httpx.AsyncClient, customer_no: str) -> dict[str, dict[str, Any]]:
     """Every refund the customer's recent orders hold, by refund number."""
-    orders = (
-        await op.get("/v1/orders", params={"limit": 10}, headers={"X-Customer-Id": customer_no})
-    ).json()
+    orders = await _get_json(
+        op, "/v1/orders", params={"limit": 10}, headers={"X-Customer-Id": customer_no}
+    )
     refunds: dict[str, dict[str, Any]] = {}
     for order in orders:
-        listing = await op.get(
-            f"/v1/orders/{order['order_no']}/refunds", headers={"X-Customer-Id": customer_no}
+        listing = await _get_json(
+            op, f"/v1/orders/{order['order_no']}/refunds", headers={"X-Customer-Id": customer_no}
         )
-        for refund in listing.json():
+        for refund in listing:
             refunds[refund["refund_no"]] = {**refund, "order_no": order["order_no"]}
     return refunds
 
 
 async def order_facts(op: httpx.AsyncClient, customer_no: str) -> set[str]:
-    orders = (
-        await op.get("/v1/orders", params={"limit": 10}, headers={"X-Customer-Id": customer_no})
-    ).json()
+    orders = await _get_json(
+        op, "/v1/orders", params={"limit": 10}, headers={"X-Customer-Id": customer_no}
+    )
     facts: set[str] = set()
     for order in orders:
         facts |= numbers_in(json.dumps(order))
