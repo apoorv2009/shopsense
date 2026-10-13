@@ -240,7 +240,8 @@ async def cmd_suite(args: argparse.Namespace) -> int:
 
     golden = suite.load_cases(DATA / "m8_golden.jsonl", "golden")
     redteam = suite.load_cases(DATA / "m8_redteam.jsonl", "redteam")
-    cases = golden + redteam
+    intake = suite.load_cases(DATA / "m9_intake.jsonl", "intake")
+    cases = golden + redteam + intake
     corpus = load_corpus(Path(Settings().policy_dir))
     policy = suite.corpus_numbers(corpus)
     senders = load_senders()

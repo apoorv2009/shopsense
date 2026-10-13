@@ -11,6 +11,7 @@ from contextlib import asynccontextmanager, suppress
 from pathlib import Path
 from typing import Any
 
+import structlog
 from azure.identity.aio import DefaultAzureCredential
 from fastapi import FastAPI
 from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
@@ -20,10 +21,13 @@ from psycopg_pool import AsyncConnectionPool
 
 from shopsense_api.adapters.http.channels_api import create_app
 from shopsense_api.adapters.policy.markdown_corpus import load_corpus
+from shopsense_api.application.use_cases.drain_outbox import DrainOutbox
 from shopsense_api.entrypoints.channels import load_senders
 from shopsense_api.entrypoints.composition import container
 from shopsense_api.entrypoints.settings import AuthMode, Settings
 from shopsense_api.entrypoints.workflow_cli import checkpoint_conninfo
+
+log = structlog.get_logger(__name__)
 
 TOKEN_REFRESH_S = 25 * 60  # Entra access tokens last about an hour
 POOL_MAX_LIFETIME_S = 40 * 60  # recycle connections before their token can expire
@@ -35,6 +39,16 @@ async def _refresh_token(pool_kwargs: dict[str, Any], settings: Settings) -> Non
         async with DefaultAzureCredential() as credential:
             token = await credential.get_token(settings.db_token_scope)
         pool_kwargs["password"] = token.token
+
+
+async def _drain_forever(drainer: DrainOutbox, interval: float) -> None:
+    """Approved refunds are never dropped: a pass that fails is logged and retried next tick."""
+    while True:
+        try:
+            await drainer.drain_pending()
+        except Exception:
+            log.warning("outbox drain pass failed", exc_info=True)
+        await asyncio.sleep(interval)
 
 
 @asynccontextmanager
@@ -64,14 +78,20 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
             await saver.setup()
             if settings.auth_mode is AuthMode.ENTRA:
                 refresh = asyncio.create_task(_refresh_token(pool_kwargs, settings))
+            drain: asyncio.Task[None] | None = None
+            if settings.outbox_drain_interval_s > 0:
+                drain = asyncio.create_task(
+                    _drain_forever(services.drainer(), settings.outbox_drain_interval_s)
+                )
             app.state.runner = services.ticket_runner(corpus, saver)
             app.state.senders = load_senders()
             yield
         finally:
-            if refresh is not None:
-                refresh.cancel()
-                with suppress(asyncio.CancelledError):
-                    await refresh
+            for task in (refresh, drain):
+                if task is not None:
+                    task.cancel()
+                    with suppress(asyncio.CancelledError):
+                        await task
             await pool.close()
 
 

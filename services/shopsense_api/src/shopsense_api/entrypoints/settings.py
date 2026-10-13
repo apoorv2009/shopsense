@@ -29,6 +29,8 @@ class Settings(BaseSettings):
     model_gateway_url: str = ""
     model_gateway_key: SecretStr | None = None
     model_tier: str = "standard"
+    # Outbox worker: seconds between drain passes inside the API (0 disables)
+    outbox_drain_interval_s: float = 30.0
 
     # Primary model and a second vendor on the same Foundry resource (D15)
     primary_deployment: str = "gpt-4.1-mini"

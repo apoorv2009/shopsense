@@ -160,6 +160,11 @@ class Container:
         )
         return TicketRunner(build_graph(flow, checkpointer, tracer or self.tracer()), outbox)
 
+    def drainer(self) -> DrainOutbox:
+        """Sends approved refunds that are still pending (the outbox worker, run in the API)."""
+        grant_key = self.settings.grant_key.get_secret_value().encode("utf-8")
+        return DrainOutbox(self.outbox_store(), self.order_tools(), grant_key)
+
     def outbox_store(self) -> OutboxStore:
         return SqlOutboxStore(self._require_db())
 
