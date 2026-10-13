@@ -15,12 +15,15 @@ from shopsense_api.application.ports.prompts import PromptRepository
 from shopsense_api.application.untrusted_blocks import random_block_id, wrap_untrusted
 from shopsense_api.application.use_cases.hybrid_search import HybridSearch, Mode
 from shopsense_api.domain.policy.grounding import unsupported_numbers
-from shopsense_api.domain.ticket.off_domain import OFF_DOMAIN_REPLY
 from shopsense_api.domain.values.untrusted_text import UntrustedText
 
 PROFILE = "policy"
 PROMPT_NAME = "policy_answer"
-HANDOFF = OFF_DOMAIN_REPLY  # not answerable from our policies: a polite, non-escalating reply
+NOT_IN_POLICY_REPLY = (
+    "I don't have that information in our policies, so I can't confirm it here. "
+    "Please check the ShopSense website or contact support for the latest details."
+)
+HANDOFF = NOT_IN_POLICY_REPLY  # not answerable from our policies: a polite, non-escalating reply
 
 
 class PolicyAnswerOut(BaseModel):
