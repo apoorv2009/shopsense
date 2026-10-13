@@ -39,6 +39,10 @@
     {
       "email": "rohan.das@example.in",
       "customer_no": "C0010"
+    },
+    {
+      "email": "apoorv20.jain@gmail.com",
+      "customer_no": "C0001"
     }
   ]
 }
