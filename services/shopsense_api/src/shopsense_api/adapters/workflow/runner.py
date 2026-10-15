@@ -60,6 +60,13 @@ class TicketRunner:
             return None
         return await self.view(ticket_id)
 
+    async def finish(self, ticket_id: str) -> TicketView:
+        """Continue a ticket whose first run stopped partway (e.g. the caller dropped the connection)."""
+        snapshot = await self._graph.aget_state(_config(ticket_id))
+        if snapshot.next and "approval" not in snapshot.next:
+            await self._graph.ainvoke(None, _config(ticket_id))
+        return await self.view(ticket_id)
+
     async def view(self, ticket_id: str) -> TicketView:
         snapshot = await self._graph.aget_state(_config(ticket_id))
         values = snapshot.values
