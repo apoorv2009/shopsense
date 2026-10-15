@@ -72,7 +72,8 @@ def create_app(lifespan: Any = None, cors_origins: list[str] | None = None) -> F
         runner = _runner(request)
         ticket_id = "TKT-EM-" + hashlib.sha256(body.message_id.encode("utf-8")).hexdigest()[:12]
         if await runner.exists(ticket_id):
-            return {"status": "duplicate", "ticket_id": ticket_id}
+            # A retried delivery gets the reply already produced, so the Logic App can still send it
+            return _view(await runner.view(ticket_id))
         text = f"{body.subject}\n\n{body.body}".strip()
         view = await runner.start(ticket_id, customer, text, channel="email")
         return _view(view)
